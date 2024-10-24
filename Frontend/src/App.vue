@@ -8,7 +8,7 @@
             <img src="../../public/logo.jpg" alt="Logo">
         </div>
         <div class="search">
-            <input type="search" name="" id="" placeholder="Recherche">
+            <input type="search" name="" id="" placeholder="Rechercher le titre du livre ou le nom de l'écrivain">
         </div>
         <div class="nav-right">
             <router-link to="/home">Accueil</router-link>

@@ -1,12 +1,141 @@
+<script>
+export default {
+    data() {
+      return {
+        books: [
+          { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', potedBy: 'John Doe', date: '19/10/2024', cover: '../../public/cover 1.jpg', isPopular: true },
+          { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true },
+          { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 3.jpg', isPopular: true },
+          { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true },
+          // ... autres livres
+        ]
+      };
+    }
+}
+</script>
+
 <template>
     <div class="content-page">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione consequatur sequi quia, maiores suscipit doloremque asperiores, architecto deserunt assumenda corrupti totam fuga omnis, dolorem a eaque placeat odio aperiam cumque aliquam sunt id illum perferendis. Maiores dolores veritatis incidunt neque deserunt! Dolorum nisi repudiandae minus minima autem explicabo. Pariatur rerum totam, modi incidunt accusantium obcaecati nam exercitationem esse suscipit dolore, nisi eius corporis! Et excepturi aliquid atque suscipit sapiente expedita deserunt laboriosam, fugit, facilis corporis alias at repudiandae commodi quibusdam dolorem recusandae iste pariatur itaque aut minus. Dignissimos veritatis in laudantium praesentium vitae mollitia quo deserunt? Quam error esse veniam quibusdam, blanditiis fuga animi, corporis, iusto cumque laudantium velit nemo libero id voluptatem excepturi voluptates sequi magni. Explicabo debitis suscipit itaque in voluptatibus veniam, aspernatur ullam inventore aliquid dolor dolorem quisquam odio, quasi doloribus repudiandae! Corporis id cumque dolore assumenda vitae provident exercitationem nam, quas voluptas alias voluptatibus neque corrupti porro culpa eveniet totam minus, omnis consequatur cupiditate sapiente consectetur atque recusandae veritatis. A ratione perspiciatis quo porro, esse provident voluptate expedita debitis totam, atque, voluptatum repellendus dignissimos. Beatae alias quae nostrum quod expedita perspiciatis necessitatibus nulla dicta ab, ea aliquid cum officiis obcaecati eaque excepturi labore? Ab iste tempore error necessitatibus vel quam tenetur sed vitae magnam. Tempore, sed. Qui minima, voluptatibus expedita impedit accusamus voluptas voluptate iste beatae suscipit placeat laborum. Distinctio nemo vitae officiis hic veniam deleniti odio reprehenderit aliquid quis cupiditate et adipisci id doloribus unde consequuntur cum, consectetur culpa, at nesciunt, odit animi. Id nisi quos consectetur iste delectus. Deleniti voluptatibus nesciunt dicta recusandae cumque officiis soluta aliquid repellendus, adipisci voluptatum. Vel ullam, temporibus nemo quaerat iure magni consequatur. Praesentium culpa architecto odio, vero fugiat nostrum perferendis autem quibusdam odit debitis eligendi pariatur? Dolor earum veritatis dicta a exercitationem praesentium magni fugit! Placeat nam nesciunt, ab commodi facilis reiciendis optio necessitatibus voluptatum doloremque quia labore eum cum nemo eius numquam voluptatibus modi quas, odio quasi molestias neque eos veritatis iste voluptas. Excepturi est minima beatae molestiae quas quos qui architecto deleniti! Tenetur magnam quidem debitis aspernatur, facere minima dolorem praesentium rerum illum iure, quis porro nam natus necessitatibus sed vel reprehenderit quam vero ut excepturi quos voluptate ea. In sint consectetur nihil repellendus sapiente quis, dolore dignissimos, necessitatibus qui eligendi voluptatem. Commodi dolores rerum repellat. Laborum, unde. Autem nemo dicta harum deleniti aperiam repellat obcaecati impedit eius est eum incidunt corporis, fugiat saepe? Iste soluta provident magnam unde veritatis inventore ab quasi ratione necessitatibus labore, vitae id cumque optio est quos porro ducimus excepturi libero ipsam. Veritatis consequatur placeat nihil molestias sit totam voluptas iusto, ullam cum, illum dicta voluptate quod? Nihil dolores eos praesentium dolorum aliquid optio, aut ullam, ex magnam ipsam molestiae qui odio quasi aperiam tempore porro quidem rerum explicabo. Veniam numquam, odit suscipit facere praesentium, quam hic odio voluptates exercitationem provident, libero corrupti laborum saepe necessitatibus aperiam! Expedita facilis maxime earum assumenda laboriosam est commodi, quae culpa voluptas! Enim aperiam rem excepturi quo fugiat officia veniam optio ea sed vitae beatae accusamus sequi eveniet, voluptatem aut incidunt quisquam molestias debitis magni. Et praesentium fuga qui, beatae impedit fugiat obcaecati. Vel perspiciatis ea ab eligendi possimus expedita adipisci doloribus a soluta libero hic suscipit dicta tempore dignissimos, velit officia vitae vero culpa consequuntur ipsum qui nesciunt, placeat eum eos. Dolorum error perferendis debitis illo, provident earum! Accusantium blanditiis, nulla debitis atque natus iste. Fugiat perspiciatis vero iure? Quaerat nihil, atque facere odio aut rerum ea? Voluptates vel debitis tempore numquam facilis, commodi, repellendus modi deleniti minus nemo pariatur, perspiciatis excepturi nobis vitae! Quas natus quis ea. Nihil velit, reprehenderit sequi similique tempore quasi molestias nisi sint eaque, alias ratione dolores soluta doloremque ad quis earum culpa aliquam asperiores! Culpa vitae perspiciatis autem ut quae doloribus nihil quod amet, at maiores laboriosam fugiat pariatur itaque laborum voluptatum illum eligendi ad quibusdam enim dolor! Tenetur, magni dolore! Molestias incidunt accusamus tenetur facere assumenda quos, iure ad, placeat, aut labore qui aperiam suscipit delectus voluptatem dolorum mollitia modi veritatis explicabo harum saepe adipisci? Iusto, animi! Sunt molestias deleniti molestiae soluta magnam, sint est, accusantium et nulla voluptatibus reprehenderit nemo exercitationem ea ab voluptatem. Optio id perferendis commodi adipisci voluptate. Dicta quos nobis repellat doloremque minus ullam? Sequi vel ex ea nostrum optio vitae voluptates qui suscipit, ratione ipsam magni enim. Necessitatibus temporibus pariatur animi recusandae soluta nisi dolor veritatis sed corporis, doloremque similique voluptatibus eveniet asperiores enim odio eaque nemo itaque suscipit. Autem earum temporibus, harum quam minima neque natus quidem asperiores, soluta perferendis corporis beatae, fugiat molestiae alias saepe necessitatibus est ab! Alias neque inventore, odio provident error omnis consequuntur deleniti repudiandae architecto obcaecati, distinctio nostrum est ratione praesentium assumenda quisquam recusandae minus sit cupiditate velit deserunt vitae tempora. Tenetur, magnam cumque. Doloribus, esse repellat beatae praesentium atque ex culpa doloremque perspiciatis voluptate eum. Dignissimos, nobis! Aperiam voluptas rerum, minima ut consectetur libero nesciunt exercitationem magnam laboriosam illum excepturi voluptate eum ullam dolorum magni nam incidunt expedita at adipisci id laudantium perspiciatis nisi, explicabo illo! Voluptate ducimus doloribus fuga error pariatur vel modi, praesentium aut rem libero ipsa ut voluptas, consequuntur tempora perspiciatis quis nam ipsum ea delectus, sint provident. Qui iure perspiciatis reiciendis, similique quia blanditiis ea numquam quo vitae iusto nam, doloremque dolores sapiente obcaecati fugiat enim animi, nemo molestiae corrupti consequatur. Numquam illo minima nisi omnis itaque aperiam, earum, dolor soluta recusandae deleniti assumenda ab eveniet explicabo molestias in consectetur ratione iste deserunt atque sapiente natus dolores amet. Repudiandae fugiat quae nulla quis, inventore sed facilis dolorum laudantium voluptatem. Culpa accusamus corrupti suscipit natus minus quisquam! Libero consequatur reiciendis minima. Odio quod alias reiciendis atque. Eligendi vel corporis delectus explicabo, eveniet eius dicta porro esse iure repellat nam animi est. Accusantium neque enim maiores illo necessitatibus. Nobis temporibus quisquam fugit consequuntur sint, accusantium sequi sunt fuga officia saepe in ipsa dicta eos voluptatem unde aliquid dolor facere error vitae nisi! Vitae excepturi tenetur iusto et, odio ad sed cum asperiores animi amet ab corporis dolorem laboriosam nihil vero labore sequi aliquid?</p>
+        <div class="tri">
+            <a href="">Romance</a>
+            <a href="">Fantaisie</a>
+            <a href="">Histoire</a>
+            <a href="">Fiction</a>
+            <a href="">Non fiction</a>
+            <a href="">Comédie</a>
+            <a href="">Action</a>
+        </div>
+
+        <section class="popular-books">
+            <h2>Les Plus Populaires</h2>
+
+            <div href="" class="card">
+            <a href="" class="book" v-for="(book, index) in books" :key="index">
+                <div v-if="(book.isPopular)" class="badge">
+                <div class="popular">
+                    Populaire
+                </div>
+                </div>
+                <div v-else-if="(book.isRecommended)" class="badge">
+                <div class="recommended">
+                    Recommandé
+                </div>
+                </div>
+                <img :src="book.cover" :alt="book.title">
+                <p id="type">Fiction</p>
+                <div class="book-info">
+                    <h3>{{ book.title }}</h3>
+                    <p>{{ book.author }}</p>
+                    <p id="postedBy">
+                    Publié par <b>{{ book.potedBy }}</b>,<br>
+                    Le <b>{{ book.date }}</b>,<br>
+                    Lang : <b>FR</b>
+                    </p>
+                    <div class="content-book">
+                    <div class="note">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note.png" alt="">
+                    </div>
+                    <span>👀1,3k</span>
+                    <span><img src="../../public/download.png" alt=""> 900</span>
+                    </div>
+                </div>
+            </a>
+            </div>
+
+            <a href="" id="seeMore">Voir plus</a>
+
+        </section>
+
+        <section class="popular-books">
+            <h2>Les derniers ajouts</h2>
+
+            <div href="" class="card">
+            <a href="" class="book" v-for="(book, index) in books" :key="index">
+                <div v-if="(book.isPopular)" class="badge">
+                <div class="popular">
+                    Populaire
+                </div>
+                </div>
+                <div v-else-if="(book.isRecommended)" class="badge">
+                <div class="recommended">
+                    Recommandé
+                </div>
+                </div>
+                <img :src="book.cover" :alt="book.title">
+                <p id="type">Fiction</p>
+                <div class="book-info">
+                    <h3>{{ book.title }}</h3>
+                    <p>{{ book.author }}</p>
+                    <p id="postedBy">
+                    Publié par <b>{{ book.potedBy }}</b>,<br>
+                    Le <b>{{ book.date }}</b>,<br>
+                    Lang : <b>FR</b>
+                    </p>
+                    <div class="content-book">
+                    <div class="note">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note-active.png" alt="">
+                        <img src="../../public/note.png" alt="">
+                    </div>
+                    <span>👀1,3k</span>
+                    <span><img src="../../public/download.png" alt=""> 900</span>
+                    </div>
+                </div>
+            </a>
+            </div>
+
+            <a href="" id="seeMore">Voir plus</a>
+
+        </section>
     </div>
 </template>
 
 <style>
 .content-page{
-    padding: 50px;
+    padding: 80px;
     color: white;
+}
+.content-page .tri{
+    display: flex;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.content-page .tri a{
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.397);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+.content-page .tri a:hover{
+    background-color: rgba(255, 255, 255, 0.235);
 }
 </style>
