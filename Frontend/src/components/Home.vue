@@ -201,7 +201,7 @@ body{
 
 #postedBy{
   font-size: 11px;
-  margin: 10px;
+  margin: 10px 0px 10px 0px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
