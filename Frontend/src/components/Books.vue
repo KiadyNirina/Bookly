@@ -66,7 +66,7 @@ export default {
             </a>
             </div>
 
-            <a href="" id="seeMore">Voir plus</a>
+            <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
 
         </section>
 
