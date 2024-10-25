@@ -7,7 +7,6 @@ export default {
           { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
           { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
           { title: 'Titre du Livre 2', author: 'Auteur 2', postedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true , type: 'Fiction'},
-          // ... autres livres
         ]
       };
     }
@@ -29,8 +28,8 @@ export default {
         <section class="popular-books">
             <h2>Les Plus Populaires</h2>
 
-            <div href="" class="row">
-                <a href="" class="books" v-for="(book, index) in books" :key="index">
+            <div class="row">
+                <a href="/books/popular/detail" class="books" v-for="(book, index) in books" :key="index">
                     <div class="img">
                         <img :src="book.cover" alt="">
                     </div>
@@ -65,8 +64,6 @@ export default {
                     </div>
                 </a>
             </div>
-
-            <a href="" id="seeMore">Voir plus</a>
 
         </section>
     </div>
