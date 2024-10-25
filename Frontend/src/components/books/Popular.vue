@@ -3,10 +3,10 @@ export default {
     data() {
       return {
         books: [
-          { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', potedBy: 'John Doe', date: '19/10/2024', cover: '../../public/cover 1.jpg', isPopular: true },
-          { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true },
-          { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 3.jpg', isPopular: true },
-          { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true },
+          { title: 'A tout les garçon que j\'ai aimé', author: 'Christophe RABEARIMANANA', postedBy: 'John Doe', date: '19/05/2023', cover: '../../public/cover 1.jpg', isPopular: true, type: 'Romance' },
+          { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
+          { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
+          { title: 'Titre du Livre 2', author: 'Auteur 2', postedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true , type: 'Fiction'},
           // ... autres livres
         ]
       };
@@ -38,7 +38,7 @@ export default {
                         <h3>{{ book.title }}</h3>
                         <p>{{ book.author }}</p>
                         <p id="poste">
-                        Publié par <b>{{ book.potedBy }}</b>,<br>
+                        Publié par <b>{{ book.postedBy }}</b>,<br>
                         Le <b>{{ book.date }}</b>,<br>
                         Lang : <b>FR</b>
                         </p>
@@ -56,7 +56,12 @@ export default {
                         </div>
                     </div>
                     <div class="desc">
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in?</p>
+                        <p id="type">{{ book.type }}</p>
+                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
+                        <div class="action">
+                            <a href="#save"><img src="../../../public/save.png" alt="">Enregistrer</a>
+                            <a href="#download"><img src="../../../public/download.png" alt="">Télécharger</a>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -97,7 +102,7 @@ export default {
     width: 30%;
 }
 .row .info h3{
-  font-size: 25px;
+  font-size: 20px;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   text-transform: uppercase;
   color: #4388ff;
@@ -107,7 +112,7 @@ export default {
 .row .info p{
   color: rgba(255, 255, 255, 0.52);
   margin: 0;
-  font-size: 20px;
+  font-size: 15px;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .row .content-book {
@@ -137,5 +142,29 @@ export default {
     padding: 5px;
     color: rgba(255, 255, 255, 0.434);
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.row .books .desc #type{
+    text-align: center;
+    background-color: #4388ff28;
+}
+.row .books .desc .action{
+    display: flex;
+}
+.row .books .desc .action a{
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.842);
+    font-weight: bold;
+    font-size: 15px;
+    align-items: center;
+}
+.row .books .desc .action a:hover{
+    background-color: rgba(128, 128, 128, 0.197);
+}
+.row .books .desc .action a img{
+    height: 20px;
+    margin-right: 5px;
 }
 </style>
