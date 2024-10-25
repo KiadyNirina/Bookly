@@ -51,6 +51,7 @@ export default {
                                 <img src="../../../public/note.png" alt="">
                             </div>
                             <span>👀1,3k</span>
+                            <span><img src="../../../public/coms.png" alt="">150</span>
                             <span><img src="../../../public/download.png" alt=""> 900</span>
                         </div>
                     </div>
@@ -104,25 +105,32 @@ export default {
 }
 
 .row .info p{
-  color: rgba(255, 255, 255, 0.352);
+  color: rgba(255, 255, 255, 0.52);
   margin: 0;
   font-size: 20px;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+.row .content-book {
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 0;
+}
 .row .content-book span{
-  font-size: 15px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   margin: auto;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Courier New', Courier, monospace;
+  color: rgba(255, 255, 255, 0.722);
 }
 #poste{
     font-size: 15px;
     margin: 10px 0px 10px 0px;
 }
 .row .books .content-book span img{
-  height: 10px;
+  height: 13px;
   width: auto;
+  margin-right: 2px;
 }
 .row .books .desc{
     width: 40%;

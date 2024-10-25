@@ -4,7 +4,7 @@ import Books from '@/components/Books.vue';
 import Popular from '@/components/books/popular.vue';
 
 const routes = [
-    { path: '/home', component: Home },
+    { path: '/', component: Home },
     { path: '/books', component: Books },
     { path: '/books/popular', component: Popular },
 ];
