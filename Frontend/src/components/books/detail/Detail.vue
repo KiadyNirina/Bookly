@@ -28,7 +28,7 @@ export default {
         <div class="one">
                     <div class="sect1">
                         <div class="img">
-                            <img src="../../../../public/cover 1.jpg" alt="">
+                            <img src="../../../../public/cover 3.jpg" alt="">
                         </div>
                         <div class="info">
                             <h3>Titre</h3>
@@ -37,7 +37,8 @@ export default {
                             <p id="poste">
                             Publié par <b>John Doe</b>,<br>
                             Le <b>10/10/2024</b>,<br>
-                            Lang : <b>FR</b>
+                            Lang : <b>FR</b><br>
+                            Page : <b>122</b>
                             </p>
                             <div class="content-book">
                                 <div class="note">
@@ -55,7 +56,9 @@ export default {
                     </div>
 
                     <div class="desc">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum voluptatem a cum porro veritatis facilis explicabo repellat? Id nobis alias, quibusdam ad sequi est exercitationem vitae officia quia doloremque totam nulla voluptatum natus mollitia adipisci ipsam deserunt aliquid reprehenderit. Minus, architecto reiciendis. A, reiciendis sunt sint perferendis aperiam impedit reprehenderit excepturi quam autem vel nostrum neque accusantium voluptates, voluptas quisquam eveniet fugit nulla eum? Ratione vitae, fuga ex vero illum placeat repellat eius praesentium corrupti nobis neque fugiat perferendis voluptatibus expedita! Doloremque tenetur sed a, aliquid laboriosam inventore illum. Sequi maxime laboriosam fuga, blanditiis dolore doloremque enim repellat accusamus quo.</p>
+                        <h2>Description</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum voluptatem a cum porro veritatis facilis explicabo repellat? <br>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic eos explicabo debitis eius eveniet vitae fugiat quaerat nesciunt nihil, alias cupiditate quod suscipit odio, corrupti animi ea fugit minus officiis perferendis! Ullam, dolorem magni alias aspernatur ipsum nulla quia accusantium omnis dicta dignissimos culpa repellat laudantium, dolores quod. Pariatur expedita doloribus nostrum eius neque deserunt vitae vero eveniet corrupti, autem hic repellat temporibus delectus illo minus repellendus aperiam omnis. Voluptatibus, nesciunt! Nesciunt unde omnis voluptate quos aut id veniam autem temporibus a iusto ipsam odit suscipit in obcaecati ratione consequatur libero magni delectus, quaerat aliquid animi tenetur facilis officia. Tempora.</p>
                         <div class="action">
                             <a href="#save"><img src="../../../../public/save.png" alt="">Enregistrer</a>
                             <a href="#download"><img src="../../../../public/download.png" alt="">Télécharger</a>
@@ -74,7 +77,7 @@ export default {
                                 </div>
                             </div>
                             <div class="profile">
-                                <img src="../../../../public/cover 2.jpg" alt="">
+                                <img src="../../../../public/cover 4.jfif" alt="">
                                 <div class="coms">
                                     <b><a href="">Nom</a></b>
                                     <p><span> Le <b>15/02/2024</b></span>,<br>
@@ -207,9 +210,14 @@ export default {
     width: 50%;
     padding: 10px;
 }
+.one .desc h2{
+    margin: 0;
+}
 .one .desc p{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: rgba(255, 255, 255, 0.57);
+    height: 230px;
+    overflow-y: auto;
 }
 .one .desc .action{
     display: flex;
@@ -260,7 +268,7 @@ export default {
     height: 30px;
 }
 .one .desc .avis{
-    height: 300px;
+    max-height: 300px;
     overflow-y: auto;
 }
 .one .desc .avis .profile{
@@ -290,6 +298,9 @@ export default {
 }
 .one .desc .avis .profile .coms span{
     font-size: 12px;
+}
+.one .desc .avis .profile .coms p{
+    height: auto;
 }
 
 </style>
