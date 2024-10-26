@@ -74,7 +74,7 @@ export default {
     display: flex;
     width: 100%;
     text-align: left;
-    margin: 10px;
+    margin-bottom: 10px;
     transition: 0.2s;
     border: 1px solid #4388ff27;
     border-radius: 20px;
