@@ -1,4 +1,11 @@
-<script setup>
+<script>
+export default {
+  methods: {
+    isActive(route) {
+      return this.$route.path === route;
+    }
+  }
+};
 </script>
 
 <template>
@@ -11,11 +18,11 @@
             <input type="search" name="" id="" placeholder="Rechercher le titre du livre ou le nom de l'écrivain ou le nom de l'utilisateur">
         </div>
         <div class="nav-right">
-            <router-link to="/">Accueil</router-link>
-            <router-link to="/books">Livres</router-link>
-            <router-link to="/">A propos</router-link>
-            <router-link to="/">Contact</router-link>
-            <router-link to="/" id="button">Connexion</router-link>
+            <router-link :to="'/'" :id="isActive('/') ? 'active-link' : ''">Accueil</router-link>
+            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''">Livres</router-link>
+            <router-link :to="'/about'" :id="isActive('/about') ? 'active-link' : ''">À propos</router-link>
+            <router-link :to="'/contact'" :id="isActive('/contact') ? 'active-link' : ''">Contact</router-link>
+            <router-link :to="'/login'" id="button">Connexion</router-link>
         </div>
     </div>
     <router-view></router-view>
@@ -85,5 +92,8 @@
 #button:hover{
     background-color: transparent;
     color: #E67E22;
+}
+#active-link {
+  color: #E67E22;
 }
 </style>
