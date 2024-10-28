@@ -108,40 +108,42 @@ export default {
             <h2>Les Livres Similaires</h2>
 
             <div class="row">
-                <a href="/books/popular/detail" class="books" v-for="(book, index) in books" :key="index">
-                    <div class="img">
-                        <img :src="book.cover" alt="">
-                    </div>
-                    <div class="info">
-                        <h3>{{ book.title }}</h3>
-                        <p>{{ book.author }}</p>
-                        <p id="poste">
-                        Publié par <b>{{ book.postedBy }}</b>,<br>
-                        Le <b>{{ book.date }}</b>,<br>
-                        Lang : <b>FR</b>
-                        </p>
-                        <div class="content-book">
-                            <div class="note">
-                                <img src="../../../../public/note-active.png" alt="">
-                                <img src="../../../../public/note-active.png" alt="">
-                                <img src="../../../../public/note-active.png" alt="">
-                                <img src="../../../../public/note-active.png" alt="">
-                                <img src="../../../../public/note.png" alt="">
+                <div class="books" v-for="(book, index) in books" :key="index">
+                    <a href="/books/detail">
+                        <div class="img">
+                            <img :src="book.cover" alt="">
+                        </div>
+                        <div class="info">
+                            <h3>{{ book.title }}</h3>
+                            <p>{{ book.author }}</p>
+                            <p id="poste">
+                            Publié par <b>{{ book.postedBy }}</b>,<br>
+                            Le <b>{{ book.date }}</b>,<br>
+                            Lang : <b>FR</b>
+                            </p>
+                            <div class="content-book">
+                                <div class="note">
+                                    <img src="../../../../public/note-active.png" alt="">
+                                    <img src="../../../../public/note-active.png" alt="">
+                                    <img src="../../../../public/note-active.png" alt="">
+                                    <img src="../../../../public/note-active.png" alt="">
+                                    <img src="../../../../public/note.png" alt="">
+                                </div>
+                                <span>👀1,3k</span>
+                                <span><img src="../../../../public/coms.png" alt="">150</span>
+                                <span><img src="../../../../public/download.png" alt=""> 900</span>
                             </div>
-                            <span>👀1,3k</span>
-                            <span><img src="../../../../public/coms.png" alt="">150</span>
-                            <span><img src="../../../../public/download.png" alt=""> 900</span>
                         </div>
-                    </div>
-                    <div class="desc">
-                        <p id="type">{{ book.type }}</p>
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
-                        <div class="action">
-                            <a href="#save"><img src="../../../../public/save.png" alt="">Enregistrer</a>
-                            <a href="#download"><img src="../../../../public/download.png" alt="">Télécharger</a>
+                        <div class="desc">
+                            <p id="type">{{ book.type }}</p>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
+                            <div class="action">
+                                <a href="#save" class="actionButton"><img src="../../../../public/save.png" alt="">Enregistrer</a>
+                                <a href="#download" class="actionButton"><img src="../../../../public/download.png" alt="">Télécharger</a>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
 
         </section>

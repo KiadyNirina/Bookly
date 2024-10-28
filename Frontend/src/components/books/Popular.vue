@@ -29,40 +29,42 @@ export default {
             <h2>Les Plus Populaires</h2>
 
             <div class="row">
-                <a href="/books/popular/detail" class="books" v-for="(book, index) in books" :key="index">
-                    <div class="img">
-                        <img :src="book.cover" alt="">
-                    </div>
-                    <div class="info">
-                        <h3>{{ book.title }}</h3>
-                        <p>{{ book.author }}</p>
-                        <p id="poste">
-                        Publié par <b>{{ book.postedBy }}</b>,<br>
-                        Le <b>{{ book.date }}</b>,<br>
-                        Lang : <b>FR</b>
-                        </p>
-                        <div class="content-book">
-                            <div class="note">
-                                <img src="../../../public/note-active.png" alt="">
-                                <img src="../../../public/note-active.png" alt="">
-                                <img src="../../../public/note-active.png" alt="">
-                                <img src="../../../public/note-active.png" alt="">
-                                <img src="../../../public/note.png" alt="">
+                <div class="books" v-for="(book, index) in books" :key="index">
+                    <a href="/books/detail">
+                        <div class="img">
+                            <img :src="book.cover" alt="">
+                        </div>
+                        <div class="info">
+                            <h3>{{ book.title }}</h3>
+                            <p>{{ book.author }}</p>
+                            <p id="poste">
+                            Publié par <b>{{ book.postedBy }}</b>,<br>
+                            Le <b>{{ book.date }}</b>,<br>
+                            Lang : <b>FR</b>
+                            </p>
+                            <div class="content-book">
+                                <div class="note">
+                                    <img src="../../../public/note-active.png" alt="">
+                                    <img src="../../../public/note-active.png" alt="">
+                                    <img src="../../../public/note-active.png" alt="">
+                                    <img src="../../../public/note-active.png" alt="">
+                                    <img src="../../../public/note.png" alt="">
+                                </div>
+                                <span>👀1,3k</span>
+                                <span><img src="../../../public/coms.png" alt="">150</span>
+                                <span><img src="../../../public/download.png" alt=""> 900</span>
                             </div>
-                            <span>👀1,3k</span>
-                            <span><img src="../../../public/coms.png" alt="">150</span>
-                            <span><img src="../../../public/download.png" alt=""> 900</span>
                         </div>
-                    </div>
-                    <div class="desc">
-                        <p id="type">{{ book.type }}</p>
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
-                        <div class="action">
-                            <a href="#save"><img src="../../../public/save.png" alt="">Enregistrer</a>
-                            <a href="#download"><img src="../../../public/download.png" alt="">Télécharger</a>
+                        <div class="desc">
+                            <p id="type">{{ book.type }}</p>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
+                            <div class="action">
+                                <a href="#save" class="actionButton"><img src="../../../public/save.png" alt="">Enregistrer</a>
+                                <a href="#download" class="actionButton"><img src="../../../public/download.png" alt="">Télécharger</a>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
 
         </section>
@@ -70,7 +72,7 @@ export default {
 </template>
 
 <style>
-.row .books{
+.row .books a{
     display: flex;
     width: 100%;
     text-align: left;
@@ -91,7 +93,7 @@ export default {
     object-fit: cover;
     border-radius: 20px 0px 0px 20px;
 }
-.row .books:hover{
+.row .books a:hover{
   box-shadow: 0px 0px 10px #3355ffc2;
 }
 .row .books .info {
@@ -147,7 +149,7 @@ export default {
 .row .books .desc .action{
     display: flex;
 }
-.row .books .desc .action a{
+.row .books .desc .action .actionButton{
     padding: 10px;
     border-radius: 10px;
     display: flex;
@@ -156,11 +158,14 @@ export default {
     font-weight: bold;
     font-size: 15px;
     align-items: center;
+    border: none;
+    justify-content: center;
 }
-.row .books .desc .action a:hover{
+.row .books .desc .action .actionButton:hover{
     background-color: rgba(128, 128, 128, 0.197);
+    box-shadow: none;
 }
-.row .books .desc .action a img{
+.row .books .desc .action .actionButton img{
     height: 20px;
     margin-right: 5px;
 }

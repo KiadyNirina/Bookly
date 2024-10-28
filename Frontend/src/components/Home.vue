@@ -4,10 +4,10 @@ export default {
   data() {
     return {
       books: [
-        { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', potedBy: 'John Doe', cover: '../../public/cover 1.jpg', isPopular: true },
-        { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', cover: '../../public/cover 2.jpg', isRecommended: true },
-        { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', cover: '../../public/cover 3.jpg', isPopular: true },
-        { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', cover: '../../public/cover 4.jfif', isRecommended: true },
+        { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', potedBy: 'John Doe', cover: '../../public/cover 1.jpg', isPopular: true, link: 1 },
+        { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', cover: '../../public/cover 2.jpg', isRecommended: true, link: 2 },
+        { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', cover: '../../public/cover 3.jpg', isPopular: true, link: 3 },
+        { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', cover: '../../public/cover 4.jfif', isRecommended: true, link: 4 },
         // ... autres livres
       ]
     };
@@ -27,44 +27,46 @@ export default {
   <section class="popular-books">
     <h2>Populaires</h2>
 
-    <div href="" class="card">
-      <a href="" class="book" v-for="(book, index) in books" :key="index">
-        <div v-if="(book.isPopular)" class="badge">
-          <div class="popular">
-            Populaire
-          </div>
-        </div>
-        <div v-else-if="(book.isRecommended)" class="badge">
-          <div class="recommended">
-            Recommandé
-          </div>
-        </div>
-        <img :src="book.cover" :alt="book.title">
-        <p id="type">Fiction</p>
-        <div class="book-info">
-            <h3>{{ book.title }}</h3>
-            <p>{{ book.author }}</p>
-            <p id="postedBy">
-              Publié par <b>{{ book.potedBy }}</b><br>
-              Lang : <b>FR</b>
-            </p>
-            <div class="content-book">
-              <div class="note">
-                <img src="../../public/note-active.png" alt="">
-                <img src="../../public/note-active.png" alt="">
-                <img src="../../public/note-active.png" alt="">
-                <img src="../../public/note-active.png" alt="">
-                <img src="../../public/note.png" alt="">
-              </div>
-              <span>👀1,3k</span>
-              <span><img src="../../public/coms.png" alt=""> 112</span>
-              <span><img src="../../public/download.png" alt=""> 900</span>
+    <div class="card">
+      <div class="book" v-for="(book, index) in books" :key="index">
+        <a href="/books/detail">
+          <div v-if="(book.isPopular)" class="badge">
+            <div class="popular">
+              Populaire
             </div>
-        </div>
-      </a>
+          </div>
+          <div v-else-if="(book.isRecommended)" class="badge">
+            <div class="recommended">
+              Recommandé
+            </div>
+          </div>
+          <img :src="book.cover" :alt="book.title">
+          <p id="type">Fiction</p>
+          <div class="book-info">
+              <h3>{{ book.title }}</h3>
+              <p>{{ book.author }}</p>
+              <p id="postedBy">
+                Publié par <b>{{ book.potedBy }}</b><br>
+                Lang : <b>FR</b>
+              </p>
+              <div class="content-book">
+                <div class="note">
+                  <img src="../../public/note-active.png" alt="">
+                  <img src="../../public/note-active.png" alt="">
+                  <img src="../../public/note-active.png" alt="">
+                  <img src="../../public/note-active.png" alt="">
+                  <img src="../../public/note.png" alt="">
+                </div>
+                <span>👀1,3k</span>
+                <span><img src="../../public/coms.png" alt=""> 112</span>
+                <span><img src="../../public/download.png" alt=""> 900</span>
+              </div>
+          </div>
+        </a>
+      </div>
     </div>
 
-    <a href="" id="seeMore">Voir plus</a>
+    <a href="/books/popular" id="seeMore">Voir plus</a>
 
   </section>
 
@@ -166,6 +168,10 @@ body{
 .card .book:hover{
   box-shadow: 0px 0px 10px #3355ffc2;
   width: 25.5%;
+}
+
+.card .book a{
+  text-decoration: none;
 }
 
 .card .book img{
