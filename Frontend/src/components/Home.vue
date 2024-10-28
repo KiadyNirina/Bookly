@@ -57,6 +57,7 @@ export default {
                 <img src="../../public/note.png" alt="">
               </div>
               <span>👀1,3k</span>
+              <span><img src="../../public/coms.png" alt=""> 112</span>
               <span><img src="../../public/download.png" alt=""> 900</span>
             </div>
         </div>
@@ -208,8 +209,8 @@ body{
 .content-book {
   display: flex;
   align-items: center;
-  padding-left: 10%;
-  padding-right: 10%;
+  padding-left: 5%;
+  padding-right: 5%;
   color: rgba(255, 255, 255, 0.587);
   margin-bottom: 10px;
 }
@@ -236,8 +237,9 @@ body{
 }
 
 .card .book .content-book span img{
-  height: 10px;
+  height: 12px;
   width: auto;
+  margin-right: 2px;
 }
 
 #seeMore{
@@ -247,9 +249,8 @@ body{
   border: 2px solid #E67E22;
   padding: 15px;
   border-radius: 30px;
-  transition: 0.5s
+  transition: 0.5s;
 }
-
 #seeMore:hover{
   background-color: transparent;
   color: #E67E22;

@@ -60,6 +60,7 @@ export default {
                         <img src="../../public/note.png" alt="">
                     </div>
                     <span>👀1,3k</span>
+                    <span><img src="../../public/coms.png" alt=""> 112</span>
                     <span><img src="../../public/download.png" alt=""> 900</span>
                     </div>
                 </div>
@@ -104,6 +105,7 @@ export default {
                         <img src="../../public/note.png" alt="">
                     </div>
                     <span>👀1,3k</span>
+                    <span><img src="../../public/coms.png" alt=""> 112</span>
                     <span><img src="../../public/download.png" alt=""> 900</span>
                     </div>
                 </div>
