@@ -3,12 +3,14 @@ import Home from '@/components/Home.vue';
 import Books from '@/components/Books.vue';
 import Popular from '@/components/books/Popular.vue';
 import Detail from '@/components/books/detail/Detail.vue';
+import Login from '@/components/Login.vue';
 
 const routes = [
     { path: '/', component: Home },
     { path: '/books', component: Books },
     { path: '/books/popular', component: Popular },
     { path: '/books/detail', component: Detail},
+    { path: '/login', component: Login },
 ];
 
 const router = createRouter({
