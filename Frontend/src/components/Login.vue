@@ -1,11 +1,29 @@
 <script>
+import api from '@/api';
+
 export default {
-  data() {
-    return {
-      password: '',
-      isPasswordVisible: false,
-    };
-  },
+    data() {
+        return {
+            email: '',
+            password: '',
+            isPasswordVisible: false,
+        };
+    },
+    methods: {
+        async login() {
+            try {
+                const response = await api.login({
+                    email: this.email,
+                    password: this.password
+                });
+                localStorage.setItem('token', response.data.access_token);
+                this.$router.push('/dashboard');
+            } catch (error) {
+                console.error(error);
+                alert('Login failed');
+            }
+        }
+    }
 };
 </script>
 
