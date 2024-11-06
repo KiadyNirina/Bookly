@@ -1,11 +1,46 @@
 <script>
+import api from '@/api';
+
 export default {
-  data() {
-    return {
-      password: '',
-      isPasswordVisible: false,
-    };
-  },
+    data() {
+        return {
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            errorMessage: '',
+            hasError: false,
+            isLoading: false
+        };
+    },
+    methods: {
+        async signup() {
+            if (this.password !== this.confirmPassword) {
+                this.errorMessage = "Les mots de passe ne correspondent pas.";
+                this.hasError = true;
+                return;
+            }
+
+            this.isLoading = true;
+
+            try {
+                const response = await api.register({
+                    name: this.name,
+                    email: this.email,
+                    password: this.password,
+                    password_confirmation: this.confirmPassword
+                });
+                this.$router.push('/welcome'); 
+                this.hasError = false;
+                this.errorMessage = '';
+            } catch (error) {
+                this.errorMessage = "Une erreur est survenue lors de l'inscription.";
+                this.hasError = true;
+            } finally {
+                this.isLoading = false; 
+            }
+        }
+    }
 };
 </script>
 
@@ -13,23 +48,33 @@ export default {
     <div class="content-login">
         <div class="form-login">
             <img src="../../public/giphy_book (4).gif" alt="">
-            <div class="sect2">
+            <div :class="['sect2', {'error-border' : hasError}]">
                 <h1>S'inscrire</h1>
-                <form action="">
-                    <input type="text" placeholder="Entrer votre nom d'utilisateur">
-                    <input type="text" placeholder="Entrer votre email">
+                <p id="error" v-if="errorMessage">{{ errorMessage }}</p>
+                <form @submit.prevent="signup" action="">
+                    <input 
+                        type="text" 
+                        v-model="name"
+                        placeholder="Entrer votre nom d'utilisateur">
+                    <input 
+                        type="text" 
+                        v-model="email"
+                        placeholder="Entrer votre email">
                     <div class="double">
                         <input name=""
-                        type='password'
-                        id="password"
-                        placeholder="Entrez votre mot de passe">
+                            type='password'
+                            class="password"
+                            v-model="password"
+                            placeholder="Entrez votre mot de passe">
                         <input name=""
-                        type='password'
-                        id="password"
-                        placeholder="Confirmer votre mot de passe">
+                            type='password'
+                            v-model="confirmPassword"
+                            class="password"
+                            placeholder="Confirmer votre mot de passe">
                     </div>
                     
-                    <button>S'inscrire</button>
+                    <button v-if="isLoading" disabled>Loading...</button>
+                    <button v-else>S'inscrire</button>
                 </form>
                 <p id="foot">Vous êtes déjà membre? <router-link to="/login">Se connecter</router-link></p>
             </div>
