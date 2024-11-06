@@ -1,16 +1,37 @@
 <script>
 export default {
-  methods: {
-    isActive(route) {
-      return this.$route.path === route;
+    data() {
+        return {
+            isAuthenticated: false
+        };
+    },
+    created() {
+        this.checkAuth();
+    },
+    methods: {
+        isActive(route) {
+            return this.$route.path === route;
+        },
+        checkAuth() {
+            this.isAuthenticated = !!localStorage.getItem('token');
+        },
+        logout() {
+            localStorage.removeItem('token');
+            this.isAuthenticated = false;
+            this.$router.push('/');
+        }
+    },
+    watch: {
+        '$route'() {
+            this.checkAuth();
+        }
     }
-  }
 };
 </script>
 
 <template>
   <main>
-    <div class="nav">
+    <div v-if="!isAuthenticated" class="nav">
         <div class="nav-left">
             <img src="../../public/logo.jpg" alt="Logo">
         </div>
@@ -23,6 +44,22 @@ export default {
             <router-link :to="'/about'" :id="isActive('/about') ? 'active-link' : ''">À propos</router-link>
             <router-link :to="'/contact'" :id="isActive('/contact') ? 'active-link' : ''">Contact</router-link>
             <router-link :to="'/login'" id="button">Connexion</router-link>
+        </div>
+    </div>
+
+    <div v-else class="nav">
+        <div class="nav-left">
+            <img src="../../public/logo.jpg" alt="Logo">
+        </div>
+        <div class="search">
+            <input type="search" name="" id="" placeholder="Rechercher le titre du livre ou le nom de l'écrivain ou le nom de l'utilisateur">
+        </div>
+        <div class="nav-right">
+            <router-link :to="'/dashboard'" :id="isActive('/dashboard') ? 'active-link' : ''">Accueil</router-link>
+            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''">Livres</router-link>
+            <router-link :to="'/about'" :id="isActive('/about') ? 'active-link' : ''">Ma Bibliothèque</router-link>
+            <router-link :to="'/contact'" :id="isActive('/contact') ? 'active-link' : ''">Notifications</router-link>
+            <button id="button">Deconnexion</button>
         </div>
     </div>
     <router-view></router-view>
@@ -39,12 +76,12 @@ export default {
     width: 100%;
     z-index: 10;
 }
-.nav a{
+.nav a, .nav button{
     text-decoration: none;
     color: #F5F5DC;
     transition: 0.5s;
 }
-.nav a:hover{
+.nav a:hover, .nav button:hover{
     color: #E67E22;
 }
 .nav-left{
@@ -78,11 +115,12 @@ export default {
     display: flex;
     align-items: center;
 }
-.nav-right a{
+.nav-right a, .nav-right button{
     margin-left: 10px;
     margin-right: 10px;
 }
 #button{
+    cursor: pointer;
     background-color: #E67E22;
     padding: 10px;
     border-radius: 20px;
