@@ -34,7 +34,7 @@ export default {
             <div class="sect2">
                 <h1>Se connecter</h1>
                 <form action="">
-                    <input type="text" placeholder="Entrer votre email">
+                    <input type="text" v-model="email" placeholder="Entrer votre email">
                     <input name=""
                         :type="isPasswordVisible ? 'text' : 'password'"
                         id="password"
