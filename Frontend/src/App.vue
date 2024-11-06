@@ -51,14 +51,18 @@ export default {
         <div class="nav-left">
             <img src="../../public/logo.jpg" alt="Logo">
         </div>
+        <div class="nav-img">
+            <router-link :to="'/dashboard'" :id="isActive('/dashboard') ? 'active-link' : ''"><img src="/icons/accueil.png" alt=""></router-link>
+            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''"><img src="/icons/livres.png" alt=""></router-link>
+            <router-link :to="'/biblio'" :id="isActive('/biblio') ? 'active-link' : ''"><img src="/icons/biblio.png" alt=""></router-link>
+            <router-link :to="'/notif'" :id="isActive('/notif') ? 'active-link' : ''"><img src="/icons/notif.png" alt=""></router-link>
+        </div>
         <div class="search">
             <input type="search" name="" id="" placeholder="Rechercher le titre du livre ou le nom de l'écrivain ou le nom de l'utilisateur">
         </div>
         <div class="nav-right">
-            <router-link :to="'/dashboard'" :id="isActive('/dashboard') ? 'active-link' : ''">Accueil</router-link>
-            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''">Livres</router-link>
-            <router-link :to="'/about'" :id="isActive('/about') ? 'active-link' : ''">Ma Bibliothèque</router-link>
-            <router-link :to="'/contact'" :id="isActive('/contact') ? 'active-link' : ''">Notifications</router-link>
+            <router-link :to="'/profil'" :id="isActive('/profil') ? 'active-link' : ''"><img src="/icons/user.png" alt=""></router-link>
+            <router-link :to="'/settings'" :id="isActive('/settings') ? 'active-link' : ''"><img src="/icons/paramètres.png" alt=""></router-link>
             <button id="button">Deconnexion</button>
         </div>
     </div>
@@ -76,6 +80,9 @@ export default {
     width: 100%;
     z-index: 10;
 }
+.nav img{
+    height: 25px;
+}
 .nav a, .nav button{
     text-decoration: none;
     color: #F5F5DC;
@@ -91,8 +98,17 @@ export default {
     height: 50px;
     border-radius: 100%;
 }
+.nav-img{
+    width: auto;
+    display: flex;
+    align-items: center;
+}
+.nav-img a{
+    margin-left: 10px;
+    margin-right: 10px;
+}
 .search{
-    width: 60%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
