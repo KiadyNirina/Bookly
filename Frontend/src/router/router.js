@@ -5,6 +5,7 @@ import Popular from '@/components/books/Popular.vue';
 import Detail from '@/components/books/detail/Detail.vue';
 import Login from '@/components/Login.vue';
 import Signup from '@/components/Signup.vue';
+import dashboard from '@/components/UserLogged/dashboard.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -13,6 +14,7 @@ const routes = [
     { path: '/books/detail', component: Detail},
     { path: '/login', component: Login },
     { path: '/signup', component: Signup },
+    { path: '/dashboard', component: dashboard },
 ];
 
 const router = createRouter({
