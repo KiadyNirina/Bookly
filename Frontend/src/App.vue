@@ -52,8 +52,8 @@ export default {
             <img src="../../public/logo.jpg" alt="Logo">
         </div>
         <div class="nav-img">
-            <router-link :to="'/dashboard'" :id="isActive('/dashboard') ? 'active-link' : ''"><img src="/icons/accueil.png" alt=""></router-link>
-            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''"><img src="/icons/livres.png" alt=""></router-link>
+            <router-link :to="'/dashboard'" :id="isActive('/dashboard') ? 'active-link' : ''"><img :src="isActive('/dashboard') ? '/icons/active/accueil.png' : '/icons/accueil.png'" alt=""></router-link>
+            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''"><img :src="isActive('/books') ? '/icons/active/livres.png' : '/icons/livres.png'" alt=""></router-link>
             <router-link :to="'/biblio'" :id="isActive('/biblio') ? 'active-link' : ''"><img src="/icons/biblio.png" alt=""></router-link>
             <router-link :to="'/notif'" :id="isActive('/notif') ? 'active-link' : ''"><img src="/icons/notif.png" alt=""></router-link>
         </div>
@@ -63,7 +63,7 @@ export default {
         <div class="nav-right">
             <router-link :to="'/profil'" :id="isActive('/profil') ? 'active-link' : ''"><img src="/icons/user.png" alt=""></router-link>
             <router-link :to="'/settings'" :id="isActive('/settings') ? 'active-link' : ''"><img src="/icons/paramètres.png" alt=""></router-link>
-            <button id="button">Deconnexion</button>
+            <button id="button" @click="logout">Deconnexion</button>
         </div>
     </div>
     <router-view></router-view>
@@ -81,7 +81,7 @@ export default {
     z-index: 10;
 }
 .nav img{
-    height: 25px;
+    height: 30px;
 }
 .nav a, .nav button{
     text-decoration: none;
