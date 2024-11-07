@@ -1,16 +1,33 @@
 <script>
 export default {
     data() {
-      return {
-        books: [
-          { title: 'A travers la fenêtre', author: 'Christophe RABEARIMANANA', postedBy: 'John Doe', date: '19/05/2023', cover: '../../public/cover 1.jpg', isPopular: true, type: 'Romance' },
-          { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
-          { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
-          { title: 'Titre du Livre 2', author: 'Auteur 2', postedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true , type: 'Fiction'},
-        ]
-      };
+        return {
+            isAuthenticated: false,
+            books: [
+                { title: 'A travers la fenêtre', author: 'Christophe RABEARIMANANA', postedBy: 'John Doe', date: '19/05/2023', cover: '../../public/cover 1.jpg', isPopular: true, type: 'Romance' },
+                { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
+                { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
+                { title: 'Titre du Livre 2', author: 'Auteur 2', postedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true , type: 'Fiction'},
+            ]
+        };
+    },
+    created() {
+        this.checkAuth();
+    },
+    methods: {
+        isActive(route) {
+            return this.$route.path === route;
+        },
+        checkAuth() {
+            this.isAuthenticated = !!localStorage.getItem('token');
+        }
+    },
+    watch: {
+        '$route'() {
+            this.checkAuth();
+        }
     }
-}
+};
 </script>
 
 <template>
@@ -63,7 +80,7 @@ export default {
                             <a href="#save"><img src="../../../../public/save.png" alt="">Enregistrer</a>
                             <a href="#download"><img src="../../../../public/download.png" alt="">Télécharger</a>
                         </div>
-                        <form action="">
+                        <form v-if="isAuthenticated"action="">
                             <textarea name="" id="" placeholder="Donnez votre avis..."></textarea>
                             <button><img src="../../../../public/send.png" alt=""></button>
                         </form>
