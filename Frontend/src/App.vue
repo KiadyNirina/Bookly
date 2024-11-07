@@ -54,7 +54,7 @@ export default {
         <div class="nav-img">
             <router-link :to="'/dashboard'" :id="isActive('/dashboard') ? 'active-link' : ''"><img :src="isActive('/dashboard') ? '/icons/active/accueil.png' : '/icons/accueil.png'" alt=""></router-link>
             <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''"><img :src="isActive('/books') ? '/icons/active/livres.png' : '/icons/livres.png'" alt=""></router-link>
-            <router-link :to="'/biblio'" :id="isActive('/biblio') ? 'active-link' : ''"><img src="/icons/biblio.png" alt=""></router-link>
+            <router-link :to="'/biblio'" :id="isActive('/biblio') ? 'active-link' : ''"><img :src="isActive('/biblio') ? '/icons/active/biblio.png' : '/icons/biblio.png'" alt=""></router-link>
             <router-link :to="'/notif'" :id="isActive('/notif') ? 'active-link' : ''"><img src="/icons/notif.png" alt=""></router-link>
         </div>
         <div class="search">
