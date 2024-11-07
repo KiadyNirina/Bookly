@@ -113,9 +113,9 @@ body{
 
 .popular-books {
   background-color: #010310;
-  padding-top: 100px;
+  padding-top: 50px;
   text-align: center;
-  height: 510px;
+  /* height: 510px; */
   max-width: 1300px;
   margin-left: auto;
   margin-right: auto;
