@@ -205,6 +205,11 @@ export default {
     align-items: center;
     text-decoration: none;
     color: white;
+    transition: 0.2s;
+}
+.content-page .users .user:hover {
+    background-color: rgba(128, 128, 128, 0.202);
+    border-radius: 15px;
 }
 .content-page .users .user img{
     height: 60px;
