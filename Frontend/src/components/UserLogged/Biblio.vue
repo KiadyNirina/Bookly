@@ -17,27 +17,27 @@ export default {
     <div class="content-page">
         <section class="popular-books">
             <div class="users">
-                <a href=""class="user">
+                <a href="/user"class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <h1>Nom</h1>
                 </a>
-                <a href="" class="user">
+                <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <h1>Nom</h1>
                 </a>
-                <a href=""class="user">
+                <a href="/user"class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <h1>Nom</h1>
                 </a>
-                <a href="" class="user">
+                <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <h1>Nom</h1>
                 </a>
-                <a href=""class="user">
+                <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <h1>Nom</h1>
                 </a>
-                <a href="" class="user">
+                <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <h1>Nom</h1>
                 </a>
