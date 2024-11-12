@@ -19,27 +19,45 @@ export default {
             <div class="users">
                 <a href="/user"class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
-                    <h1>Nom</h1>
+                    <div class="">
+                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
+                        <span><b>255</b> abonnés</span>
+                    </div>
                 </a>
                 <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
-                    <h1>Nom</h1>
+                    <div class="">
+                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
+                        <span><b>255</b> abonnés</span>
+                    </div>
                 </a>
                 <a href="/user"class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
-                    <h1>Nom</h1>
+                    <div class="">
+                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
+                        <span><b>255</b> abonnés</span>
+                    </div>
                 </a>
                 <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
-                    <h1>Nom</h1>
+                    <div class="">
+                        <h1>Cristophe</h1>
+                        <span><b>255</b> abonnés</span>
+                    </div>
                 </a>
                 <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
-                    <h1>Nom</h1>
+                    <div class="">
+                        <h1>Cristophe</h1>
+                        <span><b>255</b> abonnés</span>
+                    </div>
                 </a>
                 <a href="/user" class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
-                    <h1>Nom</h1>
+                    <div class="">
+                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
+                        <span><b>255</b> abonnés</span>
+                    </div>
                 </a>
             </div>
             <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
@@ -212,14 +230,27 @@ export default {
     border-radius: 15px;
 }
 .content-page .users .user img{
-    height: 60px;
-    width: 60px;
+    height: 50px;
+    width: 50px;
     border-radius: 100%;
     object-fit: cover;
 }
 .content-page .users .user h1{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 20px;
-    margin-left: 5px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    margin: 0px 5px 0px 5px;
+}
+.content-page .users .user h1 img{
+    height: 15px;
+    width: 15px;
+    margin-left: 2px;
+}
+.content-page .users .user span{
+    font-size: 12px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.587);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 </style>

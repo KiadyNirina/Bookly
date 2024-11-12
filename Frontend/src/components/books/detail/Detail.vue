@@ -169,11 +169,12 @@ export default {
 
 <style>
 .one{
-    padding: 10px;
+    padding: 20px;
     border: 1px solid #4388ff27;
+    box-shadow: 0px 0px 20px #4388ff2b;
     border-radius: 20px;
     display: flex;
-    margin-top: 10px;
+    margin-top: 25px;
     max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
@@ -184,7 +185,7 @@ export default {
 .one .sect1 .img img{
     width: 100%;
     height: 400px;
-    border-radius: 20px 0 0 0;
+    border-radius: 10px 0 0 0;
     object-fit: cover;
 }
 .one .sect1 .info h3{
@@ -231,6 +232,7 @@ export default {
 }
 .one .desc h2{
     margin: 0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .one .desc p{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;

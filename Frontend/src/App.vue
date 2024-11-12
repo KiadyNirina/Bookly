@@ -81,7 +81,7 @@ export default {
     z-index: 10;
 }
 .nav img{
-    height: 30px;
+    height: 25px;
 }
 .nav a, .nav button{
     text-decoration: none;
