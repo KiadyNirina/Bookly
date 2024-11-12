@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 
 /* Authentication */
@@ -23,3 +24,4 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::get('/user', [UserController::class, 'userInfo'])->middleware('auth:sanctum');
+Route::post('/createBook', [BookController::class, 'store'])->middleware('auth:sanctum');
