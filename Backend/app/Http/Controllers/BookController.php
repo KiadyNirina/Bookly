@@ -34,7 +34,7 @@ class BookController extends Controller
             'data' => $book
         ], 201);
     }
-    
+
 
     public function update(Request $request, $id)
     {
@@ -68,6 +68,25 @@ class BookController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $book
+        ], 200);
+    }
+
+
+    public function destroy($id)
+    {
+        $book = Book::find($id);
+        if (!$book) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Livre non trouvé'
+            ], 404);
+        }
+
+        $book->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Livre supprimé avec succès'
         ], 200);
     }
 }
