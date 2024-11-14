@@ -34,4 +34,40 @@ class BookController extends Controller
             'data' => $book
         ], 201);
     }
+    
+
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'author' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'genre' => 'sometimes|required|string|max:255',
+            'posted_by' => 'sometimes|required|exists:users,id',
+            'lang' => 'sometimes|required|string|max:10',
+            'page' => 'sometimes|required|integer',
+            'date' => 'nullable|date',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $book = Book::find($id);
+        if (!$book) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Livre non trouvé'
+            ], 404);
+        }
+
+        if ($request->hasFile('picture')) {
+            $imagePath = $request->file('picture')->store('public/images');
+            $validatedData['picture'] = str_replace('public/', 'storage/', $imagePath);
+        }
+
+        $book->update($validatedData);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $book
+        ], 200);
+    }
 }
