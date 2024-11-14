@@ -20,8 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('posted_by');
             $table -> string('lang', 5);
             $table -> integer('page');
-            $table -> date('date');
-            $table -> string('picture');
+            $table -> date('date') -> nullable();
+            $table -> string('picture') -> nullable();
             $table -> timestamps();
 
             $table -> foreign('posted_by') -> references('id') -> on('users') -> onDelete('cascade');

@@ -4,32 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BookController extends Controller
 {
-    //
-    public function store(Request $request) {
-        $validated = $request -> validate([
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
             'description' => 'required|string',
             'genre' => 'required|string|max:255',
             'posted_by' => 'required|exists:users,id',
-            'lang' => 'required|string|max:255',
+            'lang' => 'required|string|max:10',
             'page' => 'required|integer',
-            'date' => 'required|date',
-            'picture' => 'required|image|max:2048',
+            'date' => 'nullable|date',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        if($request -> hasFile('picture')) {
-            $validated['picture'] = $request -> file('picture') -> store('book_pictures', 'public');
+        if ($request->hasFile('picture')) {
+            $imagePath = $request->file('picture')->store('public/images');
+            $validatedData['picture'] = str_replace('public/', 'storage/', $imagePath);
         }
 
-        $book = Book::create($validated);
+        $book = Book::create($validatedData);
 
-        return response() -> json([
-            'message' => 'Book created with success!',
-            'book' => $book,
+        return response()->json([
+            'status' => 'success',
+            'data' => $book
         ], 201);
     }
 }
