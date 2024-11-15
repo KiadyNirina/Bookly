@@ -100,4 +100,22 @@ class BookController extends Controller
             'data' => $books
         ], 200);
     }
+
+
+    public function show($id)
+    {
+        $book = Book::find($id);
+        
+        if (!$book) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Livre non trouvé'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $book
+        ], 200);
+    }
 }
