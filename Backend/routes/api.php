@@ -24,6 +24,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::get('/user', [UserController::class, 'userInfo'])->middleware('auth:sanctum');
+Route::get('/users/{id}', [UserController::class, 'show']);
 
 Route::post('/createBook', [BookController::class, 'store'])->middleware('auth:sanctum');
 Route::put('/updateBook/{id}', [BookController::class, 'update'])->middleware('auth:sanctum');
