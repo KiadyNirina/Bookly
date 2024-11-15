@@ -28,3 +28,5 @@ Route::get('/user', [UserController::class, 'userInfo'])->middleware('auth:sanct
 Route::post('/createBook', [BookController::class, 'store'])->middleware('auth:sanctum');
 Route::put('/updateBook/{id}', [BookController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/deleteBook/{id}', [BookController::class, 'destroy'])->middleware('auth:sanctum');
+Route::get('/books/recent', [BookController::class, 'getRecentBooks']);
+

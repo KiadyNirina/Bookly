@@ -89,4 +89,15 @@ class BookController extends Controller
             'message' => 'Livre supprimé avec succès'
         ], 200);
     }
+
+
+    public function getRecentBooks()
+    {
+        $books = Book::orderBy('created_at', 'desc')->take(10)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $books
+        ], 200);
+    }
 }
