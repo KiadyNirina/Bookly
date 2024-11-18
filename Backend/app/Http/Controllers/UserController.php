@@ -62,4 +62,17 @@ class UserController extends Controller
             'data' => $user,
         ], 200);
     }
+
+
+    public function deleteCurrentUser(Request $request)
+    {
+        $user = $request->user();
+
+        $user->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Votre compte a été supprimé avec succès.'
+        ], 200);
+    }
 }
