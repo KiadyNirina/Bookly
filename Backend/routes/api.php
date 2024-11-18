@@ -25,11 +25,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 Route::get('/user', [UserController::class, 'userInfo'])->middleware('auth:sanctum');
 Route::get('/users/{id}', [UserController::class, 'show']);
+Route::put('/user', [UserController::class, 'updateCurrentUser'])->middleware('auth:sanctum');
 
 Route::post('/createBook', [BookController::class, 'store'])->middleware('auth:sanctum');
 Route::put('/updateBook/{id}', [BookController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/deleteBook/{id}', [BookController::class, 'destroy'])->middleware('auth:sanctum');
 Route::get('/books/recent', [BookController::class, 'getRecentBooks']);
 Route::get('/books/{id}', [BookController::class, 'show']);
-
+Route::get('/user/books', [BookController::class, 'getBooksByUser'])->middleware('auth:sanctum');
 

@@ -118,4 +118,24 @@ class BookController extends Controller
             'data' => $book
         ], 200);
     }
+
+
+    public function getBooksByUser(Request $request)
+    {
+        $books = Book::where('posted_by_user_id', $request->user()->id)
+                     ->orderBy('created_at', 'desc')
+                     ->get();
+
+        if ($books->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aucun livre trouvé pour cet utilisateur'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $books
+        ], 200);
+    }
 }
