@@ -141,11 +141,11 @@ export default {
     color: #E67E22;
 }
 .content-login .form-login .error-border form input[type='text'], .content-login .form-login .error-border form input[type='password']{
-    border: 1px solid rgb(255, 62, 62);
+    border: 2px solid rgb(255, 62, 62);
 }
 #error{
     color: rgb(255, 62, 62);
-    font-size: 13px;
+    font-size: 15px;
 }
 .content-login .form-login .sect2 form button{
     width: 100%;

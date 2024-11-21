@@ -108,7 +108,7 @@ export default {
     margin-right: 10px;
 }
 .search{
-    width: 100%;
+    width: 70%;
     margin-left: auto;
     margin-right: auto;
 }
