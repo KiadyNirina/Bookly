@@ -61,7 +61,7 @@ export default {
             <input type="search" name="" id="" placeholder="Rechercher le titre du livre ou le nom de l'écrivain ou le nom de l'utilisateur">
         </div>
         <div class="nav-right">
-            <router-link :to="'/profil'" :id="isActive('/profil') ? 'active-link' : ''"><img src="/icons/user.png" alt=""></router-link>
+            <router-link :to="'/profil'" :id="isActive('/profil') ? 'active-link' : ''"><img :src="isActive('/profil') ? '/icons/active/user.png' : '/icons/user.png'" alt=""></router-link>
             <router-link :to="'/settings'" :id="isActive('/settings') ? 'active-link' : ''"><img src="/icons/paramètres.png" alt=""></router-link>
             <button id="button" @click="logout">Deconnexion</button>
         </div>
