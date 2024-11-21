@@ -29,7 +29,10 @@
     text-align: center;
     background: rgba(255, 255, 255, 0.253);
     padding: 20px;
-    width: auto;
+    width: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 100%;
 }
 .profil h1{
     text-align: center;
