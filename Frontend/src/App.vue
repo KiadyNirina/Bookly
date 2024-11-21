@@ -75,13 +75,13 @@ export default {
     display: flex;
     align-items: center;
     background-color: #010310;
-    padding: 5px;
+    padding: 10px;
     position: fixed;
     width: 100%;
     z-index: 10;
 }
 .nav img{
-    height: 25px;
+    height: 30px;
 }
 .nav a, .nav button{
     text-decoration: none;
@@ -95,7 +95,7 @@ export default {
     width: auto;
 }
 .nav-left img{
-    height: 50px;
+    height: 40px;
     border-radius: 100%;
 }
 .nav-img{
