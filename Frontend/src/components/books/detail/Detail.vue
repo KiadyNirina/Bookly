@@ -77,10 +77,13 @@ export default {
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum voluptatem a cum porro veritatis facilis explicabo repellat? <br>
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic eos explicabo debitis eius eveniet vitae fugiat quaerat nesciunt nihil, alias cupiditate quod suscipit odio, corrupti animi ea fugit minus officiis perferendis! Ullam, dolorem magni alias aspernatur ipsum nulla quia accusantium omnis dicta dignissimos culpa repellat laudantium, dolores quod. Pariatur expedita doloribus nostrum eius neque deserunt vitae vero eveniet corrupti, autem hic repellat temporibus delectus illo minus repellendus aperiam omnis. Voluptatibus, nesciunt! Nesciunt unde omnis voluptate quos aut id veniam autem temporibus a iusto ipsam odit suscipit in obcaecati ratione consequatur libero magni delectus, quaerat aliquid animi tenetur facilis officia. Tempora.</p>
                         <div class="action">
+                            <a href="#save"><img src="../../../../public/icons/livres.png" alt="">Lire</a>
                             <a href="#save"><img src="../../../../public/save.png" alt="">Enregistrer</a>
                             <a href="#download"><img src="../../../../public/download.png" alt="">Télécharger</a>
+                            <a href="#download"><img src="../../../../public/icons/partager.png" alt="">Partager</a>
                         </div>
                         <form v-if="isAuthenticated"action="">
+                            <img id="profil"src="../../../../public/cover 2.jpg" alt="">
                             <textarea name="" id="" placeholder="Donnez votre avis..."></textarea>
                             <button><img src="../../../../public/send.png" alt=""></button>
                         </form>
@@ -238,17 +241,19 @@ export default {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .one .desc p{
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: rgba(255, 255, 255, 0.57);
     height: 230px;
     overflow-y: auto;
+    font-size: 13px;
+    line-height: 20px;
 }
 .one .desc .action{
     display: flex;
 }
 .one .desc .action a{
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 20px;
     display: flex;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.842);
@@ -270,19 +275,26 @@ export default {
     display: flex;
     margin-top: 10px;
 }
+#profil{
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 100%;
+    margin-right: 2px;
+}
 .one .desc form textarea{
     width: 100%;
     background-color: transparent;
-    border-radius: 15px;
+    border-radius: 30px;
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.227);
+    border: 1px solid rgba(255, 255, 255, 0.093);
     font-family: 'Courier New', Courier, monospace;
     padding: 10px;
 }
 .one .desc form button{
     background-color: transparent;
     border: none;
-    border-radius: 15px;
+    border-radius: 30px;
 }
 .one .desc form button:hover{
     background-color: rgba(128, 128, 128, 0.197);
@@ -311,7 +323,7 @@ export default {
     background-color: rgba(255, 255, 255, 0.081);
     margin-left: 5px;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 20px;
 }
 .one .desc .avis .profile .coms b{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
