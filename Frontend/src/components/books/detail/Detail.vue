@@ -169,9 +169,8 @@ export default {
 
 <style>
 .one{
-    padding: 20px;
     border: 1px solid #4388ff27;
-    box-shadow: 0px 0px 20px #4388ff2b;
+    box-shadow: 0px 0px 10px #4388ff2b;
     border-radius: 20px;
     display: flex;
     margin-top: 25px;
@@ -188,12 +187,16 @@ export default {
     border-radius: 10px 0 0 0;
     object-fit: cover;
 }
+.one .sect1 .info {
+    padding: 20px;
+}
 .one .sect1 .info h3{
     font-size: 30px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     text-transform: uppercase;
     color: #4388ff;
     margin-bottom: 0;
+    margin-top: 0;
 }
 .one .sect1 .info p{
     color: rgba(255, 255, 255, 0.545);
@@ -228,7 +231,7 @@ export default {
 }
 .one .desc{
     width: 50%;
-    padding: 10px;
+    padding: 20px;
 }
 .one .desc h2{
     margin: 0;
@@ -297,8 +300,8 @@ export default {
     margin-top: 10px;
 }
 .one .desc .avis .profile img{
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     object-fit: cover;
     border-radius: 100%;
     border: 1px solid rgba(255, 255, 255, 0.334);
