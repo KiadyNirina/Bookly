@@ -184,7 +184,7 @@ export default {
 .one .sect1 .img img{
     width: 100%;
     height: 400px;
-    border-radius: 10px 0 0 0;
+    border-radius: 20px 0 0 0;
     object-fit: cover;
 }
 .one .sect1 .info {
