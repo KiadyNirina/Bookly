@@ -1,5 +1,9 @@
 <script>
+//import AlertPopup from './AlertPopup.vue';
+import Swal from 'sweetalert2';
+
 export default {
+    //components: { AlertPopup },
     data() {
         return {
             isAuthenticated: false,
@@ -8,7 +12,12 @@ export default {
                 { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
                 { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
                 { title: 'Titre du Livre 2', author: 'Auteur 2', postedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true , type: 'Fiction'},
-            ]
+            ],
+            hoveredStar: 0, 
+            selectedRating: 0, 
+            filledStar: '/icons/note-active.png',
+            emptyStar: '/icons/note.png', 
+            popupVisible: false,
         };
     },
     created() {
@@ -20,7 +29,20 @@ export default {
         },
         checkAuth() {
             this.isAuthenticated = !!localStorage.getItem('token');
-        }
+        },
+        hoverStar(star) {
+            this.hoveredStar = star; 
+        },
+        selectRating(star) {
+            this.selectedRating = star;
+            //this.popupVisible = true;
+            Swal.fire({
+            title: 'Merci !',
+            text: `Vous avez donné une note de ${star} étoiles.`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+            }); 
+        },
     },
     watch: {
         '$route'() {
@@ -73,6 +95,25 @@ export default {
                     </div>
 
                     <div class="desc">
+                        <div class="rating">
+                            <img
+                                v-for="star in 5"
+                                :key="star"
+                                :src="star <= hoveredStar || star <= selectedRating ? filledStar : emptyStar"
+                                alt="star"
+                                class="star"
+                                @mouseover="hoverStar(star)"
+                                @mouseleave="hoverStar(0)"
+                                @click="selectRating(star)"
+                             />
+                        </div>
+
+                        <!-- <AlertPopup
+                            :message="'Merci pour votre note de ' + selectedRating + ' étoiles!'"
+                            :visible="popupVisible"
+                            @close="popupVisible = false"
+                        /> -->
+                        
                         <h2>Description</h2>
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum voluptatem a cum porro veritatis facilis explicabo repellat? <br>
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic eos explicabo debitis eius eveniet vitae fugiat quaerat nesciunt nihil, alias cupiditate quod suscipit odio, corrupti animi ea fugit minus officiis perferendis! Ullam, dolorem magni alias aspernatur ipsum nulla quia accusantium omnis dicta dignissimos culpa repellat laudantium, dolores quod. Pariatur expedita doloribus nostrum eius neque deserunt vitae vero eveniet corrupti, autem hic repellat temporibus delectus illo minus repellendus aperiam omnis. Voluptatibus, nesciunt! Nesciunt unde omnis voluptate quos aut id veniam autem temporibus a iusto ipsam odit suscipit in obcaecati ratione consequatur libero magni delectus, quaerat aliquid animi tenetur facilis officia. Tempora.</p>
@@ -361,6 +402,25 @@ export default {
     padding: 0;
     object-fit: none;
     width: auto;
+}
+.rating {
+  display: flex;
+  cursor: pointer;
+}
+
+.star {
+  font-size: 20px; 
+  color: #ccc; 
+  transition: color 0.3s; 
+  margin-bottom: 10px;
+}
+
+.star.active {
+  color: gold;
+}
+.swal2-popup {
+  background-color: #030311 !important;
+  color: #ffffff !important; 
 }
 
 </style>
