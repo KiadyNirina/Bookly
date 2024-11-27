@@ -276,7 +276,7 @@ export default {
     margin-right: 5px;
 }
 .one .sect1 .info .note img{
-    height: 30px;
+    height: 20px;
 }
 .one .desc{
     width: 50%;
@@ -406,6 +406,10 @@ export default {
 .rating {
   display: flex;
   cursor: pointer;
+}
+
+.rating img{
+    height: 40px;
 }
 
 .star {

@@ -229,7 +229,7 @@ body{
 }
 
 .content-book .note img{
-  height: 20px;
+  height: 15px;
   width: auto;
   object-fit: cover;
 }
