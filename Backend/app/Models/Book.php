@@ -19,6 +19,7 @@ class Book extends Model
         'page',
         'date',
         'picture',
+        'file',
     ];
 
     public function user()

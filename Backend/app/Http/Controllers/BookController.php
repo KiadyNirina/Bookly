@@ -20,11 +20,17 @@ class BookController extends Controller
             'page' => 'required|integer',
             'date' => 'nullable|date',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'file' => 'nullable|file|mimes:pdf,doc,docx',
         ]);
 
         if ($request->hasFile('picture')) {
             $imagePath = $request->file('picture')->store('public/images');
             $validatedData['picture'] = str_replace('public/', 'storage/', $imagePath);
+        }
+
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('books', 'public');
+            $validatedData['file'] = $filePath;
         }
 
         $book = Book::create($validatedData);
