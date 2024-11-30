@@ -1,3 +1,13 @@
+<script>
+export default {
+    methods: {
+        isActive(route) {
+            return this.$route.path === route;
+        },
+    },
+};
+</script>
+
 <template>
     <div class="profil">
         <h1 id="pdp">K</h1>
@@ -11,7 +21,11 @@
                 <button>Partager</button>
                 <router-link to="">Modifier le profil</router-link>
             </div>
-
+            <div class="section">
+                <router-link :to="'/profil/create'" :id="isActive('/profil/create') ? 'active-link' : ''">Créees</router-link>
+                <router-link :to="'/profil/saved'" :id="isActive('/profil/saved') ? 'active-link' : ''">Enregistrées</router-link>
+            </div>
+            <router-view></router-view>
     </div>
 </template>
 
@@ -75,5 +89,22 @@
 .button button:hover, .button a:hover{
     background: rgb(128, 128, 128);
     cursor: pointer;
+}
+.section{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.section a{
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+.section a:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+}
+#active-link{
+    color: #E67E22;
+    border-bottom: 1px solid #E67E22;
 }
 </style>
