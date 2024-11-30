@@ -68,8 +68,8 @@ export default {
                 </form>
                 <p>Ou :</p>
                 <div class="other">
-                    <button><img src="../../public/google.png" alt=""> Se connecter avec Google</button>
-                    <button><img src="../../public/mail.png" alt=""> Se connecter avec Email</button>
+                    <button><img src="../../public/icons/google.png" alt=""> Se connecter avec Google</button>
+                    <button><img src="../../public/icons/mail.png" alt=""> Se connecter avec Email</button>
                 </div>
                 <p id="foot">Vous n'êtes pas encore inscrit? <router-link to="/signup">S'inscrire</router-link></p>
             </div>

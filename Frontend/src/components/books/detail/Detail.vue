@@ -86,6 +86,7 @@ export default {
                                     <img src="../../../../public/icons/note-active.png" alt="">
                                     <img src="../../../../public/icons/note-active.png" alt="">
                                     <img src="../../../../public/icons/note.png" alt="">
+                                    <span><i>(100 notes)</i></span>
                                 </div>
                                 <span><img src="../../../../public/icons/oeil.png" alt=""> 1,3k</span>
                                 <span><img src="../../../../public/icons/coms.png" alt="">150</span>
@@ -128,6 +129,7 @@ export default {
                             <textarea name="" id="" placeholder="Donnez votre avis..."></textarea>
                             <button><img src="../../../../public/icons/send.png" alt=""></button>
                         </form>
+                        <span id="avis">99 avis</span>
                         <div class="avis">
                             <div class="profile">
                                 <img src="../../../../public/cover 4.jfif" alt="">
@@ -403,6 +405,13 @@ export default {
     object-fit: none;
     width: auto;
 }
+
+#avis{
+    color: rgb(201, 201, 201);
+    font-size: 20px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 .rating {
   display: flex;
   cursor: pointer;

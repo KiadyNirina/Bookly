@@ -44,23 +44,23 @@ export default {
                             </p>
                             <div class="content-book">
                                 <div class="note">
-                                    <img src="../../../public/note-active.png" alt="">
-                                    <img src="../../../public/note-active.png" alt="">
-                                    <img src="../../../public/note-active.png" alt="">
-                                    <img src="../../../public/note-active.png" alt="">
-                                    <img src="../../../public/note.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note.png" alt="">
                                 </div>
                                 <span>👀1,3k</span>
-                                <span><img src="../../../public/coms.png" alt="">150</span>
-                                <span><img src="../../../public/download.png" alt=""> 900</span>
+                                <span><img src="../../../public/icons/coms.png" alt="">150</span>
+                                <span><img src="../../../public/icons/download.png" alt=""> 900</span>
                             </div>
                         </div>
                         <div class="desc">
                             <p id="type">{{ book.type }}</p>
                             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
                             <div class="action">
-                                <a href="#save" class="actionButton"><img src="../../../public/save.png" alt="">Enregistrer</a>
-                                <a href="#download" class="actionButton"><img src="../../../public/download.png" alt="">Télécharger</a>
+                                <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt="">Enregistrer</a>
+                                <a href="#download" class="actionButton"><img src="../../../public/icons/download.png" alt="">Télécharger</a>
                             </div>
                         </div>
                     </a>
