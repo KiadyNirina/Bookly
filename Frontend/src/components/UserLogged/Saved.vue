@@ -22,9 +22,8 @@ export default {
                 <router-link to="">Modifier le profil</router-link>
             </div>
             <div class="section">
-                <router-link :to="'/profil/create'" :id="isActive('/profil/create') ? 'active-link' : ''">Créees</router-link>
-                <router-link :to="'/profil/saved'" :id="isActive('/profil/saved') ? 'active-link' : ''">Enregistrées</router-link>
+                <a href="/profil/create" :id="isActive('/profil/create') ? 'act-link' : ''">Créees</a>
+                <a href="/profil/saved" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
             </div>
-            <p>Saved</p>
     </div>
 </template>

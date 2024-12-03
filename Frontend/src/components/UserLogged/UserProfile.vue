@@ -22,10 +22,9 @@ export default {
                 <router-link to="">Modifier le profil</router-link>
             </div>
             <div class="section">
-                <router-link :to="'/profil/create'" :id="isActive('/profil/create') ? 'active-link' : ''">Créees</router-link>
-                <router-link :to="'/profil/saved'" :id="isActive('/profil/saved') ? 'active-link' : ''">Enregistrées</router-link>
+                <a href="/profil/create" :id="isActive('/profil/create') ? 'act-link' : ''">Créees</a>
+                <a href="/profil/saved" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
             </div>
-            <router-view></router-view>
     </div>
 </template>
 
@@ -35,7 +34,7 @@ export default {
     margin-right: auto;
     max-width: 1300px;
     justify-content: center;
-    padding: 100px;
+    padding: 50px;
 }
 #pdp {
     color: white;
@@ -76,7 +75,7 @@ export default {
     justify-content: center;
 }
 .button button, .button a {
-    font-size: 20px;
+    font-size: 15px;
     background: rgba(255, 255, 255, 0.253);
     text-decoration: none;
     color: white;
@@ -103,7 +102,7 @@ export default {
 .section a:hover{
     background-color: rgba(255, 255, 255, 0.1);
 }
-#active-link{
+#act-link{
     color: #E67E22;
     border-bottom: 1px solid #E67E22;
 }

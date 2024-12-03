@@ -22,9 +22,36 @@ export default {
                 <router-link to="">Modifier le profil</router-link>
             </div>
             <div class="section">
-                <router-link :to="'/profil/create'" :id="isActive('/profil/create') ? 'active-link' : ''">Créees</router-link>
-                <router-link :to="'/profil/saved'" :id="isActive('/profil/saved') ? 'active-link' : ''">Enregistrées</router-link>
+                <a href="/profil/create" :id="isActive('/profil/create') ? 'act-link' : ''">Créees</a>
+                <a href="/profil/saved" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
             </div>
-            <p>Create</p>
+            <div class="profil-content">
+                <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
+                <div class="button">
+                    <button id="buttonProfil">Créer</button>
+                </div>
+            </div>
     </div>
+    
 </template>
+
+<style>
+.profil-content{
+    margin-top: 50px;
+}
+.profil-content p{
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    justify-content: center;
+    color: white;
+    font-family: 'Poppins';
+    font-size: 12px;
+}
+#buttonProfil{
+    background-color: #4388ff67;
+}
+#buttonProfil:hover{
+    background-color: #274e9167;
+}
+</style>
