@@ -1,8 +1,20 @@
 <script>
+import CreateBook from './Book/createBook.vue';
+import Swal from 'sweetalert2';
+
 export default {
+    components: { CreateBook },
+    data() {
+        return {
+            popupVisible: false, // Contrôle la visibilité du popup
+        };
+    },
     methods: {
         isActive(route) {
             return this.$route.path === route;
+        },
+        create() {
+            this.popupVisible = true; // Affiche le popup
         },
     },
 };
@@ -28,9 +40,15 @@ export default {
             <div class="profil-content">
                 <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
                 <div class="button">
-                    <button id="buttonProfil">Créer</button>
+                    <button id="buttonProfil" @click="create()">Créer</button>
                 </div>
             </div>
+
+            <CreateBook
+                            :message="'Merci pour votre note de étoiles!'"
+                            :visible="popupVisible"
+                            @close="popupVisible = false"
+                        /> 
     </div>
     
 </template>
