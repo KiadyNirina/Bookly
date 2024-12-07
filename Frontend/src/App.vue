@@ -40,7 +40,7 @@ export default {
         </div>
         <div class="nav-right">
             <router-link :to="'/'" :id="isActive('/') ? 'active-link' : ''">Accueil</router-link>
-            <router-link :to="'/books'" :id="isActive('/books') ? 'active-link' : ''">Livres</router-link>
+            <router-link :to="'/books'" :id="isActive('/books') || isActive('/books/popular') ? 'active-link' : ''">Livres</router-link>
             <router-link :to="'/about'" :id="isActive('/about') ? 'active-link' : ''">À propos</router-link>
             <router-link :to="'/contact'" :id="isActive('/contact') ? 'active-link' : ''">Contact</router-link>
             <router-link :to="'/login'" id="button">Connexion</router-link>

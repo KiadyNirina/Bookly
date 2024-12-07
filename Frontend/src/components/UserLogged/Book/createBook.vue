@@ -96,7 +96,6 @@ export default {
   border-radius: 10px;
   display: block;
   width: 100%;
-  height: 30px;
   margin: 3px;
   color: white;
 }
@@ -110,7 +109,7 @@ export default {
   text-align: start;
   padding: 10px;
   font-family: 'Poppins';
-  font-size: 12px;
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.696);
 }
 
