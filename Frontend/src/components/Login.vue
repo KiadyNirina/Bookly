@@ -22,6 +22,7 @@ export default {
                 });
                 localStorage.setItem('token', response.data.access_token);
                 this.$router.push('/dashboard');
+                console.log('l info de l utilisateur connecté :', response)
             } catch (error) {
                 console.error(error);
                 if (error.response && error.response.status === 401) {

@@ -15,8 +15,22 @@ export default {
         });
     },
     getUser() {
-        return axios.get('/user');
-    }
+        const token = localStorage.getItem('token');
+        if (token) {
+            return axios.get('/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            })
+            .then(response => response.data)
+            .catch(error => {
+                console.error('Erreur lors de la récupération des infos utilisateur:', error);
+                throw error;
+            });
+        } else {
+            return Promise.reject('Token non trouvé');
+        }
+    },
 };
 
 axios.interceptors.request.use(config => {

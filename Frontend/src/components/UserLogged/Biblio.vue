@@ -97,9 +97,9 @@ export default {
                                 <img src="../../../public/icons/note-active.png" alt="">
                                 <img src="../../../public/icons/note.png" alt="">
                             </div>
-                            <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                            <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                            <span>👀1,3k</span>
+                            <span><img src="../../../public/coms.png" alt=""> 112</span>
+                            <span><img src="../../../public/download.png" alt=""> 900</span>
                             </div>
                         </div>
                     </a>
@@ -144,9 +144,9 @@ export default {
                                 <img src="../../../public/icons/note-active.png" alt="">
                                 <img src="../../../public/icons/note.png" alt="">
                             </div>
-                            <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                            <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                            <span>👀1,3k</span>
+                            <span><img src="../../../public/coms.png" alt=""> 112</span>
+                            <span><img src="../../../public/download.png" alt=""> 900</span>
                             </div>
                         </div>
                     </a>
@@ -191,9 +191,9 @@ export default {
                                 <img src="../../../public/icons/note-active.png" alt="">
                                 <img src="../../../public/icons/note.png" alt="">
                             </div>
-                            <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                            <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                            <span>👀1,3k</span>
+                            <span><img src="../../../public/coms.png" alt=""> 112</span>
+                            <span><img src="../../../public/download.png" alt=""> 900</span>
                             </div>
                         </div>
                     </a>

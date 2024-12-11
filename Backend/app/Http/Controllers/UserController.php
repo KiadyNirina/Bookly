@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     //
-    public function userInfo(Request $request) {
-        $user = $request -> user();
-        return response()->json(['user' => $user]);
+    public function userInfo(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'user' => $user
+            ], 200); 
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Utilisateur non authentifié'
+        ], 401); 
     }
 
     

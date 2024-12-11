@@ -1,13 +1,17 @@
 <script>
+import api from '@/api';
 import CreateBook from './Book/createBook.vue';
-import Swal from 'sweetalert2';
 
 export default {
     components: { CreateBook },
     data() {
         return {
-            popupVisible: false, // Contrôle la visibilité du popup
-        };
+            user: null,
+            popupVisible: false,
+        }
+    },
+    created() {
+        this.fetchUser();
     },
     methods: {
         isActive(route) {
@@ -15,6 +19,15 @@ export default {
         },
         create() {
             this.popupVisible = true; // Affiche le popup
+        },
+        async fetchUser() {
+            try {
+                const userData = await api.getUser(); 
+                this.user = userData.user;
+                console.log('l info de l utilisateur connécté:', userData)
+            } catch (error) {
+                console.error('Erreur lors de la récupération des informations utilisateur:', error);
+            }
         },
     },
 };
@@ -24,7 +37,7 @@ export default {
     <div class="profil">
         <h1 id="pdp">K</h1>
         <!-- <img src="../../../public/icons/user.png" alt=""> -->
-            <h1>Kiady Rambeloson</h1>
+            <h1>{{ user ? user.name : 'Chargement...' }}</h1>
             <div class="followers">
                 <p><b>1k</b> suivi(e)s</p>
                 <p><b>0</b> abonnements</p>
