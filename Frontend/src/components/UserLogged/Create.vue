@@ -58,7 +58,6 @@ export default {
             </div>
 
             <CreateBook
-                            :message="'Merci pour votre note de étoiles!'"
                             :visible="popupVisible"
                             @close="popupVisible = false"
                         /> 

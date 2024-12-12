@@ -31,6 +31,9 @@ export default {
             return Promise.reject('Token non trouvé');
         }
     },
+    bookCreate(data) {
+        return axios.post('/createBook', data);
+    }
 };
 
 axios.interceptors.request.use(config => {

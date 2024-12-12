@@ -1,65 +1,183 @@
 <script>
+import api from '@/api';
+import ErrorPopup from './ErrorPopup.vue';
+
 export default {
+  components: { ErrorPopup },
+
   props: {
-    message: {
-      type: String,
-      required: true,
-    },
     visible: {
       type: Boolean,
       default: false,
     },
   },
+
+  data() {
+    return {
+      user: null,
+      title: '',
+      author: '',
+      description: '',
+      genre: '',
+      lang: '',
+      page: '',
+      picture: null, // Pour stocker l'image
+      file: null, // Pour stocker le fichier numérique
+      errorMessage: '',
+      hasError: false,
+      isLoading: false,
+      popupErrorVisible: false,
+    };
+  },
+
   methods: {
-    closePopup() {
-      this.$emit('close'); // Émet un événement pour fermer le popup
+    async fetchUser() {
+      try {
+        const userData = await api.getUser();
+        this.user = userData.user;
+        console.log('Informations de l’utilisateur connecté :', userData);
+      } catch (error) {
+        this.showError('Impossible de récupérer les informations utilisateur.');
+        console.error('Erreur lors de la récupération des informations utilisateur :', error);
+      }
     },
+
+    handleFileChange(event, type) {
+      const file = event.target.files[0];
+
+      // Validation basique
+      if (!file) {
+        this.showError('Aucun fichier sélectionné.');
+        return;
+      }
+
+      if (type === 'picture') {
+        this.picture = file;
+      } else if (type === 'file') {
+        const allowedFormats = ['application/pdf', 'application/msword'];
+        if (!allowedFormats.includes(file.type)) {
+          this.showError('Format de fichier non valide. Veuillez sélectionner un fichier PDF ou DOC.');
+          return;
+        }
+        this.file = file;
+      }
+    },
+
+    async createBook() {
+      if (!this.user) {
+        this.showError('Utilisateur non connecté. Veuillez réessayer.');
+        return;
+      }
+
+      if (!this.title || !this.author || !this.description || !this.genre || !this.lang || !this.page) {
+        this.showError('Veuillez remplir tous les champs obligatoires.');
+        return;
+      }
+
+      this.isLoading = true;
+
+      const formData = new FormData();
+      formData.append('title', this.title);
+      formData.append('author', this.author);
+      formData.append('description', this.description);
+      formData.append('genre', this.genre);
+      formData.append('posted_by', this.user.id);
+      formData.append('lang', this.lang);
+      formData.append('page', this.page);
+      if (this.picture) formData.append('picture', this.picture);
+      if (this.file) formData.append('file', this.file);
+
+      try {
+        const response = await api.bookCreate(formData);
+        console.log('Ajout avec succès :', response);
+        this.resetForm();
+        this.$router.push('/profil/create');
+      } catch (error) {
+        this.showError("Une erreur est survenue lors de l'ajout du livre.");
+        console.error('Erreur lors de l’ajout :', error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    showError(message) {
+      this.errorMessage = message;
+      this.popupErrorVisible = true;
+    },
+
+    resetForm() {
+      this.title = '';
+      this.author = '';
+      this.description = '';
+      this.genre = '';
+      this.lang = '';
+      this.page = '';
+      this.picture = null;
+      this.file = null;
+      this.errorMessage = '';
+      this.hasError = false;
+      this.popupErrorVisible = false;
+    },
+
+    closePopup() {
+      this.$emit('close');
+    },
+  },
+
+  mounted() {
+    this.fetchUser();
   },
 };
 </script>
 
 <template>
-    <div v-if="visible" class="popup-overlay">
-      <div class="popup-content">
-        <h1>Créer un épingle</h1>
-        <form method="post">
-          <div class="form">
-            <div class="file">
-              <div class="file1">
-                <label for="">Choisissez la photo de couverture du livre :</label>
-                <input type="file" name="" id="">
-              </div>
-              <div class="file1">
-                <label for="">Choisissez le livre au format numérique (pdf, doc) :</label>
-                <input type="file" name="" id="">
-              </div>
+  <div v-if="visible" class="popup-overlay">
+    <div class="popup-content">
+      <h1>Créer un livre</h1>
+      <form @submit.prevent="createBook">
+        <div class="form">
+          <div class="file">
+            <div class="file1">
+              <label>Photo de couverture :</label>
+              <input type="file" @change="handleFileChange($event, 'picture')" />
             </div>
-            <div class="input">
-              <input type="text" name="" id="" placeholder="Titre">
-              <input type="text" placeholder="Auteur">
-              <textarea name="" id="" placeholder="Description"></textarea>
-              <select name="" id="">
-                <option value="" disabled>Selectionnez le genre</option>
-                <option value="">Action</option>
-                <option value="">Romance</option>
-                <option value="">Comédie</option>
-                <option value="">Fiction</option>
-                <option value="">Autre</option>
-              </select>
-              <div class="nbr">
-                <input type="text" placeholder="Entrer la langue du livre">
-                <input type="number" name="" id="" placeholder="Nombre de page">
-              </div>
+            <div class="file1">
+              <label>Fichier numérique (pdf, doc) :</label>
+              <input type="file" @change="handleFileChange($event, 'file')" />
             </div>
           </div>
-          <div class="button">
-            <button @click="closePopup">Ajouter</button>
-            <button @click="closePopup">Annuler</button>
+          <div class="input">
+            <input type="text" v-model="title" placeholder="Titre" />
+            <input type="text" v-model="author" placeholder="Auteur" />
+            <textarea v-model="description" placeholder="Description"></textarea>
+            <select v-model="genre">
+              <option value="" disabled>Selectionnez le genre</option>
+              <option value="action">Action</option>
+              <option value="romance">Romance</option>
+              <option value="comedie">Comédie</option>
+              <option value="fiction">Fiction</option>
+              <option value="autre">Autre</option>
+            </select>
+            <div class="nbr">
+              <input type="text" v-model="lang" placeholder="Langue" />
+              <input type="number" v-model="page" placeholder="Nombre de pages" />
+            </div>
           </div>
-        </form>
-      </div>
+        </div>
+        <div class="button">
+          <button v-if="isLoading" disabled>Chargement...</button>
+          <button v-else type="submit">Ajouter</button>
+          <button type="button" @click="closePopup">Annuler</button>
+        </div>
+        <ErrorPopup
+          :message="errorMessage"
+          :visible="popupErrorVisible"
+          @close="popupErrorVisible = false"
+        />
+      </form>
     </div>
- </template>
+  </div>
+</template>
 
 <style scoped>
 .popup-overlay {
