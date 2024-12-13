@@ -1,9 +1,13 @@
 <script>
 import api from '@/api';
 import ErrorPopup from './ErrorPopup.vue';
+import SuccessPopup from './SuccessPopup.vue';
 
 export default {
-  components: { ErrorPopup },
+  components: { 
+    ErrorPopup, 
+    SuccessPopup 
+  },
 
   props: {
     visible: {
@@ -25,8 +29,10 @@ export default {
       file: null, // Pour stocker le fichier numérique
       errorMessage: '',
       hasError: false,
+      successMessage: '',
       isLoading: false,
       popupErrorVisible: false,
+      popupSuccessVisible: false,
     };
   },
 
@@ -91,7 +97,7 @@ export default {
         const response = await api.bookCreate(formData);
         console.log('Ajout avec succès :', response);
         this.resetForm();
-        this.$router.push('/profil/create');
+        this.showSuccess("Ajout du livre avec succès!");
       } catch (error) {
         this.showError("Une erreur est survenue lors de l'ajout du livre.");
         console.error('Erreur lors de l’ajout :', error);
@@ -103,6 +109,11 @@ export default {
     showError(message) {
       this.errorMessage = message;
       this.popupErrorVisible = true;
+    },
+
+    showSuccess(message) {
+      this.successMessage = message;
+      this.popupSuccessVisible = true;
     },
 
     resetForm() {
@@ -173,6 +184,11 @@ export default {
           :message="errorMessage"
           :visible="popupErrorVisible"
           @close="popupErrorVisible = false"
+        />
+        <SuccessPopup
+          :message="successMessage"
+          :visible="popupSuccessVisible"
+          @close="popupSuccessVisible = false"
         />
       </form>
     </div>

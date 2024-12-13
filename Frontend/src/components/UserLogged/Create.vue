@@ -3,7 +3,9 @@ import api from '@/api';
 import CreateBook from './Book/createBook.vue';
 
 export default {
-    components: { CreateBook },
+    components: { 
+        CreateBook,
+    },
     data() {
         return {
             user: null,
@@ -58,9 +60,9 @@ export default {
             </div>
 
             <CreateBook
-                            :visible="popupVisible"
-                            @close="popupVisible = false"
-                        /> 
+                :visible="popupVisible"
+                @close="popupVisible = false"
+            /> 
     </div>
     
 </template>
