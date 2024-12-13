@@ -33,6 +33,7 @@ export default {
       isLoading: false,
       popupErrorVisible: false,
       popupSuccessVisible: false,
+      isClosing: false,
     };
   },
 
@@ -51,7 +52,6 @@ export default {
     handleFileChange(event, type) {
       const file = event.target.files[0];
 
-      // Validation basique
       if (!file) {
         this.showError('Aucun fichier sélectionné.');
         return;
@@ -67,6 +67,18 @@ export default {
         }
         this.file = file;
       }
+    },
+
+    watch: {
+      visible(newValue) {
+        if (!newValue) {
+          this.isClosing = true; 
+          setTimeout(() => {
+            this.isClosing = false; 
+            this.$emit('close'); 
+          }, 300);
+        }
+      },
     },
 
     async createBook() {
@@ -131,7 +143,11 @@ export default {
     },
 
     closePopup() {
-      this.$emit('close');
+      this.isClosing = true;
+      setTimeout(() => {
+        this.isClosing = false;
+        this.$emit('close');
+      }, 300);
     },
   },
 
@@ -142,8 +158,8 @@ export default {
 </script>
 
 <template>
-  <div v-if="visible" class="popup-overlay">
-    <div class="popup-content">
+  <div v-if="visible || isClosing" :class="['popup-overlay', { closing: isClosing }]">
+    <div :class="['popup-content', { closing: isClosing }]">
       <h1>Créer un livre</h1>
       <form @submit.prevent="createBook">
         <div class="form">
@@ -207,6 +223,12 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  animation: slideDown 0.3s forwards;
+}
+
+.popup-overlay.closing {
+  animation: fadeOut 0.3s forwards;
 }
 
 .popup-content {
@@ -216,6 +238,12 @@ export default {
   text-align: center;
   box-shadow: 0 0px 15px rgba(255, 255, 255, 0.192);
   color: white;
+  opacity: 0;
+  animation: slideDown 0.3s forwards;
+}
+
+.popup-content.closing {
+  animation: slideUp 0.3s forwards;
 }
 
 .form{
