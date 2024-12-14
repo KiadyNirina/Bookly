@@ -33,6 +33,9 @@ export default {
     },
     bookCreate(data) {
         return axios.post('/createBook', data);
+    },
+    getUserBook() {
+        return axios.get('/user/books');
     }
 };
 

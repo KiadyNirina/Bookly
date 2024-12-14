@@ -128,7 +128,7 @@ class BookController extends Controller
 
     public function getBooksByUser(Request $request)
     {
-        $books = Book::where('posted_by_user_id', $request->user()->id)
+        $books = Book::where('posted_by', $request->user()->id)
                      ->orderBy('created_at', 'desc')
                      ->get();
 
