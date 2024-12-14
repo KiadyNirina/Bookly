@@ -97,9 +97,10 @@ class BookController extends Controller
     }
 
 
-    public function getRecentBooks()
+    public function getRecentBooks(Request $request)
     {
-        $books = Book::orderBy('created_at', 'desc')->take(10)->get();
+        $books = Book::orderBy('created_at', 'desc')
+                    ->paginate($request->get('per_page', 4));;
 
         return response()->json([
             'status' => 'success',

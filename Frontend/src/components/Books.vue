@@ -1,15 +1,29 @@
 <script>
+import axios from 'axios';
+
 export default {
     data() {
       return {
-        books: [
-          { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', potedBy: 'John Doe', date: '19/10/2024', cover: '../../public/cover 1.jpg', isPopular: true },
-          { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true },
-          { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 3.jpg', isPopular: true },
-          { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true },
-        ]
+        books: [],
+        baseImageUrl: 'http://localhost:8000',
       };
-    }
+    },
+    mounted() {
+        this.fetchBooks();
+    },
+    methods: {
+        async fetchBooks() {
+            try {
+                const response = await axios.get("http://localhost:8000/api/books/recent");
+                this.books = [...this.books, ...response.data.data.data];
+            } catch (error) {
+                console.error("Erreur lors de la récupération des livres :", error);
+            }
+        },
+        getImageUrl(picturePath) {
+            return `${this.baseImageUrl}/${picturePath}`;
+        },
+    },
 }
 </script>
 
@@ -76,7 +90,7 @@ export default {
             <h2>Les derniers ajouts</h2>
 
             <div class="card">
-                <div class="book"  v-for="(book, index) in books" :key="index">
+                <div class="book" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div v-if="(book.isPopular)" class="badge">
                         <div class="popular">
@@ -88,15 +102,15 @@ export default {
                             Recommandé
                         </div>
                         </div>
-                        <img :src="book.cover" :alt="book.title">
+                        <img v-if="book.picture" :src="getImageUrl(book.picture)" :alt="book.title">
                         <p id="type">Fiction</p>
                         <div class="book-info">
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="postedBy">
-                            Publié par <b>{{ book.potedBy }}</b>,<br>
-                            Le <b>{{ book.date }}</b>,<br>
-                            Lang : <b>FR</b>
+                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Le <b>{{ book.created_at }}</b>,<br>
+                            Lang : <b>{{ book.lang }}</b>
                             </p>
                             <div class="content-book">
                             <div class="note">
