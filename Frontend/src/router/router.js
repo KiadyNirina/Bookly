@@ -10,12 +10,14 @@ import Biblio from '@/components/UserLogged/Biblio.vue';
 import UserProfile from '@/components/UserLogged/UserProfile.vue';
 import Saved from '@/components/UserLogged/Saved.vue';
 import Create from '@/components/UserLogged/Create.vue';
+import Posted from '@/components/books/Posted.vue';
 
 const routes = [
     { path: '/', component: Home },
     { path: '/books', component: Books },
     { path: '/books/popular', component: Popular },
     { path: '/books/detail', component: Detail},
+    { path: '/books/posted', component: Posted },
     { path: '/login', component: Login },
     { path: '/signup', component: Signup },
     { path: '/dashboard', component: dashboard },

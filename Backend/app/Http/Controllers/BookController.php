@@ -130,7 +130,10 @@ class BookController extends Controller
     {
         $books = Book::where('posted_by', $request->user()->id)
                      ->orderBy('created_at', 'desc')
-                     ->get();
+                     //->get()
+                     ->paginate($request->get('per_page', 4));
+        
+        //$books = Book::paginate($request->get('per_page', 4)); 
 
         if ($books->isEmpty()) {
             return response()->json([

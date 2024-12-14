@@ -15,7 +15,7 @@ export default {
         async fetchBooks() {
             try {
                 const response = await axios.get("http://localhost:8000/api/user/books");
-                this.books = response.data.data;
+                this.books = [...this.books, ...response.data.data.data];
             } catch (error) {
                 console.error("Erreur lors de la récupération des livres :", error);
             }
@@ -80,7 +80,7 @@ export default {
         <section class="popular-books">
             <h2>Publiés</h2>
 
-            <div href="" class="card">
+            <div v-if="books.length != 0" class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail/${book.id}">
                         <div v-if="(book.isPopular)" class="badge">
@@ -119,8 +119,11 @@ export default {
                     </a>
                 </div>
             </div>
+            <div v-else class="">
+                <p>Chargement...</p>
+            </div>
 
-            <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
+            <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
 
         </section>
         
