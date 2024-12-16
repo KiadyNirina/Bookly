@@ -11,6 +11,7 @@ import UserProfile from '@/components/UserLogged/UserProfile.vue';
 import Saved from '@/components/UserLogged/Saved.vue';
 import Create from '@/components/UserLogged/Create.vue';
 import Posted from '@/components/books/Posted.vue';
+import Recent from '@/components/books/Recent.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -18,6 +19,7 @@ const routes = [
     { path: '/books/popular', component: Popular },
     { path: '/books/detail', component: Detail},
     { path: '/books/posted', component: Posted },
+    { path: '/books/recent', component: Recent },
     { path: '/login', component: Login },
     { path: '/signup', component: Signup },
     { path: '/dashboard', component: dashboard },

@@ -130,7 +130,7 @@ export default {
                 </div>
             </div>
 
-            <a href="" id="seeMore">Voir plus</a>
+            <router-link to="/books/recent" id="seeMore">Voir plus</router-link>
 
         </section>
     </div>
