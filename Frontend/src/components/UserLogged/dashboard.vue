@@ -43,7 +43,8 @@ export default {
         <section class="popular-books">
             <h2>Les Plus Populaires</h2>
 
-            <div href="" class="card">
+            <div v-if="books.length != 0"class="">
+                <div class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div v-if="(book.isPopular)" class="badge">
@@ -84,13 +85,18 @@ export default {
             </div>
 
             <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
+            </div>
+            <div v-else class="">
+                <p>Chargement...</p>
+            </div>
 
         </section>
 
         <section class="popular-books">
             <h2>Les derniers ajouts</h2>
 
-            <div class="card">
+            <div v-if="books.length != 0"class="">
+                <div class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div v-if="(book.isPopular)" class="badge">
@@ -131,6 +137,10 @@ export default {
             </div>
 
             <router-link to="/books/recent" id="seeMore">Voir plus</router-link>
+            </div>
+            <div v-else class="">
+                <p>Chargement...</p>
+            </div>
 
         </section>
     </div>
