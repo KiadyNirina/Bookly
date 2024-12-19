@@ -145,12 +145,6 @@ export default {
                                 @click="selectRating(star)"
                              />
                         </div>
-
-                        <!-- <AlertPopup
-                            :message="'Merci pour votre note de ' + selectedRating + ' étoiles!'"
-                            :visible="popupVisible"
-                            @close="popupVisible = false"
-                        /> -->
                         
                         <h2>Description</h2>
                         <p>{{ book.description }}</p>
@@ -203,6 +197,9 @@ export default {
                         </div>
                     </div>
         </div>
+        <div v-else class="one">
+            <p>Chargement...</p>
+        </div>
 
         <section class="popular-books">
             <h2>Les Livres Similaires</h2>
@@ -211,15 +208,15 @@ export default {
                 <div class="books" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div class="img">
-                            <img :src="book.cover" alt="">
+                            <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
                         </div>
                         <div class="info">
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="poste">
-                            Publié par <b>{{ book.postedBy }}</b>,<br>
+                            Publié par <b>{{ book.posted_by }}</b>,<br>
                             Le <b>{{ book.date }}</b>,<br>
-                            Lang : <b>FR</b>
+                            Lang : <b>{{ book.lang }}</b>
                             </p>
                             <div class="content-book">
                                 <div class="note">
@@ -236,7 +233,7 @@ export default {
                         </div>
                         <div class="desc">
                             <p id="type">{{ book.type }}</p>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque voluptates aspernatur consequatur non blanditiis qui unde minima natus eveniet in? ...</p>
+                            <p>{{ book.description }}</p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
                                 <a href="#download" class="actionButton"><img src="../../../../public/icons/download.png" alt="">Télécharger</a>
