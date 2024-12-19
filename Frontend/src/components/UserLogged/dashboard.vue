@@ -98,7 +98,7 @@ export default {
             <div v-if="books.length != 0"class="">
                 <div class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+                    <a :href="`/books/${book.id}`">
                         <div v-if="(book.isPopular)" class="badge">
                         <div class="popular">
                             Populaire

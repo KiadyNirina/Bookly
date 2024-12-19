@@ -17,7 +17,7 @@ const routes = [
     { path: '/', component: Home },
     { path: '/books', component: Books },
     { path: '/books/popular', component: Popular },
-    { path: '/books/detail', component: Detail},
+    { path: '/books/:id', component: Detail},
     { path: '/books/posted', component: Posted },
     { path: '/books/recent', component: Recent },
     { path: '/login', component: Login },

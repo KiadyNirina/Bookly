@@ -80,50 +80,51 @@ export default {
         <section class="popular-books">
             <h2>Publiés</h2>
 
-            <div v-if="books.length != 0" class="card">
-                <div class="book" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail/${book.id}">
-                        <div v-if="(book.isPopular)" class="badge">
-                        <div class="popular">
-                            Populaire
-                        </div>
-                        </div>
-                        <div v-else-if="(book.isRecommended)" class="badge">
-                        <div class="recommended">
-                            Recommandé
-                        </div>
-                        </div>
-                        <img v-if="book.picture" :src="getImageUrl(book.picture)" :alt="book.title">
-                        <p id="type">Fiction</p>
-                        <div class="book-info">
-                            <h3>{{ book.title }}</h3>
-                            <p>{{ book.author }}</p>
-                            <p id="postedBy">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
-                            Le <b>{{ book.created_at }}</b>,<br>
-                            Lang : <b>FR</b>
-                            </p>
-                            <div class="content-book">
-                            <div class="note">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note.png" alt="">
+            <div v-if="books.length != 0" class="">
+                <div class="card">
+                    <div class="book" v-for="(book, index) in books" :key="index">
+                        <a href="/books/detail/${book.id}">
+                            <div v-if="(book.isPopular)" class="badge">
+                            <div class="popular">
+                                Populaire
                             </div>
-                            <span>👀1,3k</span>
-                            <span><img src="../../../public/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/download.png" alt=""> 900</span>
                             </div>
-                        </div>
-                    </a>
+                            <div v-else-if="(book.isRecommended)" class="badge">
+                            <div class="recommended">
+                                Recommandé
+                            </div>
+                            </div>
+                            <img v-if="book.picture" :src="getImageUrl(book.picture)" :alt="book.title">
+                            <p id="type">Fiction</p>
+                            <div class="book-info">
+                                <h3>{{ book.title }}</h3>
+                                <p>{{ book.author }}</p>
+                                <p id="postedBy">
+                                Publié par <b>{{ book.posted_by }}</b>,<br>
+                                Le <b>{{ book.created_at }}</b>,<br>
+                                Lang : <b>FR</b>
+                                </p>
+                                <div class="content-book">
+                                <div class="note">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note.png" alt="">
+                                </div>
+                                <span>👀1,3k</span>
+                                <span><img src="../../../public/coms.png" alt=""> 112</span>
+                                <span><img src="../../../public/download.png" alt=""> 900</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
+                <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
             </div>
             <div v-else class="">
                 <p>Chargement...</p>
             </div>
-
-            <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
 
         </section>
         

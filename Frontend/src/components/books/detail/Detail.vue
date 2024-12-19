@@ -1,18 +1,18 @@
 <script>
 //import AlertPopup from './AlertPopup.vue';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 export default {
-    //components: { AlertPopup },
     data() {
         return {
             isAuthenticated: false,
-            books: [
-                { title: 'A travers la fenêtre', author: 'Christophe RABEARIMANANA', postedBy: 'John Doe', date: '19/05/2023', cover: '../../public/cover 1.jpg', isPopular: true, type: 'Romance' },
-                { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
-                { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
-                { title: 'Titre du Livre 2', author: 'Auteur 2', postedBy: 'John Doe', date: '16/10/2024', cover: '../../public/cover 4.jfif', isRecommended: true , type: 'Fiction'},
-            ],
+            book: null,
+            books: [],
+            baseImageUrl: 'http://localhost:8000',
+            currentPage: 1, // Page courante
+            perPage: 10, // Nombre de livres par page
+            lastPage: 1, // Dernière page disponible
             hoveredStar: 0, 
             selectedRating: 0, 
             filledStar: '/icons/note-active.png',
@@ -20,10 +20,47 @@ export default {
             popupVisible: false,
         };
     },
+    mounted() {
+        this.fetchBook();
+        this.fetchBooks();
+    },
+    computed: {
+        hasMoreBooks() {
+            return this.currentPage < this.lastPage;
+        },
+    },
     created() {
         this.checkAuth();
     },
     methods: {
+        async fetchBook() {
+            try {
+                const bookId = this.$route.params.id;
+                const response = await axios.get(`http://localhost:8000/api/books/${bookId}`);
+                this.book = response.data.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération du livre :", error);
+                this.book = null;
+            }
+        },
+        async fetchBooks() {
+            try {
+                const response = await axios.get("http://localhost:8000/api/books/recent", {
+                    params: { page: this.currentPage, per_page: this.perPage }
+                });
+                this.books = [...this.books, ...response.data.data.data];
+                this.lastPage = response.data.data.last_page;
+            } catch (error) {
+                console.error("Erreur lors de la récupération des livres :", error);
+            }
+        },
+        loadMoreBooks() {
+            this.currentPage++;
+            this.fetchBooks();
+        },
+        getImageUrl(picturePath) {
+            return `${this.baseImageUrl}/${picturePath}`;
+        },
         isActive(route) {
             return this.$route.path === route;
         },
@@ -64,20 +101,20 @@ export default {
             <a href="">Action</a>
         </div>
 
-        <div class="one">
+        <div v-if="book" class="one">
                     <div class="sect1">
                         <div class="img">
-                            <img src="../../../../public/cover 3.jpg" alt="">
+                            <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
                         </div>
                         <div class="info">
-                            <h3>Titre</h3>
-                            <p>Ecrit par <b>John Doe</b></p>
+                            <h3>{{ book.title }}</h3>
+                            <p>Ecrit par <b>{{ book.author }}</b></p>
                             <p id="type">Romance</p>
                             <p id="poste">
-                            Publié par <b>John Doe</b>,<br>
-                            Le <b>10/10/2024</b>,<br>
-                            Lang : <b>FR</b><br>
-                            Page : <b>122</b>
+                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Le <b>{{ book.created_at }}</b>,<br>
+                            Lang : <b>{{ book.lang }}</b><br>
+                            Page : <b>{{ book.page }}</b>
                             </p>
                             <div class="content-book">
                                 <div class="note">
@@ -116,8 +153,7 @@ export default {
                         /> -->
                         
                         <h2>Description</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum voluptatem a cum porro veritatis facilis explicabo repellat? <br>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic eos explicabo debitis eius eveniet vitae fugiat quaerat nesciunt nihil, alias cupiditate quod suscipit odio, corrupti animi ea fugit minus officiis perferendis! Ullam, dolorem magni alias aspernatur ipsum nulla quia accusantium omnis dicta dignissimos culpa repellat laudantium, dolores quod. Pariatur expedita doloribus nostrum eius neque deserunt vitae vero eveniet corrupti, autem hic repellat temporibus delectus illo minus repellendus aperiam omnis. Voluptatibus, nesciunt! Nesciunt unde omnis voluptate quos aut id veniam autem temporibus a iusto ipsam odit suscipit in obcaecati ratione consequatur libero magni delectus, quaerat aliquid animi tenetur facilis officia. Tempora.</p>
+                        <p>{{ book.description }}</p>
                         <div class="action">
                             <a href="#save"><img src="../../../../public/icons/livres.png" alt="">Lire</a>
                             <a href="#save"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
