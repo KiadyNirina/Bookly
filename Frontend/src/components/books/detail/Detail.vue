@@ -1,18 +1,11 @@
 <script>
-//import AlertPopup from './AlertPopup.vue';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
 export default {
     data() {
         return {
-            isAuthenticated: false,
             book: null,
-            books: [],
-            baseImageUrl: 'http://localhost:8000',
-            currentPage: 1, // Page courante
-            perPage: 10, // Nombre de livres par page
-            lastPage: 1, // Dernière page disponible
             hoveredStar: 0, 
             selectedRating: 0, 
             filledStar: '/icons/note-active.png',
@@ -22,15 +15,6 @@ export default {
     },
     mounted() {
         this.fetchBook();
-        this.fetchBooks();
-    },
-    computed: {
-        hasMoreBooks() {
-            return this.currentPage < this.lastPage;
-        },
-    },
-    created() {
-        this.checkAuth();
     },
     methods: {
         async fetchBook() {
@@ -42,30 +26,6 @@ export default {
                 console.error("Erreur lors de la récupération du livre :", error);
                 this.book = null;
             }
-        },
-        async fetchBooks() {
-            try {
-                const response = await axios.get("http://localhost:8000/api/books/recent", {
-                    params: { page: this.currentPage, per_page: this.perPage }
-                });
-                this.books = [...this.books, ...response.data.data.data];
-                this.lastPage = response.data.data.last_page;
-            } catch (error) {
-                console.error("Erreur lors de la récupération des livres :", error);
-            }
-        },
-        loadMoreBooks() {
-            this.currentPage++;
-            this.fetchBooks();
-        },
-        getImageUrl(picturePath) {
-            return `${this.baseImageUrl}/${picturePath}`;
-        },
-        isActive(route) {
-            return this.$route.path === route;
-        },
-        checkAuth() {
-            this.isAuthenticated = !!localStorage.getItem('token');
         },
         hoverStar(star) {
             this.hoveredStar = star; 
@@ -81,11 +41,6 @@ export default {
             }); 
         },
     },
-    watch: {
-        '$route'() {
-            this.checkAuth();
-        }
-    }
 };
 </script>
 
@@ -204,7 +159,7 @@ export default {
         <section class="popular-books">
             <h2>Les Livres Similaires</h2>
 
-            <div class="row">
+            <div v-if="books.length != 0" class="row">
                 <div class="books" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div class="img">
@@ -241,6 +196,9 @@ export default {
                         </div>
                     </a>
                 </div>
+            </div>
+            <div v-else class="">
+                <p>Chargement...</p>
             </div>
 
         </section>

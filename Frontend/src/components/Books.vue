@@ -1,30 +1,4 @@
 <script>
-import axios from 'axios';
-
-export default {
-    data() {
-      return {
-        books: [],
-        baseImageUrl: 'http://localhost:8000',
-      };
-    },
-    mounted() {
-        this.fetchBooks();
-    },
-    methods: {
-        async fetchBooks() {
-            try {
-                const response = await axios.get("http://localhost:8000/api/books/recent");
-                this.books = [...this.books, ...response.data.data.data];
-            } catch (error) {
-                console.error("Erreur lors de la récupération des livres :", error);
-            }
-        },
-        getImageUrl(picturePath) {
-            return `${this.baseImageUrl}/${picturePath}`;
-        },
-    },
-}
 </script>
 
 <template>

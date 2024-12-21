@@ -1,29 +1,11 @@
 <script>
-import axios from 'axios';
-
 export default {
-    data() {
-      return {
-        books: [],
-        baseImageUrl: 'http://localhost:8000',
-      };
-    },
+    // ...existing code...
     mounted() {
         this.fetchBooks();
+        this.fetchUserBooks();
     },
-    methods: {
-        async fetchBooks() {
-            try {
-                const response = await axios.get("http://localhost:8000/api/user/books");
-                this.books = [...this.books, ...response.data.data.data];
-            } catch (error) {
-                console.error("Erreur lors de la récupération des livres :", error);
-            }
-        },
-        getImageUrl(picturePath) {
-            return `${this.baseImageUrl}/${picturePath}`;
-        },
-    },
+    // ...existing code...
 }
 </script>
 
@@ -80,10 +62,10 @@ export default {
         <section class="popular-books">
             <h2>Publiés</h2>
 
-            <div v-if="books.length != 0" class="">
+            <div v-if="userBooks.length != 0" class="">
                 <div class="card">
-                    <div class="book" v-for="(book, index) in books" :key="index">
-                        <a href="/books/detail/${book.id}">
+                    <div class="book" v-for="(book, index) in userBooks.slice(0, 4)" :key="index">
+                        <a :href="`/books/${book.id}`">
                             <div v-if="(book.isPopular)" class="badge">
                             <div class="popular">
                                 Populaire

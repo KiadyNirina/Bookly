@@ -1,45 +1,4 @@
 <script>
-import axios from 'axios';
-
-export default {
-    data() {
-      return {
-        books: [],
-        baseImageUrl: 'http://localhost:8000',
-        currentPage: 1, 
-        perPage: 10, 
-        lastPage: 1, 
-      };
-    },
-    mounted() {
-        this.fetchBooks();
-    },
-    computed: {
-        hasMoreBooks() {
-            return this.currentPage < this.lastPage;
-        },
-    },
-    methods: {
-        async fetchBooks() {
-            try {
-                const response = await axios.get("http://localhost:8000/api/books/recent", {
-                    params: { page: this.currentPage, per_page: this.perPage }
-                });
-                this.books = [...this.books, ...response.data.data.data];
-                this.lastPage = response.data.data.last_page;
-            } catch (error) {
-                console.error("Erreur lors de la récupération des livres :", error);
-            }
-        },
-        loadMoreBooks() {
-            this.currentPage++;
-            this.fetchBooks();
-        },
-        getImageUrl(picturePath) {
-            return `${this.baseImageUrl}/${picturePath}`;
-        },
-    },
-}
 </script>
 
 <template>

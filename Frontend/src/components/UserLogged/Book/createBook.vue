@@ -1,5 +1,4 @@
 <script>
-import api from '@/api';
 import ErrorPopup from './ErrorPopup.vue';
 import SuccessPopup from './SuccessPopup.vue';
 
@@ -18,7 +17,6 @@ export default {
 
   data() {
     return {
-      user: null,
       title: '',
       author: '',
       description: '',
@@ -38,17 +36,6 @@ export default {
   },
 
   methods: {
-    async fetchUser() {
-      try {
-        const userData = await api.getUser();
-        this.user = userData.user;
-        console.log('Informations de l’utilisateur connecté :', userData);
-      } catch (error) {
-        this.showError('Impossible de récupérer les informations utilisateur.');
-        console.error('Erreur lors de la récupération des informations utilisateur :', error);
-      }
-    },
-
     handleFileChange(event, type) {
       const file = event.target.files[0];
 
@@ -149,10 +136,6 @@ export default {
         this.$emit('close');
       }, 300);
     },
-  },
-
-  mounted() {
-    this.fetchUser();
   },
 };
 </script>

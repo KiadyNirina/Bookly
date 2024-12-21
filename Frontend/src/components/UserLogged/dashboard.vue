@@ -1,32 +1,5 @@
 <script>
-import axios from 'axios';
-
-export default {
-    data() {
-      return {
-        books: [],
-        baseImageUrl: 'http://localhost:8000',
-      };
-    },
-    mounted() {
-        this.fetchBooks();
-    },
-    methods: {
-        async fetchBooks() {
-            try {
-                const response = await axios.get("http://localhost:8000/api/books/recent");
-                this.books = [...this.books, ...response.data.data.data];
-            } catch (error) {
-                console.error("Erreur lors de la récupération des livres :", error);
-            }
-        },
-        getImageUrl(picturePath) {
-            return `${this.baseImageUrl}/${picturePath}`;
-        },
-    },
-}
 </script>
-
 
 <template>
     <div class="content-page">
@@ -46,7 +19,7 @@ export default {
             <div v-if="books.length != 0"class="">
                 <div class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+                    <a :href="`/books/${book.id}`">
                         <div v-if="(book.isPopular)" class="badge">
                         <div class="popular">
                             Populaire

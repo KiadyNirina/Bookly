@@ -1,45 +1,4 @@
 <script>
-import axios from 'axios';
-
-export default {
-    data() {
-      return {
-        books: [],
-        baseImageUrl: 'http://localhost:8000',
-        currentPage: 1, // Page courante
-        perPage: 10, // Nombre de livres par page
-        lastPage: 1, // Dernière page disponible
-      };
-    },
-    mounted() {
-        this.fetchBooks();
-    },
-    computed: {
-        hasMoreBooks() {
-            return this.currentPage < this.lastPage;
-        },
-    },
-    methods: {
-        async fetchBooks() {
-            try {
-                const response = await axios.get("http://localhost:8000/api/user/books", {
-                    params: { page: this.currentPage, per_page: this.perPage }
-                });
-                this.books = [...this.books, ...response.data.data.data];
-                this.lastPage = response.data.data.last_page;
-            } catch (error) {
-                console.error("Erreur lors de la récupération des livres :", error);
-            }
-        },
-        loadMoreBooks() {
-            this.currentPage++;
-            this.fetchBooks();
-        },
-        getImageUrl(picturePath) {
-            return `${this.baseImageUrl}/${picturePath}`;
-        },
-    },
-}
 </script>
 
 <template>
@@ -57,9 +16,9 @@ export default {
         <section class="popular-books">
             <h2>Les livres que vous avez publiés</h2>
 
-            <div v-if="books.length != 0" class="row">
-                <div class="books" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+            <div v-if="userBooks.length != 0" class="row">
+                <div class="books" v-for="(book, index) in userBooks" :key="index">
+                    <a :href="`/books/detail/${book.id}`">
                         <div class="img">
                             <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
                         </div>
@@ -69,7 +28,7 @@ export default {
                             <p id="poste">
                             Publié par <b>{{ book.posted_by }}</b>,<br>
                             Le <b>{{ book.created_at }}</b>,<br>
-                            Lang : <b>{{ book.lang }}</b>
+                            Langue : <b>{{ book.lang }}</b>
                             </p>
                             <div class="content-book">
                                 <div class="note">
@@ -95,9 +54,9 @@ export default {
                     </a>
                 </div>
 
-                <button v-if="hasMoreBooks" @click="loadMoreBooks" id="seeMore">Voir Plus</button>
+                <button v-if="hasMoreUserBooks" @click="fetchMoreUserBooks" id="seeMore">Voir Plus</button>
             </div>
-            <div v-else class="">
+            <div v-else>
                 <p>Chargement...</p>
             </div>
 
