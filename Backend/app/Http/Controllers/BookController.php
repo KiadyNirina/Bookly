@@ -26,6 +26,8 @@ class BookController extends Controller
         if ($request->hasFile('picture')) {
             $imagePath = $request->file('picture')->store('public/images');
             $validatedData['picture'] = str_replace('public/', 'storage/', $imagePath);
+        } else {
+            $validatedData['picture'] = 'storage/images/default.jpg';
         }
 
         if ($request->hasFile('file')) {
