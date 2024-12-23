@@ -18,7 +18,7 @@
 
             <div v-if="books.length != 0" class="row">
                 <div class="books" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+                    <a :href="`/books/${book.id}`">
                         <div class="img">
                             <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
                         </div>
@@ -47,8 +47,10 @@
                             <p id="type">{{ book.type }}</p>
                             <p>{{ book.description }}</p>
                             <div class="action">
-                                <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt="">Enregistrer</a>
-                                <a href="#download" class="actionButton"><img src="../../../public/icons/download.png" alt="">Télécharger</a>
+                                <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt=""></a>
+                                <a href="#save" class="actionButton"><img src="../../../public/icons/modifier.png" alt=""></a>
+                                <a href="#download" class="actionButton"><img src="../../../public/icons/supprimer.png" alt=""></a>
+                                <a href="#download" class="actionButton"><img src="../../../public/icons/partager.png" alt=""></a>
                             </div>
                         </div>
                     </a>
@@ -141,18 +143,17 @@
 }
 .row .books .desc .action{
     display: flex;
+    justify-content: right;
+    padding-right: 10px;
 }
 .row .books .desc .action .actionButton{
     padding: 10px;
     border-radius: 10px;
-    display: flex;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.842);
     font-weight: bold;
-    font-size: 15px;
-    align-items: center;
+    width: auto;
     border: none;
-    justify-content: center;
 }
 .row .books .desc .action .actionButton:hover{
     background-color: rgba(128, 128, 128, 0.197);
@@ -160,6 +161,6 @@
 }
 .row .books .desc .action .actionButton img{
     height: 20px;
-    margin-right: 5px;
+    margin: 0;
 }
 </style>

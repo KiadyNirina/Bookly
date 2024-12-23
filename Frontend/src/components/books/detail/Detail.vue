@@ -190,8 +190,10 @@ export default {
                             <p id="type">{{ book.type }}</p>
                             <p>{{ book.description }}</p>
                             <div class="action">
-                                <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
-                                <a href="#download" class="actionButton"><img src="../../../../public/icons/download.png" alt="">Télécharger</a>
+                                <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
+                                <a href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>
+                                <a href="#download" class="actionButton"><img src="../../../../public/icons/supprimer.png" alt=""></a>
+                                <a href="#download" class="actionButton"><img src="../../../../public/icons/partager.png" alt=""></a>
                             </div>
                         </div>
                     </a>
