@@ -22,7 +22,7 @@ class Book extends Model
         'file',
     ];
 
-    public function user()
+    public function posted_by()
     {
         return $this->belongsTo(User::class, 'posted_by');
     }

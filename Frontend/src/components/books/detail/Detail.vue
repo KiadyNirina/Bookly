@@ -66,7 +66,7 @@ export default {
                             <p>Ecrit par <b>{{ book.author }}</b></p>
                             <p id="type">Romance</p>
                             <p id="poste">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
                             Le <b>{{ book.created_at }}</b>,<br>
                             Lang : <b>{{ book.lang }}</b><br>
                             Page : <b>{{ book.page }}</b>
@@ -160,18 +160,18 @@ export default {
             <h2>Les Livres Similaires</h2>
 
             <div v-if="books.length != 0" class="row">
-                <div class="books" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+                <div class="books" v-for="(bk, index) in books" :key="index">
+                    <a v-if="bk.id != book.id" href="/books/detail">
                         <div class="img">
-                            <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
+                            <img v-if="bk.picture" :src="getImageUrl(book.picture)" alt="">
                         </div>
                         <div class="info">
-                            <h3>{{ book.title }}</h3>
-                            <p>{{ book.author }}</p>
+                            <h3>{{ bk.title }}</h3>
+                            <p>{{ bk.author }}</p>
                             <p id="poste">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
-                            Le <b>{{ book.date }}</b>,<br>
-                            Lang : <b>{{ book.lang }}</b>
+                            Publié par <b>{{ bk.posted_by.name }}</b>,<br>
+                            Le <b>{{ bk.created_at }}</b>,<br>
+                            Lang : <b>{{ bk.lang }}</b>
                             </p>
                             <div class="content-book">
                                 <div class="note">
@@ -187,8 +187,8 @@ export default {
                             </div>
                         </div>
                         <div class="desc">
-                            <p id="type">{{ book.type }}</p>
-                            <p>{{ book.description }}</p>
+                            <p id="type">{{ bk.type }}</p>
+                            <p>{{ bk.description }}</p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>

@@ -82,7 +82,7 @@ export default {
                                 <h3>{{ book.title }}</h3>
                                 <p>{{ book.author }}</p>
                                 <p id="postedBy">
-                                Publié par <b>{{ book.posted_by }}</b>,<br>
+                                Publié par <b>{{ user.name }}</b>,<br>
                                 Le <b>{{ book.created_at }}</b>,<br>
                                 Lang : <b>FR</b>
                                 </p>
