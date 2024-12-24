@@ -30,13 +30,13 @@
                             Recommandé
                         </div>
                         </div>
-                        <img :src="book.cover" :alt="book.title">
+                        <img :src="book.cover ? book.cover : 'storage/images/default.jpg'" :alt="book.title">
                         <p id="type">Fiction</p>
                         <div class="book-info">
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="postedBy">
-                            Publié par <b>{{ book.potedBy }}</b>,<br>
+                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
                             Le <b>{{ book.date }}</b>,<br>
                             Lang : <b>FR</b>
                             </p>
@@ -82,13 +82,13 @@
                             Recommandé
                         </div>
                         </div>
-                        <img v-if="book.picture" :src="getImageUrl(book.picture)" :alt="book.title">
+                        <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         <p id="type">Fiction</p>
                         <div class="book-info">
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="postedBy">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
                             Le <b>{{ book.created_at }}</b>,<br>
                             Lang : <b>{{ book.lang }}</b>
                             </p>

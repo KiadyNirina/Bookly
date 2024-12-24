@@ -12,6 +12,7 @@ export default {
             currentPageUser: 1,
             lastPageUser: 1,
             perPage: 4,
+            defaultImg: 'storage/images/default.jpg',
         };
     },
     mounted() {

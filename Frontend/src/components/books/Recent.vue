@@ -20,13 +20,13 @@
                 <div class="books" v-for="(book, index) in books" :key="index">
                     <a :href="`/books/${book.id}`">
                         <div class="img">
-                            <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
+                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         </div>
                         <div class="info">
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="poste">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
                             Le <b>{{ book.created_at }}</b>,<br>
                             Lang : <b>{{ book.lang }}</b>
                             </p>

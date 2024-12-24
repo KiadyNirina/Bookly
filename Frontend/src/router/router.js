@@ -7,7 +7,7 @@ import Login from '@/components/Login.vue';
 import Signup from '@/components/Signup.vue';
 import dashboard from '@/components/UserLogged/dashboard.vue';
 import Biblio from '@/components/UserLogged/Biblio.vue';
-import UserProfile from '@/components/UserLogged/UserProfile.vue';
+import User from '@/components/UserLogged/User.vue';
 import Saved from '@/components/UserLogged/Saved.vue';
 import Create from '@/components/UserLogged/Create.vue';
 import Posted from '@/components/books/Posted.vue';
@@ -24,7 +24,7 @@ const routes = [
     { path: '/signup', component: Signup },
     { path: '/dashboard', component: dashboard },
     { path: '/biblio', component: Biblio },
-    { path: '/profil', component: UserProfile },
+    { path: '/user/:id', component: User },
     { path: '/profil/create', component: Create },
     { path: '/profil/saved', component: Saved },
 ];

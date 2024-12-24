@@ -76,7 +76,7 @@ export default {
                                 Recommandé
                             </div>
                             </div>
-                            <img v-if="book.picture" :src="getImageUrl(book.picture)" :alt="book.title">
+                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                             <p id="type">Fiction</p>
                             <div class="book-info">
                                 <h3>{{ book.title }}</h3>
@@ -95,8 +95,8 @@ export default {
                                     <img src="../../../public/icons/note.png" alt="">
                                 </div>
                                 <span>👀1,3k</span>
-                                <span><img src="../../../public/coms.png" alt=""> 112</span>
-                                <span><img src="../../../public/download.png" alt=""> 900</span>
+                                <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
+                                <span><img src="../../../public/icons/download.png" alt=""> 900</span>
                                 </div>
                             </div>
                         </a>

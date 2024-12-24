@@ -1,4 +1,6 @@
 <script>
+import userMixin from '@/mixins/userMixin';
+
 </script>
 
 <template>
@@ -20,13 +22,13 @@
                 <div class="books" v-for="(book, index) in userBooks" :key="index">
                     <a :href="`/books/${book.id}`">
                         <div class="img">
-                            <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
+                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         </div>
                         <div class="info">
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="poste">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Publié par <b>{{ user.name }}</b>,<br>
                             Le <b>{{ book.created_at }}</b>,<br>
                             Langue : <b>{{ book.lang }}</b>
                             </p>

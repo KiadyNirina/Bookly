@@ -59,7 +59,7 @@ export default {
         <div v-if="book" class="one">
                     <div class="sect1">
                         <div class="img">
-                            <img v-if="book.picture" :src="getImageUrl(book.picture)" alt="">
+                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         </div>
                         <div class="info">
                             <h3>{{ book.title }}</h3>
@@ -163,7 +163,7 @@ export default {
                 <div class="books" v-for="(bk, index) in books" :key="index">
                     <a v-if="bk.id != book.id" href="/books/detail">
                         <div class="img">
-                            <img v-if="bk.picture" :src="getImageUrl(book.picture)" alt="">
+                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         </div>
                         <div class="info">
                             <h3>{{ bk.title }}</h3>
