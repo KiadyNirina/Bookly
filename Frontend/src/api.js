@@ -5,6 +5,7 @@ const BASE_URL = 'http://localhost:8000/api';
 // Crée une instance Axios avec la base URL définie
 const apiClient = axios.create({
     baseURL: BASE_URL,
+    withCredentials: true,
 });
 
 // Intercepteur pour ajouter le jeton d'authentification à chaque requête
@@ -89,5 +90,14 @@ export default {
         return apiClient.get('/books/recent', {
             params: { page, per_page: perPage },
         });
-    }
+    },
+
+    loginWithGoogle() {
+        window.location.href = `${apiClient.defaults.baseURL}/auth/google/redirect`;
+    },
+
+    async fetchAccessToken(googleCallbackUrl) {
+        const response = await apiClient.get(googleCallbackUrl);
+        return response.data;
+    },
 };

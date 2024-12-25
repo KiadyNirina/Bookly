@@ -17,11 +17,20 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 /* Authentication */
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+// Redirection vers Google
+Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle']);
+
+// Callback depuis Google
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
 Route::get('/user', [UserController::class, 'userInfo'])->middleware('auth:sanctum');
 Route::get('/users/{id}', [UserController::class, 'show']);

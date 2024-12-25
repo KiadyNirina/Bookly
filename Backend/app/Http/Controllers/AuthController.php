@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -55,5 +56,33 @@ class AuthController extends Controller
         $user -> tokens() -> delete();
 
         return response() -> json(['message' => 'Logged out']);
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->stateless()->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        $googleUser = Socialite::driver('google')->stateless()->user();
+
+        // Vérifiez si l'utilisateur existe déjà
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->getEmail()],
+            [
+                'name' => $googleUser->getName(),
+                'google_id' => $googleUser->getId(),
+                'password' => bcrypt('random_password'), // Pas utilisé pour les connexions Google
+            ]
+        );
+
+        // Générer un jeton pour l'utilisateur
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'user' => $user,
+        ]);
     }
 }
