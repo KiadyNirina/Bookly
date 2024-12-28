@@ -62,7 +62,10 @@ export default {
         <section class="popular-books">
             <h2>Publiés</h2>
 
-            <div v-if="userBooks.length != 0" class="">
+            <div v-if="userBooks.length == 0" class="noResult">
+                <p>Merci de patienter un moment... ou commencez à partager un livre</p>
+            </div>
+            <div v-else class="">
                 <div class="card">
                     <div class="book" v-for="(book, index) in userBooks.slice(0, 4)" :key="index">
                         <a :href="`/books/${book.id}`">
@@ -104,56 +107,58 @@ export default {
                 </div>
                 <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
             </div>
-            <div v-else class="">
-                <p>Chargement...</p>
-            </div>
 
         </section>
         
         <section class="popular-books">
             <h2>Enregistrés</h2>
 
-            <div href="" class="card">
-                <div class="book" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
-                        <div v-if="(book.isPopular)" class="badge">
-                        <div class="popular">
-                            Populaire
-                        </div>
-                        </div>
-                        <div v-else-if="(book.isRecommended)" class="badge">
-                        <div class="recommended">
-                            Recommandé
-                        </div>
-                        </div>
-                        <img :src="book.cover" :alt="book.title">
-                        <p id="type">Fiction</p>
-                        <div class="book-info">
-                            <h3>{{ book.title }}</h3>
-                            <p>{{ book.author }}</p>
-                            <p id="postedBy">
-                            Publié par <b>{{ book.potedBy }}</b>,<br>
-                            Le <b>{{ book.date }}</b>,<br>
-                            Lang : <b>FR</b>
-                            </p>
-                            <div class="content-book">
-                            <div class="note">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note.png" alt="">
-                            </div>
-                            <span>👀1,3k</span>
-                            <span><img src="../../../public/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/download.png" alt=""> 900</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+            <div class="noResult" v-if="books.length == 0">
+                <p>Merci de patienter un moment... ou commencez à enregistrer un livre</p>
             </div>
+            <div v-else class="">
+                <div href="" class="card">
+                    <div class="book" v-for="(book, index) in books" :key="index">
+                        <a href="/books/detail">
+                            <div v-if="(book.isPopular)" class="badge">
+                            <div class="popular">
+                                Populaire
+                            </div>
+                            </div>
+                            <div v-else-if="(book.isRecommended)" class="badge">
+                            <div class="recommended">
+                                Recommandé
+                            </div>
+                            </div>
+                            <img :src="book.cover" :alt="book.title">
+                            <p id="type">Fiction</p>
+                            <div class="book-info">
+                                <h3>{{ book.title }}</h3>
+                                <p>{{ book.author }}</p>
+                                <p id="postedBy">
+                                Publié par <b>{{ book.potedBy }}</b>,<br>
+                                Le <b>{{ book.date }}</b>,<br>
+                                Lang : <b>FR</b>
+                                </p>
+                                <div class="content-book">
+                                <div class="note">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note-active.png" alt="">
+                                    <img src="../../../public/icons/note.png" alt="">
+                                </div>
+                                <span>👀1,3k</span>
+                                <span><img src="../../../public/coms.png" alt=""> 112</span>
+                                <span><img src="../../../public/download.png" alt=""> 900</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
 
-            <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
+                <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
+            </div>
 
         </section>
 
@@ -252,5 +257,12 @@ export default {
     margin: 0;
     color: rgba(255, 255, 255, 0.587);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.noResult p{
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-family: 'Poppins';
+    font-size: 12px;
 }
 </style>

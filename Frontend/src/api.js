@@ -91,4 +91,13 @@ export default {
             params: { page, per_page: perPage },
         });
     },
+
+    /**
+     * Validation du token Google avec le backend
+     * @param {String} token - Token Google
+     * @returns {Promise}
+     */
+    validateGoogleToken(token) {
+        return apiClient.post('/google-login', { token });
+    },
 };
