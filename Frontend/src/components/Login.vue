@@ -12,6 +12,10 @@ export default {
             isLoading: false,
         };
     },
+    name: "GoogleLogin",
+    mounted() {
+        this.initializeGoogleLogin();
+    },
     methods: {
         async login() {
             this.isLoading = true;
@@ -35,9 +39,48 @@ export default {
                 this.isLoading = false;
             }
         },
-        loginWithGoogle() {
-            api.loginWithGoogle();
+
+        async validateWithBackend(token) {
+            try {
+                const response = await api.validateGoogleToken(token);
+                const data = response.data;
+                console.log("Réponse du backend :", data);
+                localStorage.setItem("token", data.token);
+                this.$router.push('/dashboard');
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                this.errorMess = "Une erreur réseau est survenue. Veuillez réessayer.";
+                this.hasError = true;
+            }
         },
+
+        handleCredentialResponse(response) {
+            console.log("Token ID reçu :", response.credential);
+            // Envoyer le token au backend pour validation
+            this.validateWithBackend(response.credential);
+        },
+
+        initializeGoogleLogin() {
+            // Initialiser Google Identity Services
+            window.google.accounts.id.initialize({
+                client_id: "427222673098-tujgvjf5mm6b9djup602111qja0rit86.apps.googleusercontent.com",
+                callback: this.handleCredentialResponse,
+            });
+
+            // Rendre le bouton Google
+            window.google.accounts.id.renderButton(
+                document.getElementById("google-signin-button"),
+                {
+                    theme: "outline",
+                    size: "large",
+                    text: "continue_with",
+                    shape: "pill",
+                }
+            );
+
+            // Activer le flux automatique si nécessaire
+            window.google.accounts.id.prompt();
+        }
     }
 };
 </script>
@@ -72,7 +115,7 @@ export default {
                 </form>
                 <p>Ou :</p>
                 <div class="other">
-                    <button @click="loginWithGoogle"><img src="../../public/icons/google.png" alt=""> Se connecter avec Google</button>
+                    <div id="google-signin-button"></div>
                     <button><img src="../../public/icons/mail.png" alt=""> Se connecter avec Email</button>
                 </div>
                 <p id="foot">Vous n'êtes pas encore inscrit? <router-link to="/signup">S'inscrire</router-link></p>

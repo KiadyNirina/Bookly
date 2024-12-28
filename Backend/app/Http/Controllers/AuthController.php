@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
+use Google_Client;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -58,31 +60,52 @@ class AuthController extends Controller
         return response() -> json(['message' => 'Logged out']);
     }
 
-    public function redirectToGoogle()
+    public function googleLogin(Request $request)
     {
-        return Socialite::driver('google')->stateless()->redirect();
-    }
+        try {
+            // Récupérer le token envoyé par le frontend
+            $token = $request->input('token');
 
-    public function handleGoogleCallback()
-    {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+            // Initialiser le client Google
+            $client = new Google_Client();
+            $client->setClientId('427222673098-tujgvjf5mm6b9djup602111qja0rit86.apps.googleusercontent.com');
 
-        // Vérifiez si l'utilisateur existe déjà
-        $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $googleUser->getName(),
-                'google_id' => $googleUser->getId(),
-                'password' => bcrypt('random_password'), // Pas utilisé pour les connexions Google
-            ]
-        );
+            // Vérifier le token Google
+            $payload = $client->verifyIdToken($token);
 
-        // Générer un jeton pour l'utilisateur
-        $token = $user->createToken('auth_token')->plainTextToken;
+            if ($payload) {
+                // Token valide, récupérer les informations de l'utilisateur
+                $userId = $payload['sub'];
+                $email = $payload['email'];
+                $name = $payload['name'];
 
-        return response()->json([
-            'access_token' => $token,
-            'user' => $user,
-        ]);
+                // Vérifier si l'utilisateur existe déjà dans la base de données
+                $user = User::where('email', $email)->orWhere('google_id', $userId)->first();
+
+                if (!$user) {
+                    // L'utilisateur n'existe pas, donc on le crée
+                    $user = User::create([
+                        'google_id' => $userId,
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => bcrypt(Str::random(24)), // Mot de passe sécurisé généré aléatoirement
+                    ]);
+                }
+
+                // Retourner une réponse avec le token JWT
+                $token = $user->createToken('Bookly')->plainTextToken;
+
+                return response()->json([
+                    'success' => true,
+                    'user' => $user,
+                    'token' => $token
+                ]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Token invalide'], 400);
+            }
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return response()->json(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()], 500);
+        }
     }
 }

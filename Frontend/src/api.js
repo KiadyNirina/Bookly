@@ -91,13 +91,4 @@ export default {
             params: { page, per_page: perPage },
         });
     },
-
-    loginWithGoogle() {
-        window.location.href = `${apiClient.defaults.baseURL}/auth/google/redirect`;
-    },
-
-    async fetchAccessToken(googleCallbackUrl) {
-        const response = await apiClient.get(googleCallbackUrl);
-        return response.data;
-    },
 };
