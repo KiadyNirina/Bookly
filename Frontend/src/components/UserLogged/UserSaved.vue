@@ -31,7 +31,7 @@ export default {
     <div class="profil">
         <h1 id="pdp">K</h1>
         <!-- <img src="../../../public/icons/user.png" alt=""> -->
-            <h1 v-if="userOne">{{ userOne.name || 'Chargement...' }}</h1>
+            <h1>{{ userOne ? userOne.name : "Chargement..." }}</h1>
             <div class="followers">
                 <p><b>1k</b> suivi(e)s</p>
                 <p><b>0</b> abonnements</p>
@@ -44,7 +44,7 @@ export default {
                 <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
             </div>
             <div class="profil-content">
-                <p>Rien à afficher… pour l’instant ! Les Épingles que {{ userOne.name }} crée s’installeront ici.</p>
+                <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
             </div>
     </div>
 </template>

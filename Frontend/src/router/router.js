@@ -8,6 +8,7 @@ import Signup from '@/components/Signup.vue';
 import dashboard from '@/components/UserLogged/dashboard.vue';
 import Biblio from '@/components/UserLogged/Biblio.vue';
 import User from '@/components/UserLogged/User.vue';
+import UserSaved from '@/components/UserLogged/UserSaved.vue';
 import Saved from '@/components/UserLogged/Saved.vue';
 import Create from '@/components/UserLogged/Create.vue';
 import Posted from '@/components/books/Posted.vue';
@@ -24,7 +25,8 @@ const routes = [
     { path: '/signup', component: Signup },
     { path: '/dashboard', component: dashboard },
     { path: '/biblio', component: Biblio },
-    { path: '/user/:id', component: User },
+    { path: '/user/:id/create', component: User },
+    { path: '/user/:id/saved', component: UserSaved },
     { path: '/profil/create', component: Create },
     { path: '/profil/saved', component: Saved },
 ];

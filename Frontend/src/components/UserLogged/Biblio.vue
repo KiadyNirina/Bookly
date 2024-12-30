@@ -13,7 +13,7 @@ export default {
     <div class="content-page">
         <section class="popular-books">
             <div class="users">
-                <a href="/user"class="user">
+                <a href="/user/1/create"class="user">
                     <img src="../../../public/cover 1.jpg" alt="">
                     <div class="">
                         <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
