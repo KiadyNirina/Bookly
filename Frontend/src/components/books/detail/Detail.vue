@@ -102,7 +102,7 @@ export default {
                         </div>
                         
                         <h2>Description</h2>
-                        <p>{{ book.description }}</p>
+                        <p v-html="book.description.replace(/\n/g, '<br>')"></p>
                         <div class="action">
                             <a href="#save"><img src="../../../../public/icons/livres.png" alt="">Lire</a>
                             <a href="#save"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
@@ -163,7 +163,7 @@ export default {
                 <div class="books" v-for="(bk, index) in books" :key="index">
                     <a v-if="bk.id != book.id" href="/books/detail">
                         <div class="img">
-                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                            <img :src="bk.picture ? getImageUrl(bk.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         </div>
                         <div class="info">
                             <h3>{{ bk.title }}</h3>
