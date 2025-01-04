@@ -6,6 +6,11 @@ export default {
                 return text.slice(0, maxLength) + '...';
             }
             return text;
+        },
+        formatDate(dateString) {
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', options);
         }
     }
 }
@@ -37,7 +42,7 @@ export default {
                             <p>{{ book.author }}</p>
                             <p id="poste">
                             Publié par <b>{{ user.name }}</b>,<br>
-                            Le <b>{{ book.created_at }}</b>,<br>
+                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                             Langue : <b>{{ book.lang }}</b>
                             </p>
                             <div class="content-book">

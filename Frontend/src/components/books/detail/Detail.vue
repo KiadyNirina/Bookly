@@ -45,6 +45,11 @@ export default {
                 return text.slice(0, max) + '...';
             }
             return text;
+        },
+        formatDate(dateString) {
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', options);
         }
     },
 };
@@ -73,7 +78,7 @@ export default {
                             <p id="type">Romance</p>
                             <p id="poste">
                             Publié par <b>{{ book.posted_by.name }}</b>,<br>
-                            Le <b>{{ book.created_at }}</b>,<br>
+                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                             Lang : <b>{{ book.lang }}</b><br>
                             Page : <b>{{ book.page }}</b>
                             </p>
@@ -176,7 +181,7 @@ export default {
                             <p>{{ bk.author }}</p>
                             <p id="poste">
                             Publié par <b>{{ bk.posted_by.name }}</b>,<br>
-                            Le <b>{{ bk.created_at }}</b>,<br>
+                            Le <b>{{ formatDate(bk.created_at) }}</b>,<br>
                             Lang : <b>{{ bk.lang }}</b>
                             </p>
                             <div class="content-book">

@@ -1,11 +1,12 @@
 <script>
 export default {
-    // ...existing code...
-    mounted() {
-        this.fetchBooks();
-        this.fetchUserBooks();
-    },
-    // ...existing code...
+    methods : {
+        formatDate(dateString) {
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', options);
+        }
+    }
 }
 </script>
 
@@ -86,7 +87,7 @@ export default {
                                 <p>{{ book.author }}</p>
                                 <p id="postedBy">
                                 Publié par <b>{{ user.name }}</b>,<br>
-                                Le <b>{{ book.created_at }}</b>,<br>
+                                Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                                 Lang : <b>FR</b>
                                 </p>
                                 <div class="content-book">
@@ -184,8 +185,8 @@ export default {
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="postedBy">
-                            Publié par <b>{{ book.potedBy }}</b>,<br>
-                            Le <b>{{ book.date }}</b>,<br>
+                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
+                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                             Lang : <b>FR</b>
                             </p>
                             <div class="content-book">
