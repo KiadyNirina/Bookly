@@ -60,12 +60,7 @@ export default {
     },
 
     getOneUser(id) {
-        return apiClient.get(`/users/${id}`)
-            .then(response => response.data)
-            .catch(error => {
-                console.error('Erreur lors de la récupération des infos utilisateur:', error);
-                throw error;
-            });
+        return apiClient.get(`/users/${id}`);
     }, 
 
     /**

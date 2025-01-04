@@ -1,5 +1,5 @@
 <script>
-import CreateBook from './Book/createBook.vue';
+import CreateBook from '../Book/createBook.vue';
 
 export default {
     components: { 

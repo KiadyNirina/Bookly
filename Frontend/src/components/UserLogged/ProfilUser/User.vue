@@ -17,7 +17,7 @@ export default {
                 const response = await api.getOneUser(idUser);
                 this.userOne = response.data;
             } catch (error) {
-                console.error("Erreur de récupération de donnée de l utilisateur :",error);
+                console.error("Erreur de récupération des données de l'utilisateur :", error);
             }
         },
     },
@@ -28,10 +28,10 @@ export default {
 </script>
 
 <template>
-    <div class="profil">
+    <div v-if="userOne" class="profil">
         <h1 id="pdp">K</h1>
         <!-- <img src="../../../public/icons/user.png" alt=""> -->
-            <h1 v-if="userOne">{{ userOne.name || 'Chargement...' }}</h1>
+            <h1>{{ userOne.data.name }}</h1>
             <div class="followers">
                 <p><b>1k</b> suivi(e)s</p>
                 <p><b>0</b> abonnements</p>
@@ -40,11 +40,23 @@ export default {
                 <button>S'abonner</button>
             </div>
             <div class="section">
-                <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créees</a>
-                <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
+                <a :href="`/user/${userOne.data.id}/create`" :id="isActive(`/user/${userOne.data.id}/create`) ? 'act-link' : ''">Créees</a>
+                <a :href="`/user/${userOne.data.id}/saved`" :id="isActive(`/user/${userOne.data.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
             </div>
             <div class="profil-content">
-                <p>Rien à afficher… pour l’instant ! Les Épingles que {{ userOne.name }} crée s’installeront ici.</p>
+                <p>Rien à afficher… pour l’instant ! Les Épingles que {{ userOne.data.name }} crée s’afficheront ici.</p>
+            </div>
+    </div>
+    <div v-else class="profil">
+        <h1 id="pdp">K</h1>
+        <!-- <img src="../../../public/icons/user.png" alt=""> -->
+            <h1>Chargement...</h1>
+            <div class="followers">
+                <p><b>1k</b> suivi(e)s</p>
+                <p><b>0</b> abonnements</p>
+            </div>
+            <div class="button">
+                <button>S'abonner</button>
             </div>
     </div>
 </template>

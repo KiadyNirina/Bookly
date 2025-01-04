@@ -7,10 +7,10 @@ import Login from '@/components/Login.vue';
 import Signup from '@/components/Signup.vue';
 import dashboard from '@/components/UserLogged/dashboard.vue';
 import Biblio from '@/components/UserLogged/Biblio.vue';
-import User from '@/components/UserLogged/User.vue';
-import UserSaved from '@/components/UserLogged/UserSaved.vue';
-import Saved from '@/components/UserLogged/Saved.vue';
-import Create from '@/components/UserLogged/Create.vue';
+import User from '@/components/UserLogged/ProfilUser/User.vue';
+import UserSaved from '@/components/UserLogged/ProfilUser/UserSaved.vue';
+import Saved from '@/components/UserLogged/Profil/Saved.vue';
+import Create from '@/components/UserLogged/Profil/Create.vue';
 import Posted from '@/components/books/Posted.vue';
 import Recent from '@/components/books/Recent.vue';
 
