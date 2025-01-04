@@ -1,6 +1,14 @@
 <script>
-import userMixin from '@/mixins/userMixin';
-
+export default {
+    methods : {
+        truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.slice(0, maxLength) + '...';
+            }
+            return text;
+        }
+    }
+}
 </script>
 
 <template>
@@ -47,7 +55,7 @@ import userMixin from '@/mixins/userMixin';
                         </div>
                         <div class="desc">
                             <p id="type">{{ book.type }}</p>
-                            <p>{{ book.description }}</p>
+                            <p v-html="truncateText((book.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt=""></a>
                                 <a href="#save" class="actionButton"><img src="../../../public/icons/modifier.png" alt=""></a>

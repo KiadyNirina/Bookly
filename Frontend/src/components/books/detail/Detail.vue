@@ -40,6 +40,12 @@ export default {
             confirmButtonText: 'OK',
             }); 
         },
+        truncateText(text, max) {
+            if (text.length > max) {
+                return text.slice(0, max) + '...';
+            }
+            return text;
+        }
     },
 };
 </script>
@@ -188,7 +194,7 @@ export default {
                         </div>
                         <div class="desc">
                             <p id="type">{{ bk.type }}</p>
-                            <p>{{ bk.description }}</p>
+                            <p v-html="truncateText((bk.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>
