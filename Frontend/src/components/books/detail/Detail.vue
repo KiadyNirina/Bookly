@@ -174,7 +174,7 @@ export default {
 
             <div v-if="books.length != 0" class="row">
                 <div class="books" v-for="(bk, index) in books" :key="index">
-                    <a v-if="bk.id != book.id" href="/books/detail">
+                    <a v-if="bk.id != book.id" :href="`/books/${bk.id}`">
                         <div class="img">
                             <img :src="bk.picture ? getImageUrl(bk.picture) : getImageUrl(defaultImg)" :alt="book.title" />
                         </div>
