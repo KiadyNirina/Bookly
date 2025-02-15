@@ -103,15 +103,15 @@ export default {
                             </p>
                             <div class="content-book">
                             <div class="note">
-                                <img src="../../public/icons/note-active.png" alt="">
-                                <img src="../../public/icons/note-active.png" alt="">
-                                <img src="../../public/icons/note-active.png" alt="">
-                                <img src="../../public/icons/note-active.png" alt="">
-                                <img src="../../public/icons/note.png" alt="">
+                                <img src="../../../public/icons/note-active.png" alt="">
+                                <img src="../../../public/icons/note-active.png" alt="">
+                                <img src="../../../public/icons/note-active.png" alt="">
+                                <img src="../../../public/icons/note-active.png" alt="">
+                                <img src="../../../public/icons/note.png" alt="">
                             </div>
-                            <span>👀1,3k</span>
-                            <span><img src="../../public/icons/coms.png" alt=""> 112</span>
-                            <span><img src="../../public/icons/download.png" alt=""> 900</span>
+                            <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
+                            <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
+                            <span><img src="../../../public/icons/download.png" alt=""> 900</span>
                             </div>
                         </div>
                     </a>
