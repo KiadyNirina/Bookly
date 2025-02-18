@@ -78,7 +78,6 @@ export default {
                 }
             );
 
-            // Activer le flux automatique si nécessaire
             window.google.accounts.id.prompt();
         }
     }
@@ -116,7 +115,6 @@ export default {
                 <p>Ou :</p>
                 <div class="other">
                     <div id="google-signin-button"></div>
-                    <button><img src="../../public/icons/mail.png" alt=""> Se connecter avec Email</button>
                 </div>
                 <p id="foot">Vous n'êtes pas encore inscrit? <router-link to="/signup">S'inscrire</router-link></p>
             </div>
@@ -138,7 +136,7 @@ export default {
 .content-login .form-login{
     display: flex;
     border: 1px solid rgba(255, 255, 255, 0.102);
-    height: 500px;
+    height: 80vh;
     border-radius: 20px;
 }
 .content-login .form-login img{
@@ -147,18 +145,28 @@ export default {
     border-radius: 20px 0px 0px 20px;
 }
 .content-login .form-login .sect2{
-    padding: 20px;
+    display: flex; 
+    flex-direction: column; /* Empile les éléments verticalement */
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement */
+    padding: 10px;
     width: 50%;
+    box-sizing: border-box;
 }
 .content-login .form-login .sect2 h1 {
     color: white;
     font-family: 'MaPolice';
     font-weight: 100;    
     text-align: center;
+    font-size: 50px;
+    margin-bottom: 50px;
+}
+.content-login .form-login .sect2 form {
+    width: 90%;
 }
 .content-login .form-login .sect2 form input[type='text'], .content-login .form-login .sect2 form input[type='password']{
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     height: 40px;
     background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.183);
@@ -188,7 +196,7 @@ export default {
     color: #E67E22;
 }
 .content-login .form-login .error-border form input[type='text'], .content-login .form-login .error-border form input[type='password']{
-    border: 2px solid rgb(255, 62, 62);
+    border: 1px solid rgb(255, 62, 62);
 }
 #error{
     color: rgb(255, 62, 62);
@@ -220,30 +228,11 @@ export default {
 }
 .content-login .form-login .sect2 .other{
     display: flex;
-}
-.content-login .form-login .sect2 .other button{
-    width: 100%;
-    height: 40px;
-    background-color: #0048ff;
-    color: white;
-    border: 1px solid #0048ff;
-    border-radius: 10px;
-    font-size: 13px;
-    transition: 0.5s;
-    margin: 2px;
-    display: flex;
-    align-items: center;
+    width: 90%;
     justify-content: center;
 }
-.content-login .form-login .sect2 .other button:hover{
-    cursor: pointer;
-    border: 1px solid white;
-    background-color: transparent;
-}
-.content-login .form-login .sect2 .other button img{
-    height: 30px;
-    width: auto;
-    margin-right: 2px;
+#google-signin-button {
+    width: 100%; 
 }
 #foot{
     position: relative;

@@ -94,7 +94,7 @@ export default {
     width: auto;
 }
 .nav-left img{
-    height: 40px;
+    height: 50px;
     border-radius: 100%;
 }
 .nav-img{
@@ -113,11 +113,11 @@ export default {
 }
 .search input{
     width: 100%;
-    height: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.119);
+    height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.267);
     border-radius: 20px;
     background-color: transparent;
-    padding: 10px;
+    padding: 15px;
     color: white;
     transition: 0.3s;
 }
@@ -148,5 +148,8 @@ export default {
 }
 #active-link {
   color: #E67E22;
+}
+*{
+    font-family: "poppins";
 }
 </style>

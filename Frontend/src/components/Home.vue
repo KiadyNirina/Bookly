@@ -18,10 +18,13 @@ export default {
 
 <template>
   <div class="content">
-    <h1>Découvrez un monde d'histoires</h1>
-    <a href="">
-      Explorer 
-    </a>
+    <div class="content-1">
+      <h1>Découvrez un univers de lecture illimité</h1>
+      <p>Des milliers de livres à portée de main, où que vous soyez</p>
+      <a href="">
+        Explorer les nouveautés
+      </a>
+    </div>
   </div>
 
   <section class="popular-books">
@@ -73,6 +76,10 @@ export default {
 </template>
 
 <style>
+@font-face {
+  font-family: 'Poppins-bold';
+  src: url('../../../../public/font/Poppins/Poppins-Bold.ttf');
+}
 body{
   background-color: #010310;
 }
@@ -82,19 +89,24 @@ body{
   background-repeat: no-repeat;
   background-size: cover;
   padding: 50px;
-  height: 550px;
-  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.content h1{
+.content .content-1{
+  width: 50%;
+}
+.content .content-1 h1{
   color: #FAFAFA;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "poppins-bold";
   font-size: 50px;
-  position: relative;
-  top: 40%;
 }
-.content a{
-  position: relative;
-  top: 40%;
+.content .content-1 p{
+  color: #FAFAFA;
+  margin-bottom: 50px;
+}
+.content .content-1 a{
   text-decoration: none;
   color: white;
   background-color: #E67E22;
@@ -106,7 +118,7 @@ body{
   transition: 0.5s;
   border: 2px solid #E67E22;
 }
-.content a:hover{
+.content .content-1 a:hover{
   color: #E67E22;
   background-color: transparent;
 }

@@ -2,7 +2,7 @@
 export default {
     data() {
       return {
-        books: [
+        bookes: [
           { title: 'A tout les garçon que j\'ai aimé', author: 'Christophe RABEARIMANANA', postedBy: 'John Doe', date: '19/05/2023', cover: '../../public/cover 1.jpg', isPopular: true, type: 'Romance' },
           { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', date: '17/10/2024', cover: '../../public/cover 2.jpg', isRecommended: true, type: 'Fiction' },
           { title: 'Titre du Livre 1', author: 'Auteur 1', postedBy: 'John Doe', date: '22/06/2024', cover: '../../public/cover 3.jpg', isPopular: true, type: 'Fantaisie' },
@@ -29,7 +29,7 @@ export default {
             <h2>Les Plus Populaires</h2>
 
             <div class="row">
-                <div class="books" v-for="(book, index) in books" :key="index">
+                <div class="books" v-for="(book, index) in bookes" :key="index">
                     <a href="/books/detail">
                         <div class="img">
                             <img :src="book.cover" alt="">

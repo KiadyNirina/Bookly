@@ -16,7 +16,7 @@
         <section class="popular-books">
             <h2>Les Plus Populaires</h2>
 
-            <div href="" class="card">
+            <div v-if="books.length > 0" href="" class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div v-if="(book.isPopular)" class="badge">
@@ -55,6 +55,9 @@
                     </a>
                 </div>
             </div>
+            <div v-else class="">
+                <p>Pas de livre pour le moment</p>
+            </div>
 
             <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
 
@@ -63,7 +66,7 @@
         <section class="popular-books">
             <h2>Les derniers ajouts</h2>
 
-            <div class="card">
+            <div v-if="books.length > 0" class="card">
                 <div class="book" v-for="(book, index) in books" :key="index">
                     <a href="/books/detail">
                         <div v-if="(book.isPopular)" class="badge">
@@ -101,6 +104,9 @@
                         </div>
                     </a>
                 </div>
+            </div>
+            <div v-else class="">
+                <p>Pas de livre pour le moment</p>
             </div>
 
             <a href="" id="seeMore">Voir plus</a>
