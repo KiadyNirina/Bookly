@@ -17,6 +17,11 @@ export default {
         create() {
             this.popupVisible = true; // Affiche le popup
         },
+        formatDate(dateString) {
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', options);
+        }
     },
 };
 </script>
@@ -38,12 +43,58 @@ export default {
                 <a href="/profil/create" :id="isActive('/profil/create') ? 'act-link' : ''">Créees</a>
                 <a href="/profil/saved" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
             </div>
-            <div class="profil-content">
-                <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
-                <div class="button">
-                    <button id="buttonProfil" @click="create()">Créer</button>
-                </div>
+
+            <div class="button">
+                <button id="buttonProfil" @click="create()">Créer</button>
             </div>
+            
+            <section class="popular-books">
+                <div v-if="userBooks.length == 0" class="profil-content">
+                    <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
+                </div>
+                <div v-else class="">
+                    <div class="card">
+                        <div class="book" v-for="(book, index) in userBooks.slice(0, 4)" :key="index">
+                            <a :href="`/books/${book.id}`">
+                                <div v-if="(book.isPopular)" class="badge">
+                                <div class="popular">
+                                    Populaire
+                                </div>
+                                </div>
+                                <div v-else-if="(book.isRecommended)" class="badge">
+                                <div class="recommended">
+                                    Recommandé
+                                </div>
+                                </div>
+                                <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                                <p id="type">Fiction</p>
+                                <div class="book-info">
+                                    <h3>{{ book.title }}</h3>
+                                    <p>{{ book.author }}</p>
+                                    <p id="postedBy">
+                                    Publié par <b>{{ user.name }}</b>,<br>
+                                    Le <b>{{ formatDate(book.created_at) }}</b>,<br>
+                                    Lang : <b>FR</b>
+                                    </p>
+                                    <div class="content-book">
+                                    <div class="note">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note.png" alt="">
+                                    </div>
+                                    <span>👀1,3k</span>
+                                    <span><img src="../../../../public/icons/coms.png" alt=""> 112</span>
+                                    <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
+                </div>
+            </section>
 
             <CreateBook
                 :visible="popupVisible"
@@ -54,9 +105,6 @@ export default {
 </template>
 
 <style>
-.profil-content{
-    margin-top: 50px;
-}
 .profil-content p{
     display: flex;
     margin-right: auto;
