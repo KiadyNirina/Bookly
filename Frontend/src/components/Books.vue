@@ -56,10 +56,9 @@
                 </div>
             </div>
             <div v-else class="">
-                <p>Pas de livre pour le moment</p>
+                <p>Pas de livre disponible pour le moment</p>
             </div>
-
-            <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
+            <router-link v-if="books.length > 0" to="/books/popular" id="seeMore">Voir plus</router-link>
 
         </section>
 
@@ -106,10 +105,10 @@
                 </div>
             </div>
             <div v-else class="">
-                <p>Pas de livre pour le moment</p>
+                <p>Pas de livre disponible pour le moment</p>
             </div>
 
-            <a href="" id="seeMore">Voir plus</a>
+            <a v-if="books.length > 0" href="" id="seeMore">Voir plus</a>
 
         </section>
     </div>

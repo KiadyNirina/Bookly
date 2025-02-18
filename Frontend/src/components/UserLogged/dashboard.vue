@@ -27,49 +27,49 @@ export default {
 
             <div v-if="books.length != 0"class="">
                 <div class="card">
-                <div class="book" v-for="(book, index) in books" :key="index">
-                    <a :href="`/books/${book.id}`">
-                        <div v-if="(book.isPopular)" class="badge">
-                        <div class="popular">
-                            Populaire
-                        </div>
-                        </div>
-                        <div v-else-if="(book.isRecommended)" class="badge">
-                        <div class="recommended">
-                            Recommandé
-                        </div>
-                        </div>
-                        <img :src="book.cover ? book.cover : 'storage/images/default.jpg'" :alt="book.title">
-                        <p id="type">Fiction</p>
-                        <div class="book-info">
-                            <h3>{{ book.title }}</h3>
-                            <p>{{ book.author }}</p>
-                            <p id="postedBy">
-                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
-                            Le <b>{{ book.date }}</b>,<br>
-                            Lang : <b>FR</b>
-                            </p>
-                            <div class="content-book">
-                            <div class="note">
-                                <img src="../../../public/iconsnote-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note.png" alt="">
+                    <div class="book" v-for="(book, index) in books" :key="index">
+                        <a :href="`/books/${book.id}`">
+                            <div v-if="(book.isPopular)" class="badge">
+                                <div class="popular">
+                                    Populaire
+                                </div>
                             </div>
-                            <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                            <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                            <div v-else-if="(book.isRecommended)" class="badge">
+                                <div class="recommended">
+                                    Recommandé
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                            <img :src="book.cover ? book.cover : 'storage/images/default.jpg'" :alt="book.title">
+                            <p id="type">Fiction</p>
+                            <div class="book-info">
+                                <h3>{{ book.title }}</h3>
+                                <p>{{ book.author }}</p>
+                                <p id="postedBy">
+                                Publié par <b>{{ book.posted_by.name }}</b>,<br>
+                                Le <b>{{ book.date }}</b>,<br>
+                                Lang : <b>FR</b>
+                                </p>
+                                <div class="content-book">
+                                    <div class="note">
+                                        <img src="../../../public/iconsnote-active.png" alt="">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note.png" alt="">
+                                    </div>
+                                    <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
+                                    <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
+                                    <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
+                <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
             </div>
             <div v-else class="">
-                <p>Chargement...</p>
+                <p>Pas de livre disponnible pour le moment</p>
             </div>
 
         </section>
@@ -79,49 +79,49 @@ export default {
 
             <div v-if="books.length != 0"class="">
                 <div class="card">
-                <div class="book" v-for="(book, index) in books" :key="index">
-                    <a :href="`/books/${book.id}`">
-                        <div v-if="(book.isPopular)" class="badge">
-                        <div class="popular">
-                            Populaire
-                        </div>
-                        </div>
-                        <div v-else-if="(book.isRecommended)" class="badge">
-                        <div class="recommended">
-                            Recommandé
-                        </div>
-                        </div>
-                        <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
-                        <p id="type">Fiction</p>
-                        <div class="book-info">
-                            <h3>{{ book.title }}</h3>
-                            <p>{{ book.author }}</p>
-                            <p id="postedBy">
-                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
-                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
-                            Lang : <b>{{ book.lang }}</b>
-                            </p>
-                            <div class="content-book">
-                            <div class="note">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note-active.png" alt="">
-                                <img src="../../../public/icons/note.png" alt="">
+                    <div class="book" v-for="(book, index) in books" :key="index">
+                        <a :href="`/books/${book.id}`">
+                            <div v-if="(book.isPopular)" class="badge">
+                                <div class="popular">
+                                    Populaire
+                                </div>
                             </div>
-                            <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                            <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                            <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                            <div v-else-if="(book.isRecommended)" class="badge">
+                                <div class="recommended">
+                                    Recommandé
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                            <p id="type">Fiction</p>
+                            <div class="book-info">
+                                <h3>{{ book.title }}</h3>
+                                <p>{{ book.author }}</p>
+                                <p id="postedBy">
+                                Publié par <b>{{ book.posted_by.name }}</b>,<br>
+                                Le <b>{{ formatDate(book.created_at) }}</b>,<br>
+                                Lang : <b>{{ book.lang }}</b>
+                                </p>
+                                <div class="content-book">
+                                    <div class="note">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../public/icons/note.png" alt="">
+                                    </div>
+                                    <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
+                                    <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
+                                    <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <router-link to="/books/recent" id="seeMore">Voir plus</router-link>
+                <router-link to="/books/recent" id="seeMore">Voir plus</router-link>
             </div>
             <div v-else class="">
-                <p>Chargement...</p>
+                <p>Pas de livre disponnible pour le moment</p>
             </div>
 
         </section>
