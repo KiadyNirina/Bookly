@@ -91,7 +91,7 @@ export default {
 <style>
 #label {
     margin: 10px 0 0 0;
-    font-size: 15px;
+    font-size: 12px;
 }
 .double{
     display: flex;

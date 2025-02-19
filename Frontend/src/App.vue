@@ -151,5 +151,6 @@ export default {
 }
 *{
     font-family: "poppins";
+    font-size: 12px;
 }
 </style>

@@ -158,7 +158,7 @@ export default {
     font-family: 'MaPolice';
     font-weight: 100;    
     text-align: center;
-    font-size: 50px;
+    font-size: 40px;
     margin-bottom: 50px;
 }
 .content-login .form-login .sect2 form {
@@ -183,7 +183,7 @@ export default {
     color: rgba(255, 255, 255, 0.659);
     align-items: center;
     margin-bottom: 20px;
-    font-size: 13px;
+    font-size: 12px;
 }
 .content-login .form-login .sect2 form input[type='checkbox']{
     cursor: pointer;
@@ -200,7 +200,7 @@ export default {
 }
 #error{
     color: rgb(255, 62, 62);
-    font-size: 15px;
+    font-size: 12px;
 }
 .content-login .form-login .sect2 form button{
     width: 100%;
@@ -233,10 +233,6 @@ export default {
 }
 #google-signin-button {
     width: 100%; 
-}
-#foot{
-    position: relative;
-    top: 60px;
 }
 #passwordForgot{
     text-decoration: none;

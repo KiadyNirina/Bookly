@@ -27,8 +27,7 @@ export default {
 
             <div v-if="books.length != 0"class="">
                 <div class="card">
-                    <div class="book" v-for="(book, index) in books" :key="index">
-                        <a :href="`/books/${book.id}`">
+                    <a :href="`/books/${book.id}`" class="book" v-for="(book, index) in books" :key="index">
                             <div v-if="(book.isPopular)" class="badge">
                                 <div class="popular">
                                     Populaire
@@ -62,8 +61,7 @@ export default {
                                     <span><img src="../../../public/icons/download.png" alt=""> 900</span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                    </a>
                 </div>
 
                 <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
@@ -79,8 +77,7 @@ export default {
 
             <div v-if="books.length != 0"class="">
                 <div class="card">
-                    <div class="book" v-for="(book, index) in books" :key="index">
-                        <a :href="`/books/${book.id}`">
+                    <a :href="`/books/${book.id}`" class="book" v-for="(book, index) in books" :key="index">
                             <div v-if="(book.isPopular)" class="badge">
                                 <div class="popular">
                                     Populaire
@@ -114,8 +111,7 @@ export default {
                                     <span><img src="../../../public/icons/download.png" alt=""> 900</span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                    </a>
                 </div>
 
                 <router-link to="/books/recent" id="seeMore">Voir plus</router-link>

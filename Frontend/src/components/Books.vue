@@ -17,8 +17,7 @@
             <h2>Les Plus Populaires</h2>
 
             <div v-if="books.length > 0" href="" class="card">
-                <div class="book" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+                <a href="/books/detail" class="book" v-for="(book, index) in books" :key="index">
                         <div v-if="(book.isPopular)" class="badge">
                         <div class="popular">
                             Populaire
@@ -52,8 +51,7 @@
                             <span><img src="../../public/icons/download.png" alt=""> 900</span>
                             </div>
                         </div>
-                    </a>
-                </div>
+                </a>
             </div>
             <div v-else class="">
                 <p>Pas de livre disponible pour le moment</p>
@@ -66,8 +64,7 @@
             <h2>Les derniers ajouts</h2>
 
             <div v-if="books.length > 0" class="card">
-                <div class="book" v-for="(book, index) in books" :key="index">
-                    <a href="/books/detail">
+                <a href="/books/detail" class="book" v-for="(book, index) in books" :key="index">
                         <div v-if="(book.isPopular)" class="badge">
                         <div class="popular">
                             Populaire
@@ -84,7 +81,7 @@
                             <h3>{{ book.title }}</h3>
                             <p>{{ book.author }}</p>
                             <p id="postedBy">
-                            Publié par <b>{{ book.posted_by }}</b>,<br>
+                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
                             Le <b>{{ book.created_at }}</b>,<br>
                             Lang : <b>{{ book.lang }}</b>
                             </p>
@@ -102,7 +99,7 @@
                             </div>
                         </div>
                     </a>
-                </div>
+                
             </div>
             <div v-else class="">
                 <p>Pas de livre disponible pour le moment</p>
