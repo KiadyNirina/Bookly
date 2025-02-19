@@ -85,7 +85,7 @@ body{
 }
 .content{
   background: url("../../public/background.jpg");
-  background-position: top;
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   padding: 50px;
