@@ -8,7 +8,6 @@ export default {
         { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', cover: '../../public/cover 2.jpg', isRecommended: true, link: 2 },
         { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', cover: '../../public/cover 3.jpg', isPopular: true, link: 3 },
         { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', cover: '../../public/cover 4.jfif', isRecommended: true, link: 4 },
-        // ... autres livres
       ]
     };
   }
