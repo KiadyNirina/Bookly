@@ -64,7 +64,7 @@
             <h2>Les derniers ajouts</h2>
 
             <div v-if="books.length > 0" class="card">
-                <a href="/books/detail" class="book" v-for="(book, index) in books" :key="index">
+                <a :href="`/books/${book.id}`" class="book" v-for="book in books" :key="book.id">
                         <div v-if="(book.isPopular)" class="badge">
                         <div class="popular">
                             Populaire
@@ -75,7 +75,7 @@
                             Recommandé
                         </div>
                         </div>
-                        <img v-if="book.picture" :src="getImageUrl(book.picture)" :alt="book.title">
+                        <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title">
                         <p id="type">Fiction</p>
                         <div class="book-info">
                             <h3>{{ book.title }}</h3>

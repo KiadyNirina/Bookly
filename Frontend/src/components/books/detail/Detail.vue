@@ -78,7 +78,7 @@ export default {
                             <p>Ecrit par <b>{{ book.author }}</b></p>
                             <p id="type">Romance</p>
                             <p id="poste">
-                            Publié par <b><a v-if="book.posted_by.name == user.name" href="/profil/create">{{ book.posted_by.name }}</a>
+                            Publié par <b><a v-if="user && book.posted_by.name == user.name" href="/profil/create">{{ book.posted_by.name }}</a>
                                 <a v-else :href="`/user/${book.posted_by.id}/create`">{{ book.posted_by.name }}</a></b>,<br>
                             Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                             Lang : <b>{{ book.lang }}</b><br>
