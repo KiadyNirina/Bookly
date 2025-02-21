@@ -40,4 +40,5 @@ Route::delete('/deleteBook/{id}', [BookController::class, 'destroy'])->middlewar
 Route::get('/books/recent', [BookController::class, 'getRecentBooks']);
 Route::get('/books/{id}', [BookController::class, 'show']);
 Route::get('/user/books', [BookController::class, 'getBooksByUser'])->middleware('auth:sanctum');
+Route::get('/user/{id}/books', [BookController::class, 'getBooksByUserSelected']);
 

@@ -5,6 +5,11 @@ export default {
     data() {
         return {
             userOne: null,
+            userSelectedBooks: [],
+            currentPageUserSelected: 1,
+            lastPageUserSelected: 1,
+            perPageUserSelected: 4,
+            defaultImg: '/path/to/default/image.jpg', // À remplacer par une image par défaut
         }
     },
     methods: {
@@ -20,9 +25,26 @@ export default {
                 console.error("Erreur de récupération des données de l'utilisateur :", error);
             }
         },
+        async getSelectedUserBooks() {
+            try {
+                const idUser = this.$route.params.id;
+                const response = await api.getUserSelectedBooks(idUser, this.currentPageUserSelected, this.perPageUserSelected);
+                this.userSelectedBooks = response.data.data;
+                console.log("Livres récupérés : ", this.userSelectedBooks);
+            } catch (error) {
+                console.error("Erreur de récupération des livres de l'utilisateur sélectionné :", error.message);
+            }
+        },
+        getImageUrl(imagePath) {
+            return imagePath ? `/uploads/${imagePath}` : this.defaultImg;
+        },
+        formatDate(date) {
+            return new Date(date).toLocaleDateString('fr-FR');
+        }
     },
     created() {
         this.getUserOne();
+        this.getSelectedUserBooks();
     }
 };
 </script>
@@ -30,34 +52,73 @@ export default {
 <template>
     <div v-if="userOne" class="profil">
         <h1 id="pdp">K</h1>
-        <!-- <img src="../../../public/icons/user.png" alt=""> -->
-            <h1>{{ userOne.data.name }}</h1>
-            <div class="followers">
-                <p><b>1k</b> suivi(e)s</p>
-                <p><b>0</b> abonnements</p>
+        <h1>{{ userOne.name }}</h1>
+        <div class="followers">
+            <p><b>1k</b> suivi(e)s</p>
+            <p><b>0</b> abonnements</p>
+        </div>
+        <div class="button">
+            <button>S'abonner</button>
+        </div>
+        <div class="section">
+            <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créées</a>
+            <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
+        </div>
+
+        <div class="popular-books">
+            <div v-if="userSelectedBooks.length === 0" class="profil-content">
+                <p>Rien à afficher… pour l’instant ! Les Épingles que {{ userOne.name }} crée s’afficheront ici.</p>
             </div>
-            <div class="button">
-                <button>S'abonner</button>
+            <div v-else>
+                <div class="card">
+                    <div class="book" v-for="book in userSelectedBooks.slice(0, 4)" :key="book.id">
+                        <a :href="`/books/${book.id}`">
+                            <div v-if="book.isPopular" class="badge">
+                                <div class="popular">Populaire</div>
+                            </div>
+                            <div v-else-if="book.isRecommended" class="badge">
+                                <div class="recommended">Recommandé</div>
+                            </div>
+                            <img :src="getImageUrl(book.picture)" :alt="book.title" />
+                            <p id="type">Fiction</p>
+                            <div class="book-info">
+                                <h3>{{ book.title }}</h3>
+                                <p>{{ book.author }}</p>
+                                <p id="postedBy">
+                                    Publié par <b>{{ userOne.name }}</b>,<br>
+                                    Le <b>{{ formatDate(book.created_at) }}</b>,<br>
+                                    Lang : <b>FR</b>
+                                </p>
+                                <div class="content-book">
+                                    <div class="note">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note-active.png" alt="">
+                                        <img src="../../../../public/icons/note.png" alt="">
+                                    </div>
+                                    <span>👀1,3k</span>
+                                    <span><img src="../../../../public/icons/coms.png" alt=""> 112</span>
+                                    <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
             </div>
-            <div class="section">
-                <a :href="`/user/${userOne.data.id}/create`" :id="isActive(`/user/${userOne.data.id}/create`) ? 'act-link' : ''">Créees</a>
-                <a :href="`/user/${userOne.data.id}/saved`" :id="isActive(`/user/${userOne.data.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
-            </div>
-            <div class="profil-content">
-                <p>Rien à afficher… pour l’instant ! Les Épingles que {{ userOne.data.name }} crée s’afficheront ici.</p>
-            </div>
+        </div>
     </div>
     <div v-else class="profil">
         <h1 id="pdp">K</h1>
-        <!-- <img src="../../../public/icons/user.png" alt=""> -->
-            <h1>Chargement...</h1>
-            <div class="followers">
-                <p><b>1k</b> suivi(e)s</p>
-                <p><b>0</b> abonnements</p>
-            </div>
-            <div class="button">
-                <button>S'abonner</button>
-            </div>
+        <h1>Chargement...</h1>
+        <div class="followers">
+            <p><b>1k</b> suivi(e)s</p>
+            <p><b>0</b> abonnements</p>
+        </div>
+        <div class="button">
+            <button>S'abonner</button>
+        </div>
     </div>
 </template>
 

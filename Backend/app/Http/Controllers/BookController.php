@@ -153,4 +153,25 @@ class BookController extends Controller
             'data' => $books
         ], 200);
     }
+
+
+    public function getBooksByUserSelected($id)
+    {
+        $perPage = request()->get('per_page', 4);
+        $books = Book::where('posted_by', $id)
+                     ->orderBy('created_at', 'desc')
+                     ->paginate($perPage);
+        
+        if ($books->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aucun livre trouvé pour cet utilisateur'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $books
+        ], 200);
+    }
 }

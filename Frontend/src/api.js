@@ -85,6 +85,24 @@ export default {
     },
 
     /**
+     * Récupération des livres d un utilisateur
+     * @param {Number} id - Id de l'utilisateur
+     * @param {Number} page - Numéro de la page
+     * @param {Number} perPage - Nombre d'éléments par page
+     * @returns {Promise}
+     */
+    getUserSelectedBooks(id, page, perPage) {
+        return apiClient.get(`/user/${id}/books`, {
+            params: { id, page, per_page: perPage },
+        })
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Erreur lors de la récupération des livres utilisateur séléctionné:', error);
+            throw error;
+        });
+    },
+
+    /**
      * Récupération des livres récents
      * @param {Number} page - Numéro de la page
      * @param {Number} perPage - Nombre d'éléments par page
