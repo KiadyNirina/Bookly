@@ -125,7 +125,6 @@ body{
 .popular-books {
   background-color: #010310;
   padding-top: 50px;
-  text-align: center;
   /* height: 510px; */
   max-width: 1300px;
   margin-left: auto;
@@ -178,7 +177,6 @@ body{
 
 .card .book:hover{
   box-shadow: 0px 0px 10px #3355ffc2;
-  width: 25.5%;
 }
 
 .card .book a{
@@ -200,6 +198,12 @@ body{
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-weight: bold;
   font-style: italic;
+  padding-left: 20px;
+}
+
+.book-info {
+  padding : 20px;
+  font-family: 'poppins';
 }
 
 .book-info h3{
@@ -214,20 +218,16 @@ body{
   color: rgba(255, 255, 255, 0.352);
   margin: 0;
   font-size: 15px;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 #postedBy{
-  font-size: 11px;
+  font-size: 12px;
   margin: 10px 0px 10px 0px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .content-book {
   display: flex;
   align-items: center;
-  padding-left: 5%;
-  padding-right: 5%;
   color: rgba(255, 255, 255, 0.587);
   margin-bottom: 10px;
 }

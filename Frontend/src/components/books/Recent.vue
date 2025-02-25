@@ -71,7 +71,7 @@ export default {
                     </a>
                 </div>
 
-                <button v-if="hasMoreBooks" @click="loadMoreBooks" id="seeMore">Voir Plus</button>
+                <button v-if="hasMoreBooks" @click="fetchMoreBooks" id="seeMore">Voir Plus</button>
             </div>
             <div v-else class="">
                 <p>Chargement...</p>
@@ -82,6 +82,9 @@ export default {
 </template>
 
 <style>
+.row{
+    font-family: 'poppins';
+}
 .row .books a{
     display: flex;
     width: 100%;
@@ -122,7 +125,6 @@ export default {
   color: rgba(255, 255, 255, 0.52);
   margin: 0;
   font-size: 15px;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .row .content-book {
   padding-left: 0;
@@ -138,7 +140,7 @@ export default {
   color: rgba(255, 255, 255, 0.722);
 }
 #poste{
-    font-size: 15px;
+    font-size: 12px;
     margin: 10px 0px 10px 0px;
 }
 .row .books .content-book span img{
@@ -150,7 +152,6 @@ export default {
     width: 40%;
     padding: 5px;
     color: rgba(255, 255, 255, 0.434);
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .row .books .desc #type{
     text-align: center;
