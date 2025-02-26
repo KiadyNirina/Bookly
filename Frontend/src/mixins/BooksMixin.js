@@ -31,7 +31,11 @@ export default {
         async fetchBooks() {
             try {
                 const response = await api.getRecentBooks(this.currentPage, this.perPage);
-                this.books = response.data.data.data;
+                if (this.currentPage === 1) {
+                    this.books = response.data.data.data;
+                } else {
+                    this.books = [...this.books, ...response.data.data.data];
+                }
                 this.lastPage = response.data.data.last_page;
                 console.log("Books fetched successfully:", this.books);
             } catch (error) {
