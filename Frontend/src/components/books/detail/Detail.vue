@@ -211,6 +211,7 @@ export default {
                         </div>
                     </a>
                 </div>
+                <button v-if="hasMoreBooks" @click="fetchMoreBooks" id="seeMore">Voir Plus</button>
             </div>
             <div v-else class="">
                 <p>Chargement...</p>
