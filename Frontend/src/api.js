@@ -59,6 +59,21 @@ export default {
             });
     },
 
+    /**
+     * Récupération des utilisateurs
+     * @returns {Promise}
+     */
+    getUsers(page, perPage) {
+        return apiClient.get('/users', {
+            params: {page, per_page: perPage}
+        })
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Erreur lors de la récupération des utilisateurs:', error);
+            throw error;
+        });
+    },
+
     getOneUser(id) {
         return apiClient.get(`/users/${id}`);
     }, 

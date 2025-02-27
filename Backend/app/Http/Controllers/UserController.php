@@ -87,4 +87,15 @@ class UserController extends Controller
             'message' => 'Votre compte a été supprimé avec succès.'
         ], 200);
     }
+
+    public function showAllUsers(Request $request)
+    {
+        $per_page = $request->get('per_page', 4);
+        $users = User::paginate($per_page);
+        return response()->json([
+            'status' => 'success',
+            'data' => $users
+        ], 200);
+    }
+
 }

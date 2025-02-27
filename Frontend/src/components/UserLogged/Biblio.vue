@@ -13,51 +13,18 @@ export default {
 <template>
     <div class="content-page">
         <section class="popular-books">
-            <div class="users">
-                <a href="/user/1/create"class="user">
-                    <img src="../../../public/cover 1.jpg" alt="">
-                    <div class="">
-                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
-                        <span><b>255</b> abonnés</span>
-                    </div>
-                </a>
-                <a href="/user" class="user">
-                    <img src="../../../public/cover 1.jpg" alt="">
-                    <div class="">
-                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
-                        <span><b>255</b> abonnés</span>
-                    </div>
-                </a>
-                <a href="/user"class="user">
-                    <img src="../../../public/cover 1.jpg" alt="">
-                    <div class="">
-                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
-                        <span><b>255</b> abonnés</span>
-                    </div>
-                </a>
-                <a href="/user" class="user">
-                    <img src="../../../public/cover 1.jpg" alt="">
-                    <div class="">
-                        <h1>Cristophe</h1>
-                        <span><b>255</b> abonnés</span>
-                    </div>
-                </a>
-                <a href="/user" class="user">
-                    <img src="../../../public/cover 1.jpg" alt="">
-                    <div class="">
-                        <h1>Cristophe</h1>
-                        <span><b>255</b> abonnés</span>
-                    </div>
-                </a>
-                <a href="/user" class="user">
-                    <img src="../../../public/cover 1.jpg" alt="">
-                    <div class="">
-                        <h1>Cristophe <img src="../../../public/icons/badge.png" alt=""></h1>
-                        <span><b>255</b> abonnés</span>
-                    </div>
-                </a>
+            <div class="" v-if="users && users.length != 0">
+                <div class="users">
+                    <a href="/user/1/create" class="user" v-for="(user, index) in users" :key="index">
+                        <img src="../../../public/cover 1.jpg" alt="">
+                        <div class="">
+                            <h1>{{ user.name }}<img src="../../../public/icons/badge.png" alt=""></h1>
+                            <span><b>255</b> abonnés</span>
+                        </div>
+                    </a>
+                </div>
+                <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
             </div>
-            <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
         </section>
 
         <section class="popular-books">

@@ -30,6 +30,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::post('/google-login', [AuthController::class, 'googleLogin']);
 
 Route::get('/user', [UserController::class, 'userInfo'])->middleware('auth:sanctum');
+Route::get('/users', [UserController::class, 'showAllUsers']);
 Route::get('/users/{id}', [UserController::class, 'show']);
 Route::put('/user-update', [UserController::class, 'updateCurrentUser'])->middleware('auth:sanctum');
 Route::delete('/user-delete', [UserController::class, 'deleteCurrentUser'])->middleware('auth:sanctum');
