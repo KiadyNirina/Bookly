@@ -204,8 +204,8 @@ export default {
                             <p v-html="truncateText((bk.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
-                                <a href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>
-                                <a href="#download" class="actionButton"><img src="../../../../public/icons/supprimer.png" alt=""></a>
+                                <a v-if="bk.posted_by.name === user.name" href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>
+                                <a v-if="bk.posted_by.name === user.name" href="#download" class="actionButton"><img src="../../../../public/icons/supprimer.png" alt=""></a>
                                 <a href="#download" class="actionButton"><img src="../../../../public/icons/partager.png" alt=""></a>
                             </div>
                         </div>
