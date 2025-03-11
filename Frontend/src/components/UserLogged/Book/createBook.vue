@@ -46,7 +46,13 @@ export default {
       }
 
       if (type === 'picture') {
+        const allowedImageFormats = ['image/jpeg', 'image/png'];
+        if (!allowedImageFormats.includes(file.type)) {
+          this.showError('Format de fichier image non valide. Veuillez sélectionner un fichier JPEG ou PNG.');
+          return;
+        }
         this.picture = file;
+        document.getElementById('file-name-picture').textContent = file.name;
       } else if (type === 'file') {
         const allowedFormats = ['application/pdf', 'application/msword'];
         if (!allowedFormats.includes(file.type)) {
@@ -54,6 +60,7 @@ export default {
           return;
         }
         this.file = file;
+        document.getElementById('file-name-file').textContent = file.name;
       }
     },
 
@@ -149,18 +156,27 @@ export default {
         <div class="form">
           <div class="file">
             <div class="file1">
-              <label>Photo de couverture :</label>
-              <input type="file" @change="handleFileChange($event, 'picture')" />
+              <label for="file-upload-picture" class="custom-file-upload">Photo de couverture :</label>
+              <span class="file-name" id="file-name-picture">Aucun fichier choisi</span>
+              <input id="file-upload-picture" type="file" @change="handleFileChange($event, 'picture')" />
             </div>
             <div class="file1">
-              <label>Fichier numérique (pdf, doc) :</label>
-              <input type="file" @change="handleFileChange($event, 'file')" />
+              <label for="file-upload-file" class="custom-file-upload">Fichier numérique (pdf, doc) :</label>
+              <span class="file-name" id="file-name-file">Aucun fichier choisi</span>
+              <input id="file-upload-file" type="file" @change="handleFileChange($event, 'file')" />
             </div>
           </div>
           <div class="input">
+            <label for="">Titre :</label>
             <input type="text" v-model="title" placeholder="Titre" />
+
+            <label for="">Auteur :</label>
             <input type="text" v-model="author" placeholder="Auteur" />
+
+            <label for="">Description :</label>
             <textarea v-model="description" placeholder="Description"></textarea>
+
+            <label for="">Genre :</label>
             <select v-model="genre">
               <option value="" disabled>Selectionnez le genre</option>
               <option value="action">Action</option>
@@ -170,8 +186,14 @@ export default {
               <option value="autre">Autre</option>
             </select>
             <div class="nbr">
-              <input type="text" v-model="lang" placeholder="Langue" />
-              <input type="number" v-model="page" placeholder="Nombre de pages" />
+              <div class="">
+                <label for="">Langue :</label>
+                <input type="text" v-model="lang" placeholder="Langue" />
+              </div>
+              <div class="">
+                <label for="">Page :</label>
+                <input type="number" v-model="page" placeholder="Nombre de pages" />
+              </div>
             </div>
           </div>
         </div>
@@ -219,11 +241,11 @@ export default {
   background: #060818;
   padding: 20px;
   border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 0px 15px rgba(255, 255, 255, 0.192);
+  box-shadow: 0 0px 15px rgba(255, 255, 255, 0.087);
   color: white;
   opacity: 0;
   animation: slideDown 0.3s forwards;
+  max-width: 70%;
 }
 
 .popup-content.closing {
@@ -232,23 +254,35 @@ export default {
 
 .form{
   display: flex;
-  border: 1px solid rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(255, 255, 255, 0.065);
   padding: 10px;
   border-radius: 10px;
   align-items: center;
 }
 
 .form .file .file1 input{
-  border-radius: 10px;
-  display: block;
-  width: 100%;
-  margin: 3px;
-  color: white;
+  display: none;
 }
 
-.form .file .file1 input:hover{
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.155);
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.custom-file-upload:hover {
+    background-color: #0056b3;
+}
+
+.file-name {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #575757;
 }
 
 .form .file .file1 {
@@ -264,20 +298,27 @@ export default {
 }
 
 .form .input input, .form .input select, .form .input textarea {
-  width: 100%;
-  padding: 0px;
+  width: calc(100% - 15px);
+  padding-left: 10px;
   height: 40px;
   margin: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.085);
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.048);
   border-radius: 10px;
   background-color: transparent;
   color: white;
-  text-align: center;
+  font-family: 'Poppins';
 }
 
 .form .input textarea{
   height: 100px;
   text-align: start;
+}
+
+.form .input label {
+  color: rgb(219, 219, 219);
+  margin-left: 3px;
 }
 
 .form .input .nbr{
@@ -295,6 +336,7 @@ button {
   padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
+  font-family: 'Poppins';
 }
 
 button:hover {
