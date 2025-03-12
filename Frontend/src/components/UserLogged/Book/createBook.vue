@@ -87,6 +87,11 @@ export default {
         return;
       }
 
+      if (!this.file) {
+        this.showError('Veuillez importer le livre version numérique.');
+        return;
+      }
+
       this.isLoading = true;
 
       const formData = new FormData();

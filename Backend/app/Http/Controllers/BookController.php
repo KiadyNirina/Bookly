@@ -20,7 +20,7 @@ class BookController extends Controller
             'page' => 'required|integer',
             'date' => 'nullable|date',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'file' => 'nullable|file|mimes:pdf,doc,docx',
+            'file' => 'required|file|mimes:pdf,doc,docx',
         ]);
 
         if ($request->hasFile('picture')) {

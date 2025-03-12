@@ -67,7 +67,7 @@ export default {
                                 </div>
                                 </div>
                                 <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
-                                <p id="type">Fiction</p>
+                                <p id="type">{{ book.genre }}</p>
                                 <div class="book-info">
                                     <h3>{{ book.title }}</h3>
                                     <p>{{ book.author }}</p>
