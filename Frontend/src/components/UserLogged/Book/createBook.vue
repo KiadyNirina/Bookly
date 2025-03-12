@@ -186,11 +186,11 @@ export default {
               <option value="autre">Autre</option>
             </select>
             <div class="nbr">
-              <div class="">
+              <div class="nbr1">
                 <label for="">Langue :</label>
                 <input type="text" v-model="lang" placeholder="Langue" />
               </div>
-              <div class="">
+              <div class="nbr1">
                 <label for="">Page :</label>
                 <input type="number" v-model="page" placeholder="Nombre de pages" />
               </div>
@@ -323,6 +323,12 @@ export default {
 
 .form .input .nbr{
   display: flex;
+  width: 100%;
+}
+
+.form .input .nbr .nbr1 {
+  width: 50%;
+  margin-right: 5px;
 }
 
 .form .input option {

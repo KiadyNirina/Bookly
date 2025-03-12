@@ -139,11 +139,11 @@ export default {
     text-decoration: none;
     color: white;
     padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.397);
+    border: 1px solid rgba(255, 255, 255, 0.212);
     border-radius: 20px;
     transition: 0.5s;
 }
 .content-page .tri a:hover{
-    background-color: rgba(255, 255, 255, 0.235);
+    background-color: rgba(255, 255, 255, 0.123);
 }
 </style>

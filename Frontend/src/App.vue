@@ -114,9 +114,9 @@ export default {
 .search input{
     width: 100%;
     height: auto;
-    border: 1px solid rgba(255, 255, 255, 0.267);
+    border: none;
     border-radius: 20px;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.053);
     padding: 15px;
     color: white;
     transition: 0.3s;
