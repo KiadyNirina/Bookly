@@ -13,12 +13,14 @@ import Saved from '@/components/UserLogged/Profil/Saved.vue';
 import Create from '@/components/UserLogged/Profil/Create.vue';
 import Posted from '@/components/books/Posted.vue';
 import Recent from '@/components/books/Recent.vue';
+import BookReader from '@/components/books/BookReader.vue';
 
 const routes = [
     { path: '/', component: Home },
     { path: '/books', component: Books },
     { path: '/books/popular', component: Popular },
     { path: '/books/:id', component: Detail},
+    { path: '/book/:id/file', component: BookReader, props: true },
     { path: '/books/posted', component: Posted },
     { path: '/books/recent', component: Recent },
     { path: '/login', component: Login },

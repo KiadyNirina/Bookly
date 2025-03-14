@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 class BookController extends Controller
 {
@@ -173,5 +175,25 @@ class BookController extends Controller
             'status' => 'success',
             'data' => $books
         ], 200);
+    }
+
+    public function getFile($id)
+    {
+        // Trouver le livre
+        $book = Book::find($id);
+        
+        if (!$book || !$book->file) {
+            return response()->json(['error' => 'Fichier introuvable'], 404);
+        }
+
+        // Construire le chemin du fichier
+        $filePath = storage_path("app/public/" . $book->file);
+
+        // Vérifier si le fichier existe
+        if (!file_exists($filePath)) {
+            throw new FileNotFoundException("Le fichier n'existe pas : $filePath");
+        }
+
+        return response()->file($filePath);
     }
 }

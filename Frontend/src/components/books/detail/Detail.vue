@@ -117,7 +117,7 @@ export default {
                         <h2>Description</h2>
                         <p v-html="book.description.replace(/\n/g, '<br>')"></p>
                         <div class="action">
-                            <a href="#save"><img src="../../../../public/icons/livres.png" alt="">Lire</a>
+                            <router-link :to="`/books/${book.id}/file`"><img src="../../../../public/icons/livres.png" alt="">Lire</router-link>
                             <a href="#save"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
                             <a href="#download"><img src="../../../../public/icons/download.png" alt="">Télécharger</a>
                             <a href="#download"><img src="../../../../public/icons/partager.png" alt="">Partager</a>
