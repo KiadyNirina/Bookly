@@ -36,6 +36,7 @@ export default {
         this.isClosing = false;
         this.$emit('close');
       }, 300); 
+      window.location.reload();
     },
   },
 };
