@@ -1,5 +1,6 @@
 <script>
 import api from '@/api';
+import FollowButton from './FollowButton.vue';
 
 export default {
     data() {
@@ -58,9 +59,7 @@ export default {
             <p><b>1k</b> suivi(e)s</p>
             <p><b>0</b> abonnements</p>
         </div>
-        <div class="button">
-            <button>S'abonner</button>
-        </div>
+        <FollowButton v-if="userOne" :userId="userOne.id" />
         <div class="section">
             <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créées</a>
             <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
