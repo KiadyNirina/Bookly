@@ -20,7 +20,8 @@ export default {
             try {
                 const idUser = this.$route.params.id;
                 const response = await api.getOneUser(idUser);
-                this.userOne = response.data;
+                this.userOne = response.data.data;
+                console.log("Utilisateur récupéré :", this.userOne);
             } catch (error) {
                 console.error("Erreur de récupération des données de l'utilisateur :", error);
             }

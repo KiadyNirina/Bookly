@@ -179,21 +179,17 @@ class BookController extends Controller
 
     public function getFile($id)
     {
-        // Trouver le livre
-        $book = Book::find($id);
-        
-        if (!$book || !$book->file) {
-            return response()->json(['error' => 'Fichier introuvable'], 404);
-        }
+        $book = Book::findOrFail($id);
 
-        // Construire le chemin du fichier
-        $filePath = storage_path("app/public/" . $book->file);
+        $filePath = storage_path('app/public/' . $book->file);
 
-        // Vérifier si le fichier existe
         if (!file_exists($filePath)) {
-            throw new FileNotFoundException("Le fichier n'existe pas : $filePath");
+            return response()->json(['error' => 'File not found'], 404);
         }
 
-        return response()->file($filePath);
+        return response()->file($filePath, [
+            'Content-Type' => 'application/epub+zip',
+            'Access-Control-Allow-Origin' => 'http://localhost:5173',
+        ]);
     }
 }
