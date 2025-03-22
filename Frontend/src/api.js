@@ -163,5 +163,23 @@ export default {
      */
     unfollowUser(id) {
         return apiClient.post(`/users/${id}/unfollow`);
+    },
+
+    /**
+     * Nombre de suivi d'un utilisateur
+     * @param {Number} id - Id de l'utilisateur
+     * @returns {Promise}
+     */
+    followersCount(id) {
+        return apiClient.get(`/users/${id}/followers/count`);
+    },
+
+    /**
+     * Nombre d'abonnement d'un utilisateur
+     * @param {Number} id - Id de l'utilisateur
+     * @returns {Promise}
+     */
+    followingCount(id) {
+        return apiClient.get(`/users/${id}/following/count`);
     }
 };

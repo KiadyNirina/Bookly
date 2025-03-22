@@ -6,6 +6,8 @@ export default {
     data() {
         return {
             userOne: null,
+            FollowersCount: null,
+            FollowingCount: null,
             userSelectedBooks: [],
             currentPageUserSelected: 1,
             lastPageUserSelected: 1,
@@ -40,6 +42,24 @@ export default {
                 console.error("Erreur de récupération des livres de l'utilisateur sélectionné :", error.message);
             }
         },
+        async getFollowersNumber() {
+            try {
+                const idUser = this.$route.params.id;
+                const response = await api.followersCount(idUser);
+                this.FollowersCount = response.data;
+            } catch (error) {
+                console.error("Erreur lors de récupération de nombre de suivi");
+            }
+        },
+        async getFollowingNumber() {
+            try {
+                const idUser = this.$route.params.id;
+                const response = await api.followingCount(idUser);
+                this.FollowingCount = response.data;
+            } catch (error) {
+                console.error("Erreur lors de récupération de nombre de suivi");
+            }
+        },
         getImageUrl(imagePath) {
             return imagePath ? `/uploads/${imagePath}` : this.defaultImg;
         },
@@ -50,6 +70,8 @@ export default {
     created() {
         this.getUserOne();
         this.getSelectedUserBooks();
+        this.getFollowersNumber();
+        this.getFollowingNumber();
     }
 };
 </script>
@@ -59,8 +81,8 @@ export default {
         <h1 id="pdp">K</h1>
         <h1>{{ userOne.name }}</h1>
         <div class="followers">
-            <p><b>1k</b> suivi(e)s</p>
-            <p><b>0</b> abonnements</p>
+            <p><b>{{ FollowersCount }}</b> suivi(e)s</p>
+            <p><b>{{ FollowingCount }}</b> abonnements</p>
         </div>
         <FollowButton v-if="userOne" :userId="userOne.id" />
         <div class="section">
@@ -116,7 +138,7 @@ export default {
         <h1 id="pdp">K</h1>
         <h1>Chargement...</h1>
         <div class="followers">
-            <p><b>1k</b> suivi(e)s</p>
+            <p><b>0</b> suivi(e)s</p>
             <p><b>0</b> abonnements</p>
         </div>
         <div class="button">

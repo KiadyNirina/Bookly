@@ -43,4 +43,14 @@ class FollowerController extends Controller
     public function following(User $user) {
         return response()->json($user->following()->get());
     }
+
+    // Nombre des followers d'un user
+    public function followersCount(User $user) {
+        return response()->json($user->followers()->get()->count());
+    }
+
+    // Nombre des personnes suivies par un utilisateur
+    public function followingCount(User $user) {
+        return response()->json($user->following()->get()->count());
+    }
 }
