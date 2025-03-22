@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, defineProps } from "vue";
-import apiClient from "@/api";
-
+import api from "@/api";
 const props = defineProps({
     userId: Number, // L'ID de l'utilisateur à suivre
 });
@@ -11,9 +10,9 @@ const isFollowing = ref(false);
 // Vérifier si l'utilisateur connecté suit déjà l'utilisateur cible
 const checkFollowStatus = async () => {
     try {
-        const response = await apiClient.get(`/users/${props.userId}/is-following`);
+        const response = await api.checkFollow(props.userId);
         isFollowing.value = response.data.isFollowing;
-        console.log("Suivre : ".isFollowing)
+        console.log("Suivi vérifié :", isFollowing.value);
     } catch (error) {
         console.error("Erreur lors de la vérification du suivi", error);
     }
@@ -23,11 +22,14 @@ const checkFollowStatus = async () => {
 const toggleFollow = async () => {
     try {
         if (isFollowing.value) {
-            await apiClient.post(`/users/${props.userId}/unfollow`);
+            await api.unfollowUser(props.userId);
+            isFollowing.value = false;
+            console.log("Désabonné");
         } else {
-            await apiClient.post(`/users/${props.userId}/follow`);
+            await api.followUser(props.userId);
+            isFollowing.value = true;
+            console.log("Abonné");
         }
-        isFollowing.value = !isFollowing.value; // Inverser l'état
     } catch (error) {
         console.error("Erreur lors du suivi/désabonnement", error);
     }
@@ -37,11 +39,36 @@ onMounted(checkFollowStatus);
 </script>
 
 <template>
-    <button
-        @click="toggleFollow"
-        :class="isFollowing ? 'bg-red-500' : 'bg-blue-500'"
-        class="px-4 py-2 text-white rounded"
-    >
-        {{ isFollowing ? "Se désabonner" : "Suivre" }}
-    </button>
+    <div class="button">
+        <button
+            @click="toggleFollow"
+            :id="isFollowing ? 'isFollow' : 'isNotFollow'"
+        >
+            {{ isFollowing ? "Se désabonner" : "S'abonner" }}
+        </button>
+    </div>
 </template>
+
+<style>
+#isFollow{
+    background: rgba(255, 255, 255, 0.253);
+}
+
+#isFollow:hover {
+    background: rgb(128, 128, 128);
+    cursor: pointer;
+}
+
+#isNotFollow {
+    background-color: #E67E22;
+    border: 2px solid #E67E22;
+    border-radius: 30px;
+    transition: 0.5s;
+}
+
+#isNotFollow:hover {
+    background-color: transparent;
+    color: #E67E22;
+    cursor: pointer;
+}
+</style>

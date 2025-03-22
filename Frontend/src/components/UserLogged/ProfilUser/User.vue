@@ -13,6 +13,9 @@ export default {
             defaultImg: '/path/to/default/image.jpg', // À remplacer par une image par défaut
         }
     },
+    components: {
+        FollowButton,
+    },
     methods: {
         isActive(route) {
             return this.$route.path === route;
@@ -162,26 +165,6 @@ export default {
 .followers p{
     color: white;
     margin: 10px;
-}
-.button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.button button, .button a {
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.253);
-    text-decoration: none;
-    color: white;
-    padding: 15px;
-    border-radius: 30px;
-    border: none;
-    margin: 5px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-.button button:hover, .button a:hover{
-    background: rgb(128, 128, 128);
-    cursor: pointer;
 }
 .section{
     display: flex;

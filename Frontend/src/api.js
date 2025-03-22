@@ -137,4 +137,31 @@ export default {
     validateGoogleToken(token) {
         return apiClient.post('/google-login', { token });
     },
+
+    /**
+     * Vérification de suivi d'un utilisateur
+     * @param {Number} id - Id de l'utilisateur
+     * @returns {Promise}
+     */
+    checkFollow(id) {
+        return apiClient.get(`/users/${id}/is-following`);
+    },
+
+    /**
+     * Suivre un utilisateur
+     * @param {Number} id - Id de l'utilisateur
+     * @returns {Promise}
+     */
+    followUser(id) {
+        return apiClient.post(`/users/${id}/follow`);
+    },
+
+    /**
+     * Désabonner un utilisateur
+     * @param {Number} id - Id de l'utilisateur
+     * @returns {Promise}
+     */
+    unfollowUser(id) {
+        return apiClient.post(`/users/${id}/unfollow`);
+    }
 };
