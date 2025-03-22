@@ -88,6 +88,24 @@ export default {
     },
 
     /**
+     * Suppression d'un livre
+     * @param {Number} id - Id du livre
+     * @returns {Promise}
+     */
+    bookDelete(id) {
+        return apiClient.delete(`/deleteBook/${id}`);
+    },
+
+    /**
+     * Récupération d'un livre
+     * @param {Number} id - Id du livre
+     * @returns {Promise}
+     */
+    getOneBook(id) {
+        return apiClient.get(`/books/${id}`);
+    },
+
+    /**
      * Récupération des livres de l'utilisateur connecté
      * @param {Number} page - Numéro de la page
      * @param {Number} perPage - Nombre d'éléments par page

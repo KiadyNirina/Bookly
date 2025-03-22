@@ -1,6 +1,6 @@
 <script>
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import api from '@/api';
 import userMixin from '@/mixins/userMixin';
 
 export default {
@@ -21,11 +21,20 @@ export default {
         async fetchBook() {
             try {
                 const bookId = this.$route.params.id;
-                const response = await axios.get(`http://localhost:8000/api/books/${bookId}`);
+                const response = await api.getOneBook(bookId);
                 this.book = response.data.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du livre :", error);
                 this.book = null;
+            }
+        },
+        async deleteBook(bookId) {
+            try {
+                await api.bookDelete(bookId);
+                this.books = this.books.filter(bk => bk.id !== bookId);
+                console.log('Livre supprimé avec succès');
+            } catch (error) {
+                console.error('Erreur lors de la suppression du livre', error);
             }
         },
         hoverStar(star) {
@@ -205,7 +214,7 @@ export default {
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
                                 <a v-if="user && bk.posted_by.name === user.name" href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>
-                                <a v-if="user && bk.posted_by.name === user.name" href="#download" class="actionButton"><img src="../../../../public/icons/supprimer.png" alt=""></a>
+                                <a v-if="user && bk.posted_by.name === user.name" href="#delete" @click="deleteBook(bk.id)" class="actionButton"><img src="../../../../public/icons/supprimer.png" alt=""></a>
                                 <a href="#download" class="actionButton"><img src="../../../../public/icons/partager.png" alt=""></a>
                             </div>
                         </div>
