@@ -92,10 +92,13 @@ export default {
                 <h1>Se connecter</h1>
                 <p v-if="errorMess" id="error">{{ errorMess }}</p>
                 <form @submit.prevent="login" action="">
+                    <label id="label" for="">Email :</label>
                     <input 
                         type="text" 
                         v-model="email" 
                         placeholder="Entrer votre email">
+
+                    <label id="label" for="">Mot de passe :</label>
                     <input name=""
                         :type="isPasswordVisible ? 'text' : 'password'"
                         id="password"
@@ -162,7 +165,7 @@ export default {
     margin-bottom: 50px;
 }
 .content-login .form-login .sect2 form {
-    width: 90%;
+    width: 80%;
 }
 .content-login .form-login .sect2 form input[type='text'], .content-login .form-login .sect2 form input[type='password']{
     width: 100%;
@@ -232,7 +235,7 @@ export default {
     justify-content: center;
 }
 #google-signin-button {
-    width: 100%; 
+    width: 90%; 
 }
 #passwordForgot{
     text-decoration: none;

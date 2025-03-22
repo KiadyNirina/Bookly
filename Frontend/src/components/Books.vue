@@ -105,7 +105,7 @@
                 <p>Pas de livre disponible pour le moment</p>
             </div>
 
-            <a v-if="books.length > 0" href="" id="seeMore">Voir plus</a>
+            <a v-if="books.length > 0" :href="`/books/recent`" id="seeMore">Voir plus</a>
 
         </section>
     </div>
