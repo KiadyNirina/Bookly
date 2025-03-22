@@ -30,14 +30,25 @@ export default {
         },
         async deleteBook(bookId) {
             try {
-                await api.bookDelete(bookId);
-                this.books = this.books.filter(bk => bk.id !== bookId);
-                Swal.fire({
-                    title: 'Supprimé !',
-                    text: 'Le livre a été supprimé avec succès.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
+                const result = await Swal.fire({
+                    title: 'Êtes-vous sûr ?',
+                    text: 'Cette action supprimera définitivement le livre.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler',
                 });
+
+                if (result.isConfirmed) {
+                    await api.bookDelete(bookId);
+                    this.books = this.books.filter(bk => bk.id !== bookId);
+                    Swal.fire({
+                        title: 'Supprimé !',
+                        text: 'Le livre a été supprimé avec succès.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    });
+                }
             } catch (error) {
                 console.error('Erreur lors de la suppression du livre', error);
                 Swal.fire({
