@@ -1,45 +1,37 @@
 <script>
-import api from '@/api';
+import { ref } from "vue";
+import { useAuth } from "@/composables/useAuth";
+import { useRouter } from "vue-router";
 
 export default {
-    data() {
-        return {
-            name: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            errorMessage: '',
-            hasError: false,
-            isLoading: false
-        };
-    },
-    methods: {
-        async signup() {
-            if (this.password !== this.confirmPassword) {
-                this.errorMessage = "Les mots de passe ne correspondent pas.";
-                this.hasError = true;
+    setup() {
+        const name = ref("");
+        const email = ref("");
+        const password = ref("");
+        const confirmPassword = ref("");
+        const router = useRouter();
+        const { signup, errorMess, isLoading, hasError } = useAuth();
+
+        const handleSignup = async () => {
+            if (password.value !== confirmPassword.value) {
+                errorMess.value = "Les mots de passe ne correspondent pas.";
+                hasError.value = true;
                 return;
             }
 
-            this.isLoading = true;
+            await signup({
+                name: name.value,
+                email: email.value,
+                password: password.value,
+                password_confirmation: confirmPassword.value
+            });
 
-            try {
-                const response = await api.register({
-                    name: this.name,
-                    email: this.email,
-                    password: this.password,
-                    password_confirmation: this.confirmPassword
-                });
-                this.$router.push('/welcome'); 
-                this.hasError = false;
-                this.errorMessage = '';
-            } catch (error) {
-                this.errorMessage = "Une erreur est survenue lors de l'inscription.";
-                this.hasError = true;
-            } finally {
-                this.isLoading = false; 
+            if (!hasError.value) {
+                router.push("/welcome");
             }
-        }
+        };
+
+        return { name, email, password, confirmPassword, handleSignup, errorMess, isLoading, hasError };
     }
 };
 </script>
@@ -48,37 +40,22 @@ export default {
     <div class="content-login">
         <div class="form-login">
             <img src="../../public/giphy_book (4).gif" alt="">
-            <div :class="['sect2', {'error-border' : hasError}]">
+            <div :class="['sect2', { 'error-border': hasError }]">
                 <h1>S'inscrire</h1>
-                <p id="error" v-if="errorMessage">{{ errorMessage }}</p>
-                <form  @submit.prevent="signup" action="">
-                    <label id="label" for="">Nom :</label>
-                    <input 
-                        type="text" 
-                        v-model="name"
-                        placeholder="Entrer votre nom d'utilisateur">
+                <p id="error" v-if="errorMess">{{ errorMess }}</p>
+                <form @submit.prevent="handleSignup">
+                    <label id="label">Nom :</label>
+                    <input type="text" v-model="name" placeholder="Entrer votre nom d'utilisateur">
 
-                    <label id="label" for="">Email :</label>
-                    <input 
-                        type="text" 
-                        v-model="email"
-                        placeholder="Entrer votre email">
+                    <label id="label">Email :</label>
+                    <input type="text" v-model="email" placeholder="Entrer votre email">
 
-                    <label id="label" for="">Mot de passe :</label>
+                    <label id="label">Mot de passe :</label>
                     <div class="double">
-                        <input name=""
-                            type='password'
-                            class="password"
-                            v-model="password"
-                            placeholder="Entrez votre mot de passe">
-                        
-                        <input name=""
-                            type='password'
-                            v-model="confirmPassword"
-                            class="password"
-                            placeholder="Confirmer votre mot de passe">
+                        <input type="password" class="password" v-model="password" placeholder="Entrez votre mot de passe">
+                        <input type="password" class="password" v-model="confirmPassword" placeholder="Confirmer votre mot de passe">
                     </div><br>
-                    
+
                     <button v-if="isLoading" disabled>Loading...</button>
                     <button v-else>S'inscrire</button>
                 </form>

@@ -1,81 +1,80 @@
 <script>
-import CreateBook from '../Book/createBook.vue';
-import api from '@/api';
-import userMixin from '@/mixins/userMixin';
+// import CreateBook from '../Book/createBook.vue';
+// import api from '@/api';
+// import userMixin from '@/mixins/userMixin';
 
-export default {
-    mixins: [userMixin],
-    components: { 
-        CreateBook,
-    },
-    data() {
-        return {
-            popupVisible: false,
-            followers: null,
-            following: null,
-            user: null,
-        }
-    },
-    methods: {
-        isActive(route) {
-            return this.$route.path === route;
-        },
-        create() {
-            this.popupVisible = true; // Affiche le popup
-        },
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        },
-        async getFollowersCount() {
-            try{
-                if(this.user){
-                    const response = await api.followersCount(this.user.id);
-                    this.followers = response.data;
-                    if(this.followers > 999) {
-                        this.followers = Math.floor(this.followers / 1000) + 'k'; // Convertit en milliers
-                    }
-                }
-            } catch (error) {
-                console.error("Erreur lors de la récupération du nombre de followers", error);
-            }
-        },
-        async getFollowingCount() {
-            try {
-                if(this.user) {
-                    const response = await api.followingCount(this.user.id);
-                    this.following = response.data;
-                    if(this.following > 999) {
-                        this.following = Math.floor(this.following / 1000) + 'k'; // Convertit en milliers
-                    }
-                }
-            } catch (error) {
-                console.error("Erreur lors de la récupération du nombre de following", error);
-            }
-        },
-    },
-    async created() {
-        await this.$nextTick();
-        await this.getFollowersCount();
-        await this.getFollowingCount();
-    },
-    watch: {
-        // On surveille les changements de user
-        'user'(newVal) {
-            if(newVal) {
-                this.getFollowersCount();
-                this.getFollowingCount();
-            }
-        },
-    }
-};
+// export default {
+//     mixins: [userMixin],
+//     components: { 
+//         CreateBook,
+//     },
+//     data() {
+//         return {
+//             popupVisible: false,
+//             followers: null,
+//             following: null,
+//             user: null,
+//         }
+//     },
+//     methods: {
+//         isActive(route) {
+//             return this.$route.path === route;
+//         },
+//         create() {
+//             this.popupVisible = true; // Affiche le popup
+//         },
+//         formatDate(dateString) {
+//             const options = { day: '2-digit', month: 'long', year: 'numeric' };
+//             const date = new Date(dateString);
+//             return date.toLocaleDateString('fr-FR', options);
+//         },
+//         async getFollowersCount() {
+//             try{
+//                 if(this.user){
+//                     const response = await api.followersCount(this.user.id);
+//                     this.followers = response.data;
+//                     if(this.followers > 999) {
+//                         this.followers = Math.floor(this.followers / 1000) + 'k'; // Convertit en milliers
+//                     }
+//                 }
+//             } catch (error) {
+//                 console.error("Erreur lors de la récupération du nombre de followers", error);
+//             }
+//         },
+//         async getFollowingCount() {
+//             try {
+//                 if(this.user) {
+//                     const response = await api.followingCount(this.user.id);
+//                     this.following = response.data;
+//                     if(this.following > 999) {
+//                         this.following = Math.floor(this.following / 1000) + 'k'; // Convertit en milliers
+//                     }
+//                 }
+//             } catch (error) {
+//                 console.error("Erreur lors de la récupération du nombre de following", error);
+//             }
+//         },
+//     },
+//     async created() {
+//         await this.$nextTick();
+//         await this.getFollowersCount();
+//         await this.getFollowingCount();
+//     },
+//     watch: {
+//         // On surveille les changements de user
+//         'user'(newVal) {
+//             if(newVal) {
+//                 this.getFollowersCount();
+//                 this.getFollowingCount();
+//             }
+//         },
+//     }
+// };
 </script>
 
 <template>
-    <div class="profil">
+    <!-- <div class="profil">
         <h1 id="pdp">K</h1>
-        <!-- <img src="../../../public/icons/user.png" alt=""> -->
             <h1>{{ user?.name || 'Chargement...' }}</h1>
             <div class="followers">
                 <p><b>{{ followers ?? 0 }}</b> suivi(e)s</p>
@@ -146,7 +145,7 @@ export default {
                 :visible="popupVisible"
                 @close="popupVisible = false"
             /> 
-    </div>
+    </div> -->
     
 </template>
 

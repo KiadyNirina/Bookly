@@ -1,52 +1,52 @@
 <script setup>
-import { ref, onMounted, defineProps } from "vue";
-import api from "@/api";
-const props = defineProps({
-    userId: Number, // L'ID de l'utilisateur à suivre
-});
+// import { ref, onMounted, defineProps } from "vue";
+// import api from "@/api";
+// const props = defineProps({
+//     userId: Number, // L'ID de l'utilisateur à suivre
+// });
 
-const isFollowing = ref(false);
+// const isFollowing = ref(false);
 
-// Vérifier si l'utilisateur connecté suit déjà l'utilisateur cible
-const checkFollowStatus = async () => {
-    try {
-        const response = await api.checkFollow(props.userId);
-        isFollowing.value = response.data.isFollowing;
-        console.log("Suivi vérifié :", isFollowing.value);
-    } catch (error) {
-        console.error("Erreur lors de la vérification du suivi", error);
-    }
-};
+// // Vérifier si l'utilisateur connecté suit déjà l'utilisateur cible
+// const checkFollowStatus = async () => {
+//     try {
+//         const response = await api.checkFollow(props.userId);
+//         isFollowing.value = response.data.isFollowing;
+//         console.log("Suivi vérifié :", isFollowing.value);
+//     } catch (error) {
+//         console.error("Erreur lors de la vérification du suivi", error);
+//     }
+// };
 
-// Suivre ou se désabonner d'un utilisateur
-const toggleFollow = async () => {
-    try {
-        if (isFollowing.value) {
-            await api.unfollowUser(props.userId);
-            isFollowing.value = false;
-            console.log("Désabonné");
-        } else {
-            await api.followUser(props.userId);
-            isFollowing.value = true;
-            console.log("Abonné");
-        }
-    } catch (error) {
-        console.error("Erreur lors du suivi/désabonnement", error);
-    }
-};
+// // Suivre ou se désabonner d'un utilisateur
+// const toggleFollow = async () => {
+//     try {
+//         if (isFollowing.value) {
+//             await api.unfollowUser(props.userId);
+//             isFollowing.value = false;
+//             console.log("Désabonné");
+//         } else {
+//             await api.followUser(props.userId);
+//             isFollowing.value = true;
+//             console.log("Abonné");
+//         }
+//     } catch (error) {
+//         console.error("Erreur lors du suivi/désabonnement", error);
+//     }
+// };
 
-onMounted(checkFollowStatus);
+// onMounted(checkFollowStatus);
 </script>
 
 <template>
-    <div class="button">
+    <!-- <div class="button">
         <button
             @click="toggleFollow"
             :id="isFollowing ? 'isFollow' : 'isNotFollow'"
         >
             {{ isFollowing ? "Se désabonner" : "S'abonner" }}
         </button>
-    </div>
+    </div> -->
 </template>
 
 <style>

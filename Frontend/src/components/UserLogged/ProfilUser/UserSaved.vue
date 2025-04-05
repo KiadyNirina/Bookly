@@ -1,36 +1,35 @@
 <script>
-import api from '@/api';
+// import api from '@/api';
 
-export default {
-    data() {
-        return {
-            userOne: null,
-        }
-    },
-    methods: {
-        isActive(route) {
-            return this.$route.path === route;
-        },
-        async getUserOne() {
-            try {
-                const idUser = this.$route.params.id;
-                const response = await api.getOneUser(idUser);
-                this.userOne = response.data;
-            } catch (error) {
-                console.error("Erreur de récupération de donnée de l utilisateur :",error);
-            }
-        },
-    },
-    created() {
-        this.getUserOne();
-    }
-};
+// export default {
+//     data() {
+//         return {
+//             userOne: null,
+//         }
+//     },
+//     methods: {
+//         isActive(route) {
+//             return this.$route.path === route;
+//         },
+//         async getUserOne() {
+//             try {
+//                 const idUser = this.$route.params.id;
+//                 const response = await api.getOneUser(idUser);
+//                 this.userOne = response.data;
+//             } catch (error) {
+//                 console.error("Erreur de récupération de donnée de l utilisateur :",error);
+//             }
+//         },
+//     },
+//     created() {
+//         this.getUserOne();
+//     }
+// };
 </script>
 
 <template>
-    <div v-if="userOne" class="profil">
+    <!-- <div v-if="userOne" class="profil">
         <h1 id="pdp">K</h1>
-        <!-- <img src="../../../public/icons/user.png" alt=""> -->
             <h1>{{ userOne.data.name }}</h1>
             <div class="followers">
                 <p><b>1k</b> suivi(e)s</p>
@@ -49,7 +48,6 @@ export default {
     </div>
     <div v-else class="profil">
         <h1 id="pdp">K</h1>
-        <!-- <img src="../../../public/icons/user.png" alt=""> -->
             <h1>Chargement...</h1>
             <div class="followers">
                 <p><b>1k</b> suivi(e)s</p>
@@ -58,7 +56,7 @@ export default {
             <div class="button">
                 <button>S'abonner</button>
             </div>
-    </div>
+    </div> -->
 </template>
 
 <style>

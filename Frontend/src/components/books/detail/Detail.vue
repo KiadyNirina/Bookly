@@ -1,90 +1,107 @@
 <script>
-import Swal from 'sweetalert2';
-import api from '@/api';
-import userMixin from '@/mixins/userMixin';
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useBook } from '@/composables/useBook'
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+import Swal from 'sweetalert2'
 
 export default {
-    data() {
-        return {
-            book: null,
-            hoveredStar: 0, 
-            selectedRating: 0, 
-            filledStar: '/icons/note-active.png',
-            emptyStar: '/icons/note.png', 
-            popupVisible: false,
-        };
-    },
-    mounted() {
-        this.fetchBook();
-    },
-    methods: {
-        async fetchBook() {
-            try {
-                const bookId = this.$route.params.id;
-                const response = await api.getOneBook(bookId);
-                this.book = response.data.data;
-            } catch (error) {
-                console.error("Erreur lors de la récupération du livre :", error);
-                this.book = null;
-            }
-        },
-        async deleteBook(bookId) {
-            try {
-                const result = await Swal.fire({
-                    title: 'Êtes-vous sûr ?',
-                    text: 'Cette action supprimera définitivement le livre.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Oui, supprimer',
-                    cancelButtonText: 'Annuler',
-                });
+  setup() {
+    const route = useRoute()
+    const router = useRouter()
+    
+    // États du livre courant
+    const { 
+      book: currentBook, 
+      isLoading: isBookLoading, 
+      error: bookError, 
+      fetchBook, 
+      deleteBook 
+    } = useBook()
+    
+    // États des livres similaires
+    const { 
+      books: similarBooks, 
+      isLoading: areBooksLoading, 
+      hasMore: hasMoreBooks, 
+      loadMore: loadMoreBooks 
+    } = useLoadMoreBooks(5)
+    
+    // États de l'évaluation
+    const hoveredStar = ref(0)
+    const selectedRating = ref(0)
+    const starIcons = {
+      filled: '/icons/note-active.png',
+      empty: '/icons/note.png'
+    }
 
-                if (result.isConfirmed) {
-                    await api.bookDelete(bookId);
-                    this.books = this.books.filter(bk => bk.id !== bookId);
-                    Swal.fire({
-                        title: 'Supprimé !',
-                        text: 'Le livre a été supprimé avec succès.',
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                    });
-                }
-            } catch (error) {
-                console.error('Erreur lors de la suppression du livre', error);
-                Swal.fire({
-                    title: 'Erreur',
-                    text: 'Une erreur est survenue lors de la suppression du livre.',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                });
-            }
-        },
-        hoverStar(star) {
-            this.hoveredStar = star; 
-        },
-        selectRating(star) {
-            this.selectedRating = star;
-            //this.popupVisible = true;
-            Swal.fire({
-            title: 'Merci !',
-            text: `Vous avez donné une note de ${star} étoiles.`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-            }); 
-        },
-        truncateText(text, max) {
-            if (text.length > max) {
-                return text.slice(0, max) + '...';
-            }
-            return text;
-        },
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        }
-    },
-};
+    // Chargement initial
+    onMounted(async () => {
+      await fetchBook(route.params.id)
+      await loadMoreBooks()
+    })
+
+    // Gestion de la suppression
+    const handleDeleteBook = async (bookId) => {
+      const success = await deleteBook(bookId)
+      if (success) {
+        router.push('/')
+      }
+    }
+
+    // Gestion de l'évaluation
+    const handleStarHover = (star) => hoveredStar.value = star
+    const handleRatingSelection = (star) => {
+      selectedRating.value = star
+      Swal.fire({
+        title: 'Merci !',
+        text: `Vous avez donné une note de ${star} étoiles.`,
+        icon: 'success',
+        confirmButtonText: 'OK',
+      })
+    }
+
+    // Utilitaires
+    const truncateText = (text = '', max = 100) => 
+      text.length > max ? `${text.slice(0, max)}...` : text
+
+    const formatDate = (dateString) => {
+      if (!dateString) return ''
+      const options = { day: '2-digit', month: 'long', year: 'numeric' }
+      return new Date(dateString).toLocaleDateString('fr-FR', options)
+    }
+
+    const getImageUrl = (imgPath) => 
+      imgPath ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}${imgPath}` 
+              : '/default-book-cover.jpg'
+
+    return {
+      // Livre courant
+      currentBook,
+      isBookLoading,
+      bookError,
+      
+      // Livres similaires
+      similarBooks,
+      areBooksLoading,
+      hasMoreBooks,
+      loadMoreBooks,
+      
+      // Évaluation
+      hoveredStar,
+      selectedRating,
+      starIcons,
+      
+      // Méthodes
+      handleDeleteBook,
+      handleStarHover,
+      handleRatingSelection,
+      truncateText,
+      formatDate,
+      getImageUrl
+    }
+  }
+}
 </script>
 
 <template>
@@ -99,123 +116,131 @@ export default {
             <a href="">Action</a>
         </div>
 
-        <div v-if="book" class="one">
-                    <div class="sect1">
-                        <div class="img">
-                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+        <div v-if="currentBook" class="one">
+            <div class="sect1">
+                <div class="img">
+                    <img :src="getImageUrl(currentBook.picture)" :alt="currentBook.title" />
+                </div>
+                <div class="info">
+                    <h3>{{ currentBook.title }}</h3>
+                    <p>Ecrit par <b>{{ currentBook.author }}</b></p>
+                    <p id="type">Romance</p>
+                    <p id="poste">
+                        Publié par <b>
+                            <a v-if="user && currentBook.posted_by.name == user.name" href="/profil/create">
+                                {{ currentBook.posted_by.name }}
+                            </a>
+                            <a v-else :href="`/user/${currentBook.posted_by.id}/create`">
+                                {{ currentBook.posted_by.name }}
+                            </a>
+                        </b>,<br>
+                        Le <b>{{ formatDate(currentBook.created_at) }}</b>,<br>
+                        Lang : <b>{{ currentBook.lang }}</b><br>
+                        Page : <b>{{ currentBook.page }}</b>
+                    </p>
+                    <div class="content-book">
+                        <div class="note">
+                            <img src="../../../../public/icons/note-active.png" alt="">
+                            <img src="../../../../public/icons/note-active.png" alt="">
+                            <img src="../../../../public/icons/note-active.png" alt="">
+                            <img src="../../../../public/icons/note-active.png" alt="">
+                            <img src="../../../../public/icons/note.png" alt="">
+                            <span><i>(100 notes)</i></span>
                         </div>
-                        <div class="info">
-                            <h3>{{ book.title }}</h3>
-                            <p>Ecrit par <b>{{ book.author }}</b></p>
-                            <p id="type">Romance</p>
-                            <p id="poste">
-                            Publié par <b><a v-if="user && book.posted_by.name == user.name" href="/profil/create">{{ book.posted_by.name }}</a>
-                                <a v-else :href="`/user/${book.posted_by.id}/create`">{{ book.posted_by.name }}</a></b>,<br>
-                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
-                            Lang : <b>{{ book.lang }}</b><br>
-                            Page : <b>{{ book.page }}</b>
-                            </p>
-                            <div class="content-book">
-                                <div class="note">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note.png" alt="">
-                                    <span><i>(100 notes)</i></span>
-                                </div>
-                                <span><img src="../../../../public/icons/oeil.png" alt=""> 1,3k</span>
-                                <span><img src="../../../../public/icons/coms.png" alt="">150</span>
-                                <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
-                            </div>
-                        </div>
+                        <span><img src="../../../../public/icons/oeil.png" alt=""> 1,3k</span>
+                        <span><img src="../../../../public/icons/coms.png" alt="">150</span>
+                        <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
                     </div>
+                </div>
+            </div>
 
-                    <div class="desc">
-                        <div class="rating">
-                            <img
-                                v-for="star in 5"
-                                :key="star"
-                                :src="star <= hoveredStar || star <= selectedRating ? filledStar : emptyStar"
-                                alt="star"
-                                class="star"
-                                @mouseover="hoverStar(star)"
-                                @mouseleave="hoverStar(0)"
-                                @click="selectRating(star)"
-                             />
-                        </div>
-                        
-                        <h2>Description</h2>
-                        <p v-html="book.description.replace(/\n/g, '<br>')"></p>
-                        <div class="action">
-                            <router-link :to="`/book/${book.id}/file`"><img src="../../../../public/icons/livres.png" alt="">Lire</router-link>  
-                            <a href="#save"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
-                            <a href="#download"><img src="../../../../public/icons/download.png" alt="">Télécharger</a>
-                            <a href="#download"><img src="../../../../public/icons/partager.png" alt="">Partager</a>
-                        </div>
-                        <form v-if="isAuthenticated"action="">
-                            <img id="profil"src="../../../../public/cover 2.jpg" alt="">
-                            <textarea name="" id="" placeholder="Donnez votre avis..."></textarea>
-                            <button><img src="../../../../public/icons/send.png" alt=""></button>
-                        </form>
-                        <span id="avis">99 avis</span>
-                        <div class="avis">
-                            <div class="profile">
-                                <img src="../../../../public/cover 4.jfif" alt="">
-                                <div class="coms">
-                                    <b><a href="">Nom</a></b>
-                                    <p><span> Le <b>15/02/2024</b></span>,<br>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
-                                    <span class="answer">2mois <b>Répondre</b> <b><img src="../../../../public/icons/like.png" alt="">2</b></span>
-                                </div>
-                            </div>
-                            <div class="profile">
-                                <img src="../../../../public/cover 4.jfif" alt="">
-                                <div class="coms">
-                                    <b><a href="">Nom</a></b>
-                                    <p><span> Le <b>15/02/2024</b></span>,<br>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
-                                </div>
-                            </div>
-                            <div class="profile">
-                                <img src="../../../../public/cover 4.jfif" alt="">
-                                <div class="coms">
-                                    <b><a href="">Nom</a></b>
-                                    <p><span> Le <b>15/02/2024</b></span>,<br>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
-                                </div>
-                            </div>
-                            <div class="profile">
-                                <img src="../../../../public/cover 4.jfif" alt="">
-                                <div class="coms">
-                                    <b><a href="">Nom</a></b>
-                                    <p><span> Le <b>15/02/2024</b></span>,<br>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
-                                </div>
-                            </div>
+            <div class="desc">
+                <div class="rating">
+                    <img
+                        v-for="star in 5"
+                        :key="star"
+                        :src="star <= hoveredStar || star <= selectedRating ? starIcons.filled : starIcons.empty"
+                        alt="star"
+                        class="star"
+                        @mouseover="handleStarHover(star)"
+                        @mouseleave="handleStarHover(0)"
+                        @click="handleRatingSelection(star)"
+                    />
+                </div>
+                
+                <h2>Description</h2>
+                <p v-html="currentBook.description.replace(/\n/g, '<br>')"></p>
+                <div class="action">
+                    <router-link :to="`/book/${currentBook.id}/file`">
+                        <img src="../../../../public/icons/livres.png" alt="">Lire
+                    </router-link>  
+                    <a href="#save"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
+                    <a href="#download"><img src="../../../../public/icons/download.png" alt="">Télécharger</a>
+                    <a href="#download"><img src="../../../../public/icons/partager.png" alt="">Partager</a>
+                </div>
+                <form v-if="isAuthenticated" action="">
+                    <img id="profil" src="../../../../public/cover 2.jpg" alt="">
+                    <textarea name="" id="" placeholder="Donnez votre avis..."></textarea>
+                    <button><img src="../../../../public/icons/send.png" alt=""></button>
+                </form>
+                <span id="avis">99 avis</span>
+                <div class="avis">
+                    <div class="profile">
+                        <img src="../../../../public/cover 4.jfif" alt="">
+                        <div class="coms">
+                            <b><a href="">Nom</a></b>
+                            <p><span> Le <b>15/02/2024</b></span>,<br>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                            <span class="answer">2mois <b>Répondre</b> <b><img src="../../../../public/icons/like.png" alt="">2</b></span>
                         </div>
                     </div>
+                    <div class="profile">
+                        <img src="../../../../public/cover 4.jfif" alt="">
+                        <div class="coms">
+                            <b><a href="">Nom</a></b>
+                            <p><span> Le <b>15/02/2024</b></span>,<br>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        <img src="../../../../public/cover 4.jfif" alt="">
+                        <div class="coms">
+                            <b><a href="">Nom</a></b>
+                            <p><span> Le <b>15/02/2024</b></span>,<br>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        <img src="../../../../public/cover 4.jfif" alt="">
+                        <div class="coms">
+                            <b><a href="">Nom</a></b>
+                            <p><span> Le <b>15/02/2024</b></span>,<br>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div v-else class="one">
-            <p>Chargement...</p>
+            <p>Livre non trouvé</p>
         </div>
 
         <section class="popular-books">
             <h2>Les Livres Similaires</h2>
 
-            <div v-if="books.length != 0" class="row">
-                <div class="books" v-for="(bk, index) in books" :key="index">
-                    <a v-if="bk.id != book.id" :href="`/books/${bk.id}`">
+            <div v-if="similarBooks.length > 0" class="row">
+                <div class="books" v-for="(bk, index) in similarBooks" :key="index">
+                    <a v-if="bk.id != currentBook?.id" :href="`/books/${bk.id}`">
                         <div class="img">
-                            <img :src="bk.picture ? getImageUrl(bk.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                            <img :src="getImageUrl(bk.picture)" :alt="bk.title" />
                         </div>
                         <div class="info">
                             <h3>{{ bk.title }}</h3>
                             <p>{{ bk.author }}</p>
                             <p id="poste">
-                            Publié par <b>{{ bk.posted_by.name }}</b>,<br>
-                            Le <b>{{ formatDate(bk.created_at) }}</b>,<br>
-                            Lang : <b>{{ bk.lang }}</b>
+                                Publié par <b>{{ bk.posted_by.name }}</b>,<br>
+                                Le <b>{{ formatDate(bk.created_at) }}</b>,<br>
+                                Lang : <b>{{ bk.lang }}</b>
                             </p>
                             <div class="content-book">
                                 <div class="note">
@@ -235,19 +260,24 @@ export default {
                             <p v-html="truncateText((bk.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
-                                <a v-if="user && bk.posted_by.name === user.name" href="#save" class="actionButton"><img src="../../../../public/icons/modifier.png" alt=""></a>
-                                <a v-if="user && bk.posted_by.name === user.name" href="#delete" @click="deleteBook(bk.id)" class="actionButton"><img src="../../../../public/icons/supprimer.png" alt=""></a>
+                                <a v-if="user && bk.posted_by.name === user.name" href="#save" class="actionButton">
+                                    <img src="../../../../public/icons/modifier.png" alt="">
+                                </a>
+                                <a v-if="user && bk.posted_by.name === user.name" href="#delete" 
+                                   @click.prevent="handleDeleteBook(bk.id)" 
+                                   class="actionButton">
+                                    <img src="../../../../public/icons/supprimer.png" alt="">
+                                </a>
                                 <a href="#download" class="actionButton"><img src="../../../../public/icons/partager.png" alt=""></a>
                             </div>
                         </div>
                     </a>
                 </div>
-                <button v-if="hasMoreBooks" @click="fetchMoreBooks" id="seeMore">Voir Plus</button>
+                <button v-if="hasMoreBooks" @click="loadMoreBooks" id="seeMore">{{ !areBooksLoading ? 'Voir Plus' : 'Chargement' }}</button>
             </div>
             <div v-else class="">
-                <p>Chargement...</p>
+                <p>Aucun livre similaire trouvé</p>
             </div>
-
         </section>
     </div>
 </template>

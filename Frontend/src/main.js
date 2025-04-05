@@ -1,18 +1,15 @@
-// import './assets/main.css'
-
 import { createApp } from 'vue';
 import App from './App.vue';
-import axios from 'axios';
-import router from './router/router';
-import userMixin from './mixins/userMixin';
-import BooksMixin from './mixins/BooksMixin';
-
-axios.defaults.baseURL = 'http://localhost:8000/api';
+import router from './router/router'; // Importation du routeur Vue
+//import store from './store'; // Importation du store (Vuex)
+import apiClient from './plugins/axios'; // Configuration globale de axios
+//import './assets/main.css';
 
 const app = createApp(App);
-app.config.globalProperties.$axios = axios;
 
-app.mixin(userMixin);
-app.mixin(BooksMixin);
+// Injection globale d'axios
+app.config.globalProperties.$api = apiClient;
 
-app.use(router).mount('#app');
+app.use(router);
+//app.use(store);
+app.mount('#app');

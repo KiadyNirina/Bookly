@@ -1,83 +1,83 @@
 <script>
-import api from '@/api';
-import FollowButton from './FollowButton.vue';
+// import api from '@/api';
+// import FollowButton from './FollowButton.vue';
 
-export default {
-    data() {
-        return {
-            userOne: null,
-            FollowersCount: null,
-            FollowingCount: null,
-            userSelectedBooks: [],
-            currentPageUserSelected: 1,
-            lastPageUserSelected: 1,
-            perPageUserSelected: 4,
-            defaultImg: '/path/to/default/image.jpg', // À remplacer par une image par défaut
-        }
-    },
-    components: {
-        FollowButton,
-    },
-    methods: {
-        isActive(route) {
-            return this.$route.path === route;
-        },
-        async getUserOne() {
-            try {
-                const idUser = this.$route.params.id;
-                const response = await api.getOneUser(idUser);
-                this.userOne = response.data.data;
-                console.log("Utilisateur récupéré :", this.userOne);
-            } catch (error) {
-                console.error("Erreur de récupération des données de l'utilisateur :", error);
-            }
-        },
-        async getSelectedUserBooks() {
-            try {
-                const idUser = this.$route.params.id;
-                const response = await api.getUserSelectedBooks(idUser, this.currentPageUserSelected, this.perPageUserSelected);
-                this.userSelectedBooks = response.data.data;
-                console.log("Livres récupérés : ", this.userSelectedBooks);
-            } catch (error) {
-                console.error("Erreur de récupération des livres de l'utilisateur sélectionné :", error.message);
-            }
-        },
-        async getFollowersNumber() {
-            try {
-                const idUser = this.$route.params.id;
-                const response = await api.followersCount(idUser);
-                this.FollowersCount = response.data;
-            } catch (error) {
-                console.error("Erreur lors de récupération de nombre de suivi");
-            }
-        },
-        async getFollowingNumber() {
-            try {
-                const idUser = this.$route.params.id;
-                const response = await api.followingCount(idUser);
-                this.FollowingCount = response.data;
-            } catch (error) {
-                console.error("Erreur lors de récupération de nombre de suivi");
-            }
-        },
-        getImageUrl(imagePath) {
-            return imagePath ? `/uploads/${imagePath}` : this.defaultImg;
-        },
-        formatDate(date) {
-            return new Date(date).toLocaleDateString('fr-FR');
-        }
-    },
-    created() {
-        this.getUserOne();
-        this.getSelectedUserBooks();
-        this.getFollowersNumber();
-        this.getFollowingNumber();
-    }
-};
+// export default {
+//     data() {
+//         return {
+//             userOne: null,
+//             FollowersCount: null,
+//             FollowingCount: null,
+//             userSelectedBooks: [],
+//             currentPageUserSelected: 1,
+//             lastPageUserSelected: 1,
+//             perPageUserSelected: 4,
+//             defaultImg: '/path/to/default/image.jpg', // À remplacer par une image par défaut
+//         }
+//     },
+//     components: {
+//         FollowButton,
+//     },
+//     methods: {
+//         isActive(route) {
+//             return this.$route.path === route;
+//         },
+//         async getUserOne() {
+//             try {
+//                 const idUser = this.$route.params.id;
+//                 const response = await api.getOneUser(idUser);
+//                 this.userOne = response.data.data;
+//                 console.log("Utilisateur récupéré :", this.userOne);
+//             } catch (error) {
+//                 console.error("Erreur de récupération des données de l'utilisateur :", error);
+//             }
+//         },
+//         async getSelectedUserBooks() {
+//             try {
+//                 const idUser = this.$route.params.id;
+//                 const response = await api.getUserSelectedBooks(idUser, this.currentPageUserSelected, this.perPageUserSelected);
+//                 this.userSelectedBooks = response.data.data;
+//                 console.log("Livres récupérés : ", this.userSelectedBooks);
+//             } catch (error) {
+//                 console.error("Erreur de récupération des livres de l'utilisateur sélectionné :", error.message);
+//             }
+//         },
+//         async getFollowersNumber() {
+//             try {
+//                 const idUser = this.$route.params.id;
+//                 const response = await api.followersCount(idUser);
+//                 this.FollowersCount = response.data;
+//             } catch (error) {
+//                 console.error("Erreur lors de récupération de nombre de suivi");
+//             }
+//         },
+//         async getFollowingNumber() {
+//             try {
+//                 const idUser = this.$route.params.id;
+//                 const response = await api.followingCount(idUser);
+//                 this.FollowingCount = response.data;
+//             } catch (error) {
+//                 console.error("Erreur lors de récupération de nombre de suivi");
+//             }
+//         },
+//         getImageUrl(imagePath) {
+//             return imagePath ? `/uploads/${imagePath}` : this.defaultImg;
+//         },
+//         formatDate(date) {
+//             return new Date(date).toLocaleDateString('fr-FR');
+//         }
+//     },
+//     created() {
+//         this.getUserOne();
+//         this.getSelectedUserBooks();
+//         this.getFollowersNumber();
+//         this.getFollowingNumber();
+//     }
+// };
 </script>
 
 <template>
-    <div v-if="userOne" class="profil">
+    <!-- <div v-if="userOne" class="profil">
         <h1 id="pdp">K</h1>
         <h1>{{ userOne.name }}</h1>
         <div class="followers">
@@ -144,7 +144,7 @@ export default {
         <div class="button">
             <button>S'abonner</button>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <style>

@@ -1,18 +1,32 @@
-<script>
-export default {
-    methods : {
-        truncateText(text, maxlength) {
-            if(text.length > maxlength) {
-                return text.slice(0, maxlength) + '...';
-            }
-            return text;
-        },
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        }
+<script setup>
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+
+const {
+  books,
+  isLoading,
+  hasMore,
+  error,
+  loadMore
+} = useLoadMoreBooks(5) // 5 livres à la fois
+
+// Charger les premiers livres au montage
+loadMore()
+
+function getImageUrl(imgPath) {
+  return `http://localhost:8000/${imgPath}`;
+}
+
+function truncateText(text, maxlength) {
+    if(text.length > maxlength) {
+        return text.slice(0, maxlength) + '...';
     }
+    return text;
+}
+
+function formatDate(dateString) {
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', options);
 }
 </script>
 
@@ -35,7 +49,7 @@ export default {
                 <div class="books" v-for="(book, index) in books" :key="index">
                     <a :href="`/books/${book.id}`">
                         <div class="img">
-                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                            <img :src="getImageUrl(book.picture)" :alt="book.title" />
                         </div>
                         <div class="info">
                             <h3>{{ book.title }}</h3>
@@ -59,7 +73,7 @@ export default {
                             </div>
                         </div>
                         <div class="desc">
-                            <p id="type">{{ book.type }}</p>
+                            <p id="type">{{ book.genre }}</p>
                             <p v-html="truncateText((book.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt=""></a>
@@ -71,7 +85,14 @@ export default {
                     </a>
                 </div>
 
-                <button v-if="hasMoreBooks" @click="fetchMoreBooks" id="seeMore">Voir Plus</button>
+                <button
+                v-if="hasMore && books.length > 0"
+                @click="loadMore"
+                :disabled="isLoading"
+                id="seeMore"
+                >
+                    {{ isLoading ? 'Chargement...' : 'Voir plus' }}
+                </button>
             </div>
             <div v-else class="">
                 <p>Chargement...</p>
