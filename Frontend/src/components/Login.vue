@@ -58,11 +58,12 @@ onMounted(initializeGoogleLogin);
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
+    font-family: "Poppins";
 }
 .content-login .form-login{
     display: flex;
     border: 1px solid rgba(255, 255, 255, 0.102);
-    height: 80vh;
+    height: auto;
     border-radius: 20px;
 }
 .content-login .form-login img{
@@ -98,7 +99,6 @@ onMounted(initializeGoogleLogin);
     border: 1px solid rgba(255, 255, 255, 0.183);
     border-radius: 10px;
     color: white;
-    font-family: 'Courier New', Courier, monospace;
     padding: 0;
     text-align: center;
 }
@@ -109,7 +109,6 @@ onMounted(initializeGoogleLogin);
     color: rgba(255, 255, 255, 0.659);
     align-items: center;
     margin-bottom: 20px;
-    font-size: 12px;
 }
 .content-login .form-login .sect2 form input[type='checkbox']{
     cursor: pointer;
@@ -126,7 +125,6 @@ onMounted(initializeGoogleLogin);
 }
 #error{
     color: rgb(255, 62, 62);
-    font-size: 12px;
 }
 .content-login .form-login .sect2 form button{
     width: 100%;
