@@ -92,6 +92,7 @@ body{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-family: "poppins";
 }
 .content .content-1{
   width: 50%;
@@ -113,7 +114,6 @@ body{
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   transition: 0.5s;
   border: 2px solid #E67E22;
 }
@@ -132,7 +132,7 @@ body{
 }
 
 .popular-books h2 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'poppins';
   font-size: 1.5rem;
   color: white; 
   margin-bottom: 20px;
@@ -146,7 +146,7 @@ body{
   background-color: #E67E22;
   color: white;
   padding: 10px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'poppins';
   border-radius: 100%;
   font-size: 12px;
 }

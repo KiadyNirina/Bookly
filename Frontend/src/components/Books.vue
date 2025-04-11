@@ -103,6 +103,7 @@ function getImageUrl(imgPath) {
 .content-page{
     padding: 80px;
     color: white;
+    font-family: 'poppins';
 }
 .content-page .tri{
     display: flex;
