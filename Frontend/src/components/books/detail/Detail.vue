@@ -3,12 +3,14 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBook } from '@/composables/useBook'
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+import { useUser } from '@/composables/useUser'
 import Swal from 'sweetalert2'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const { user, isLoggedIn } = useUser()
     
     // États du livre courant
     const { 
@@ -76,6 +78,9 @@ export default {
               : '/default-book-cover.jpg'
 
     return {
+      isLoggedIn,
+      user,
+      
       // Livre courant
       currentBook,
       isBookLoading,
@@ -127,7 +132,7 @@ export default {
                     <p id="type">Romance</p>
                     <p id="poste">
                         Publié par <b>
-                            <a v-if="user && currentBook.posted_by.name == user.name" href="/profil/create">
+                            <a v-if="isLoggedIn && currentBook.posted_by.name == user.name" href="/profil/create">
                                 {{ currentBook.posted_by.name }}
                             </a>
                             <a v-else :href="`/user/${currentBook.posted_by.id}/create`">
