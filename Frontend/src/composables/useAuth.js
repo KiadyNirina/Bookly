@@ -2,6 +2,8 @@ import { ref } from 'vue';
 import { useApi } from '@/composables/useApi';
 import { useRouter } from 'vue-router';
 
+const isAuthenticated = ref(!!localStorage.getItem('token'));
+
 export function useAuth() {
     const { request } = useApi();
     const email = ref('');
@@ -20,6 +22,7 @@ export function useAuth() {
                 password: password.value
             });
             localStorage.setItem('token', response.access_token);
+            isAuthenticated.value = true;
             router.push('/dashboard');
             console.log('Utilisateur connecté :', response);
         } catch (error) {
@@ -35,10 +38,17 @@ export function useAuth() {
         }
     };
 
+    const logout = () => {
+        localStorage.removeItem('token');
+        isAuthenticated.value = false;
+        router.push('/login');
+    };
+
     const validateWithBackend = async (token) => {
         try {
             const response = await request('POST', '/google-login', { token });
             localStorage.setItem('token', response.token);
+            isAuthenticated.value = true;
             router.push('/dashboard');
         } catch (error) {
             console.error("Erreur réseau :", error);
@@ -85,7 +95,7 @@ export function useAuth() {
             await request("post", "/register", userData);
         } catch (error) {
             hasError.value = true;
-            errorMessage.value = error.response?.data?.message || "Une erreur est survenue.";
+            errorMess.value = error.response?.data?.message || "Une erreur est survenue.";
         } finally {
             isLoading.value = false;
         }
@@ -99,6 +109,8 @@ export function useAuth() {
         hasError,
         isLoading,
         login,
+        logout,
+        isAuthenticated,
         initializeGoogleLogin,
         signup
     };
