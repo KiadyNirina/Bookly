@@ -1,6 +1,8 @@
 <script setup>
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+import { useUser } from '@/composables/useUser';
 
+const { user } = useUser();
 const {
   books,
   isLoading,
@@ -9,7 +11,6 @@ const {
   loadMore
 } = useLoadMoreBooks(5) // 5 livres à la fois
 
-// Charger les premiers livres au montage
 loadMore()
 
 function getImageUrl(imgPath) {
@@ -77,8 +78,8 @@ function formatDate(dateString) {
                             <p v-html="truncateText((book.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt=""></a>
-                                <a href="#save" class="actionButton"><img src="../../../public/icons/modifier.png" alt=""></a>
-                                <a href="#download" class="actionButton"><img src="../../../public/icons/supprimer.png" alt=""></a>
+                                <a v-if="book.posted_by.name == user.name" href="#save" class="actionButton"><img src="../../../public/icons/modifier.png" alt=""></a>
+                                <a v-if="book.posted_by.name == user.name" href="#download" class="actionButton"><img src="../../../public/icons/supprimer.png" alt=""></a>
                                 <a href="#download" class="actionButton"><img src="../../../public/icons/partager.png" alt=""></a>
                             </div>
                         </div>
