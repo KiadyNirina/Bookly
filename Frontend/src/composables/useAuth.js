@@ -37,7 +37,7 @@ export function useAuth() {
 
     const validateWithBackend = async (token) => {
         try {
-            const response = await request('POST', '/validate-google-token', { token });
+            const response = await request('POST', '/google-login', { token });
             localStorage.setItem('token', response.token);
             router.push('/dashboard');
         } catch (error) {
