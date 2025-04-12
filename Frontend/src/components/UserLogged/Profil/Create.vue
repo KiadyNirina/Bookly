@@ -1,7 +1,23 @@
 <script>
-// import CreateBook from '../Book/createBook.vue';
-// import api from '@/api';
-// import userMixin from '@/mixins/userMixin';
+import { useUser } from '@/composables/useUser';
+
+export default {
+    setup() {
+        const { user, isLoggedIn, isUserLoading } = useUser();
+
+        return {
+        user,
+        isLoggedIn,
+        isUserLoading
+        };
+    },
+    methods: {
+        isActive(route) {
+            return this.$route.path === route;
+        },
+    }
+};
+
 
 // export default {
 //     mixins: [userMixin],
@@ -73,9 +89,9 @@
 </script>
 
 <template>
-    <!-- <div class="profil">
+    <div class="profil">
         <h1 id="pdp">K</h1>
-            <h1>{{ user?.name || 'Chargement...' }}</h1>
+            <h1>{{ isLoggedIn ? user.name : 'Chargement...' }}</h1>
             <div class="followers">
                 <p><b>{{ followers ?? 0 }}</b> suivi(e)s</p>
                 <p><b>{{ following ?? 0 }}</b> abonnements</p>
@@ -89,7 +105,7 @@
                 <a href="/profil/saved" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
             </div>
 
-            <div class="button">
+            <!-- <div class="button">
                 <button id="buttonProfil" @click="create()">Créer</button>
             </div>
             
@@ -144,8 +160,8 @@
             <CreateBook
                 :visible="popupVisible"
                 @close="popupVisible = false"
-            /> 
-    </div> -->
+            />  -->
+    </div>
     
 </template>
 
