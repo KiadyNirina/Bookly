@@ -59,6 +59,7 @@ onMounted(initializeGoogleLogin);
     margin-left: auto;
     margin-right: auto;
     font-family: "Poppins";
+    font-size: 12px;
 }
 .content-login .form-login{
     display: flex;
@@ -164,5 +165,8 @@ onMounted(initializeGoogleLogin);
     display: flex;
     justify-content: right;
     margin-bottom: 10px;
+}
+#foot{
+    margin-top: 20px;
 }
 </style>
