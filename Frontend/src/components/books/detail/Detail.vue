@@ -72,7 +72,7 @@ export default {
     }
 
     const getImageUrl = (imgPath) => 
-      imgPath ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}${imgPath}` 
+      imgPath ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/'}${imgPath}` 
               : '/default-book-cover.jpg'
 
     return {
@@ -221,7 +221,7 @@ export default {
                 </div>
             </div>
         </div>
-        <div v-else class="one">
+        <div v-else>
             <p>Livre non trouvé</p>
         </div>
 
@@ -256,7 +256,7 @@ export default {
                             </div>
                         </div>
                         <div class="desc">
-                            <p id="type">{{ bk.type }}</p>
+                            <p id="type">{{ bk.genre }}</p>
                             <p v-html="truncateText((bk.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
                                 <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
@@ -276,7 +276,7 @@ export default {
                 <button v-if="hasMoreBooks" @click="loadMoreBooks" id="seeMore">{{ !areBooksLoading ? 'Voir Plus' : 'Chargement' }}</button>
             </div>
             <div v-else class="">
-                <p>Aucun livre similaire trouvé</p>
+                <p style="font-size: 12px;">Aucun livre similaire trouvé</p>
             </div>
         </section>
     </div>

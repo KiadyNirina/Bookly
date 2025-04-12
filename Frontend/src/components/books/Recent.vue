@@ -95,7 +95,7 @@ function formatDate(dateString) {
                 </button>
             </div>
             <div v-else class="">
-                <p>Chargement...</p>
+                <p style="font-size: 12px;">Chargement...</p>
             </div>
 
         </section>
@@ -145,7 +145,6 @@ function formatDate(dateString) {
 .row .info p{
   color: rgba(255, 255, 255, 0.52);
   margin: 0;
-  font-size: 15px;
 }
 .row .content-book {
   padding-left: 0;
@@ -177,6 +176,9 @@ function formatDate(dateString) {
 .row .books .desc #type{
     text-align: center;
     background-color: #4388ff28;
+}
+.row .books .desc p {
+    font-size: 13px;
 }
 .row .books .desc .action{
     display: flex;

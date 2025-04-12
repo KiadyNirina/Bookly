@@ -59,7 +59,7 @@ function getImageUrl(imgPath) {
         </a>
       </div>
       <div v-else>
-        <p>Pas de livre disponible pour le moment</p>
+        <p style="font-size: 12px;">Pas de livre disponible pour le moment</p>
       </div>
       <router-link v-if="books.length > 0" to="/books/popular" id="seeMore">Voir plus</router-link>
     </section>
@@ -92,7 +92,7 @@ function getImageUrl(imgPath) {
         </a>
       </div>
       <div v-else>
-        <p>Pas de livre disponible pour le moment</p>
+        <p style="font-size: 12px;">Pas de livre disponible pour le moment</p>
       </div>
       <a v-if="books.length > 0" href="/books/recent" id="seeMore">Voir plus</a>
     </section>
@@ -113,6 +113,7 @@ function getImageUrl(imgPath) {
 }
 .content-page .tri a{
     text-decoration: none;
+    font-size: 12px;
     color: white;
     padding: 10px;
     border: 1px solid rgba(255, 255, 255, 0.397);

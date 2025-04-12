@@ -267,6 +267,7 @@ body{
   padding: 15px;
   border-radius: 30px;
   transition: 0.5s;
+  font-size: 12px;
 }
 #seeMore:hover{
   background-color: transparent;
