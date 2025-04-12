@@ -1,40 +1,36 @@
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
 import { useUser } from '@/composables/useUser';
-import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
+import CreateBook from '../Book/createBook.vue';
 
-export default {
-    setup() {
-        const { user, isLoggedIn, isUserLoading } = useUser();
-        const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4) 
+const { user, isLoggedIn, isUserLoading } = useUser();
+const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4);
 
-        return {
-        user,
-        isLoggedIn,
-        isUserLoading,
-        books,
-        isLoading,
-        hasMore,
-        error,
-        loadMoreUserBook
-        };
-    },
-    methods: {
-        isActive(route) {
-            return this.$route.path === route;
-        },
-        getImageUrl(imgPath) {
-            return `http://localhost:8000/${imgPath}`;
-        },
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        }
-    },
-    mounted() {
-        this.loadMoreUserBook();
-    },
+const popupVisible = ref(false);
+
+// Méthodes utilitaires
+const isActive = (route) => {
+  return route === window.location.pathname;
 };
+
+const getImageUrl = (imgPath) => {
+  return `http://localhost:8000/${imgPath}`;
+};
+
+const formatDate = (dateString) => {
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', options);
+};
+
+const create = () => {
+  popupVisible.value = true;
+};
+
+onMounted(() => {
+  loadMoreUserBook();
+});
 
 
 // export default {

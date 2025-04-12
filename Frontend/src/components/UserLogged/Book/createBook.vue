@@ -1,7 +1,6 @@
 <script>
 // import ErrorPopup from './ErrorPopup.vue';
 // import SuccessPopup from './SuccessPopup.vue';
-// import api from '@/api';
 
 // export default {
 //   components: { 
@@ -154,7 +153,7 @@
 </script>
 
 <template>
-  <!-- <div v-if="visible || isClosing" :class="['popup-overlay', { closing: isClosing }]">
+  <div v-if="visible || isClosing" :class="['popup-overlay', { closing: isClosing }]">
     <div :class="['popup-content', { closing: isClosing }]">
       <h1>Créer un livre</h1>
       <form @submit.prevent="createBook">
@@ -219,7 +218,7 @@
         />
       </form>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <style scoped>
