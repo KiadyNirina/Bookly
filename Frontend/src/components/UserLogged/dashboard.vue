@@ -1,12 +1,24 @@
-<script>
-export default {
-    methods : {
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        }
-    }
+<script setup>
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+
+const {
+  books,
+  isLoading,
+  hasMore,
+  error,
+  loadMore
+} = useLoadMoreBooks(4) 
+
+loadMore()
+
+function formatDate(dateString) {
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', options);
+}
+
+function getImageUrl(imgPath) {
+  return `http://localhost:8000/${imgPath}`;
 }
 </script>
 
