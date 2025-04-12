@@ -87,7 +87,7 @@ function formatDate(dateString) {
                     </a>
                 </div>
 
-                <button v-if="hasMoreUserBooks" @click="fetchMoreUserBooks" id="seeMore">Voir Plus</button>
+                <button v-if="hasMore" @click="loadMoreUserBook" id="seeMore">Voir Plus</button>
             </div>
             <div v-else>
                 <p style="font-size: 12px;">Chargement...</p>
