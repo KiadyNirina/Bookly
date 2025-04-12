@@ -79,7 +79,7 @@ function getImageUrl(imgPath) {
                 <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
             </div>
             <div v-else class="">
-                <p>Pas de livre disponnible pour le moment</p>
+                <p style="font-size: 12px;">Pas de livre disponnible pour le moment</p>
             </div>
 
         </section>
@@ -129,7 +129,7 @@ function getImageUrl(imgPath) {
                 <router-link to="/books/recent" id="seeMore">Voir plus</router-link>
             </div>
             <div v-else class="">
-                <p>Pas de livre disponnible pour le moment</p>
+                <p style="font-size: 12px;">Pas de livre disponnible pour le moment</p>
             </div>
 
         </section>
