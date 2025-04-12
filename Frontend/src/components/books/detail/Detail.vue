@@ -47,7 +47,7 @@ export default {
     const handleDeleteBook = async (bookId) => {
       const success = await deleteBook(bookId)
       if (success) {
-        router.push('/')
+        similarBooks.value = similarBooks.value.filter(book => book.id !== bookId)
       }
     }
 
