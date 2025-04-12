@@ -1,18 +1,34 @@
-<script>
-export default {
-    methods : {
-        truncateText(text, maxLength) {
-            if (text.length > maxLength) {
-                return text.slice(0, maxLength) + '...';
-            }
-            return text;
-        },
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        }
+<script setup>
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
+import { useUser } from '@/composables/useUser';
+
+const { user, isLoggedIn, isUserLoading } = useUser();
+const {
+  books,
+  isLoading,
+  hasMore,
+  error,
+  loadMoreUserBook
+} = useLoadMoreBooks(5) // 5 livres à la fois
+
+// Charger les premiers livres au montage
+loadMoreUserBook()
+
+function getImageUrl(imgPath) {
+  return `http://localhost:8000/${imgPath}`;
+}
+
+function truncateText(text, maxlength) {
+    if(text.length > maxlength) {
+        return text.slice(0, maxlength) + '...';
     }
+    return text;
+}
+
+function formatDate(dateString) {
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', options);
 }
 </script>
 
@@ -31,8 +47,8 @@ export default {
         <section class="popular-books">
             <h2>Les livres que vous avez publiés</h2>
 
-            <div v-if="userBooks.length != 0" class="row">
-                <div class="books" v-for="(book, index) in userBooks" :key="index">
+            <div v-if="books.length != 0" class="row">
+                <div class="books" v-for="(book, index) in books" :key="index">
                     <a :href="`/books/${book.id}`">
                         <div class="img">
                             <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
@@ -74,7 +90,7 @@ export default {
                 <button v-if="hasMoreUserBooks" @click="fetchMoreUserBooks" id="seeMore">Voir Plus</button>
             </div>
             <div v-else>
-                <p>Chargement...</p>
+                <p style="font-size: 12px;">Chargement...</p>
             </div>
 
         </section>
