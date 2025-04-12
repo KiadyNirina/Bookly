@@ -1,21 +1,39 @@
 <script>
 import { useUser } from '@/composables/useUser';
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 
 export default {
     setup() {
         const { user, isLoggedIn, isUserLoading } = useUser();
+        const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4) 
 
         return {
         user,
         isLoggedIn,
-        isUserLoading
+        isUserLoading,
+        books,
+        isLoading,
+        hasMore,
+        error,
+        loadMoreUserBook
         };
     },
     methods: {
         isActive(route) {
             return this.$route.path === route;
         },
-    }
+        getImageUrl(imgPath) {
+            return `http://localhost:8000/${imgPath}`;
+        },
+        formatDate(dateString) {
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', options);
+        }
+    },
+    mounted() {
+        this.loadMoreUserBook();
+    },
 };
 
 
@@ -105,17 +123,17 @@ export default {
                 <a href="/profil/saved" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
             </div>
 
-            <!-- <div class="button">
+            <div class="button">
                 <button id="buttonProfil" @click="create()">Créer</button>
             </div>
             
             <section class="popular-books">
-                <div v-if="userBooks.length == 0" class="profil-content">
+                <div v-if="books.length == 0" class="profil-content">
                     <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
                 </div>
                 <div v-else class="">
                     <div class="card">
-                        <div class="book" v-for="(book, index) in userBooks.slice(0, 4)" :key="index">
+                        <div class="book" v-for="(book, index) in books.slice(0, 4)" :key="index">
                             <a :href="`/books/${book.id}`">
                                 <div v-if="(book.isPopular)" class="badge">
                                 <div class="popular">
@@ -160,7 +178,7 @@ export default {
             <CreateBook
                 :visible="popupVisible"
                 @close="popupVisible = false"
-            />  -->
+            />
     </div>
     
 </template>
