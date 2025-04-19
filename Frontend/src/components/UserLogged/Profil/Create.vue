@@ -9,7 +9,6 @@ const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(
 
 const popupVisible = ref(false);
 
-// Méthodes utilitaires
 const isActive = (route) => {
   return route === window.location.pathname;
 };

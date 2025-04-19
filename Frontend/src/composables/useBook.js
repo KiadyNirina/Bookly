@@ -1,11 +1,14 @@
 import { ref } from 'vue'
 import { useApi } from './useApi'
+import { useUser } from './useUser'
 import Swal from 'sweetalert2'
 
 export function useBook() {
   const book = ref(null)
   const isLoading = ref(false)
   const error = ref(null)
+  const success = ref(null)
+  const { user } = useUser()
 
   const { request } = useApi()
 
@@ -19,6 +22,41 @@ export function useBook() {
     } catch (err) {
       error.value = "Erreur lors de la récupération du livre."
       console.error(err)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const createBook = async (bookData) => {
+    isLoading.value = true
+    error.value = null
+    success.value = null
+    
+    try {
+      const formData = new FormData()
+      
+      formData.append('title', bookData.title)
+      formData.append('author', bookData.author)
+      formData.append('description', bookData.description)
+      formData.append('genre', bookData.genre)
+      formData.append('posted_by', user.value.id)
+      formData.append('lang', bookData.lang)
+      formData.append('page', bookData.page)
+      
+      if (bookData.picture) formData.append('picture', bookData.picture)
+      if (bookData.file) formData.append('file', bookData.file)
+
+      const response = await request('post', '/createBook', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      success.value = "Livre créé avec succès!"
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.message || "Erreur lors de la création du livre."
+      throw err
     } finally {
       isLoading.value = false
     }
@@ -62,7 +100,9 @@ export function useBook() {
     book,
     isLoading,
     error,
+    success,
     fetchBook,
+    createBook,
     deleteBook
   }
 }

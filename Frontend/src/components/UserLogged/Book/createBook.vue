@@ -1,162 +1,187 @@
 <script>
-// import ErrorPopup from './ErrorPopup.vue';
-// import SuccessPopup from './SuccessPopup.vue';
+import ErrorPopup from './ErrorPopup.vue';
+import SuccessPopup from './SuccessPopup.vue';
+import { useUser } from '@/composables/useUser';
+import { useBook } from '@/composables/useBook';
 
-// export default {
-//   components: { 
-//     ErrorPopup, 
-//     SuccessPopup 
-//   },
+export default {
+  components: { 
+    ErrorPopup, 
+    SuccessPopup 
+  },
 
-//   props: {
-//     visible: {
-//       type: Boolean,
-//       default: false,
-//     },
-//   },
+  props: {
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-//   data() {
-//     return {
-//       title: '',
-//       author: '',
-//       description: '',
-//       genre: '',
-//       lang: '',
-//       page: '',
-//       picture: null, // Pour stocker l'image
-//       file: null, // Pour stocker le fichier numérique
-//       errorMessage: '',
-//       hasError: false,
-//       successMessage: '',
-//       isLoading: false,
-//       popupErrorVisible: false,
-//       popupSuccessVisible: false,
-//       isClosing: false,
-//     };
-//   },
+  setup() {
+    const { createBook, isLoading, error, success } = useBook()
+    const { user, isLoggedIn } = useUser()
+    
+    return {
+      createBook,
+      isLoading,
+      error,
+      success,
+      user,
+      isLoggedIn
+    }
+  },
 
-//   methods: {
-//     handleFileChange(event, type) {
-//       const file = event.target.files[0];
+  watch: {
+    visible(newValue) {
+      if (!newValue) {
+        this.isClosing = true; 
+        setTimeout(() => {
+          this.isClosing = false; 
+          this.$emit('close'); 
+        }, 300);
+      }
+    },
+    error(newError) {
+      if (newError) {
+        this.showError(newError)
+      }
+    },
+    success(newSuccess) {
+      if (newSuccess) {
+        this.showSuccess(newSuccess)
+        this.resetForm()
+      }
+    }
+  },
 
-//       if (!file) {
-//         this.showError('Aucun fichier sélectionné.');
-//         return;
-//       }
+  data() {
+    return {
+      title: '',
+      author: '',
+      description: '',
+      genre: '',
+      lang: '',
+      page: '',
+      picture: null, // Pour stocker l'image
+      file: null, // Pour stocker le fichier numérique
+      errorMessage: '',
+      hasError: false,
+      successMessage: '',
+      isLoading: false,
+      popupErrorVisible: false,
+      popupSuccessVisible: false,
+      isClosing: false,
+    };
+  },
 
-//       if (type === 'picture') {
-//         const allowedImageFormats = ['image/jpeg', 'image/png'];
-//         if (!allowedImageFormats.includes(file.type)) {
-//           this.showError('Format de fichier image non valide. Veuillez sélectionner un fichier JPEG ou PNG.');
-//           return;
-//         }
-//         this.picture = file;
-//         document.getElementById('file-name-picture').textContent = file.name;
-//       } else if (type === 'file') {
-//         const allowedFormats = ['application/pdf', 'application/msword'];
-//         if (!allowedFormats.includes(file.type)) {
-//           this.showError('Format de fichier non valide. Veuillez sélectionner un fichier PDF ou DOC.');
-//           return;
-//         }
-//         this.file = file;
-//         document.getElementById('file-name-file').textContent = file.name;
-//       }
-//     },
+  methods: {
+    handleFileChange(event, type) {
+      const file = event.target.files[0];
 
-//     watch: {
-//       visible(newValue) {
-//         if (!newValue) {
-//           this.isClosing = true; 
-//           setTimeout(() => {
-//             this.isClosing = false; 
-//             this.$emit('close'); 
-//           }, 300);
-//         }
-//       },
-//     },
+      if (!file) {
+        this.showError('Aucun fichier sélectionné.');
+        return;
+      }
 
-//     async createBook() {
-//       if (!this.user) {
-//         this.showError('Utilisateur non connecté. Veuillez réessayer.');
-//         return;
-//       }
+      if (type === 'picture') {
+        const allowedImageFormats = ['image/jpeg', 'image/png'];
+        if (!allowedImageFormats.includes(file.type)) {
+          this.showError('Format de fichier image non valide. Veuillez sélectionner un fichier JPEG ou PNG.');
+          return;
+        }
+        this.picture = file;
+        document.getElementById('file-name-picture').textContent = file.name;
+      } else if (type === 'file') {
+        const allowedFormats = ['application/pdf', 'application/msword'];
+        if (!allowedFormats.includes(file.type)) {
+          this.showError('Format de fichier non valide. Veuillez sélectionner un fichier PDF ou DOC.');
+          return;
+        }
+        this.file = file;
+        document.getElementById('file-name-file').textContent = file.name;
+      }
+    },
 
-//       if (!this.title || !this.author || !this.description || !this.genre || !this.lang || !this.page) {
-//         this.showError('Veuillez remplir tous les champs obligatoires.');
-//         return;
-//       }
+    async create() {
+      if (!this.isLoggedIn) {
+        this.showError('Utilisateur non connecté. Veuillez réessayer.');
+        return;
+      }
 
-//       if (!this.file) {
-//         this.showError('Veuillez importer le livre version numérique.');
-//         return;
-//       }
+      if (!this.title || !this.author || !this.description || !this.genre || !this.lang || !this.page) {
+        this.showError('Veuillez remplir tous les champs obligatoires.');
+        return;
+      }
 
-//       this.isLoading = true;
+      if (!this.file) {
+        this.showError('Veuillez importer le livre version numérique.');
+        return;
+      }
 
-//       const formData = new FormData();
-//       formData.append('title', this.title);
-//       formData.append('author', this.author);
-//       formData.append('description', this.description);
-//       formData.append('genre', this.genre);
-//       formData.append('posted_by', this.user.id);
-//       formData.append('lang', this.lang);
-//       formData.append('page', this.page);
-//       if (this.picture) formData.append('picture', this.picture);
-//       if (this.file) formData.append('file', this.file);
+      this.isLoading = true;
 
-//       try {
-//         const response = await api.bookCreate(formData);
-//         console.log('Ajout avec succès :', response);
-//         this.resetForm();
-//         this.showSuccess("Ajout du livre avec succès!");
-//       } catch (error) {
-//         this.showError("Une erreur est survenue lors de l'ajout du livre.");
-//         console.error('Erreur lors de l’ajout :', error);
-//       } finally {
-//         this.isLoading = false;
-//       }
-//     },
+      try {
+        await this.createBook({
+          title: this.title,
+          author: this.author,
+          description: this.description,
+          genre: this.genre,
+          lang: this.lang,
+          page: this.page,
+          picture: this.picture,
+          file: this.file
+        })
+        console.log('Ajout avec succès :', response);
+        this.resetForm();
+        this.showSuccess("Ajout du livre avec succès!");
+      } catch (error) {
+        this.showError("Une erreur est survenue lors de l'ajout du livre.");
+        console.error('Erreur lors de l’ajout :', error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
 
-//     showError(message) {
-//       this.errorMessage = message;
-//       this.popupErrorVisible = true;
-//     },
+    showError(message) {
+      this.errorMessage = message;
+      this.popupErrorVisible = true;
+    },
 
-//     showSuccess(message) {
-//       this.successMessage = message;
-//       this.popupSuccessVisible = true;
-//     },
+    showSuccess(message) {
+      this.successMessage = message;
+      this.popupSuccessVisible = true;
+    },
 
-//     resetForm() {
-//       this.title = '';
-//       this.author = '';
-//       this.description = '';
-//       this.genre = '';
-//       this.lang = '';
-//       this.page = '';
-//       this.picture = null;
-//       this.file = null;
-//       this.errorMessage = '';
-//       this.hasError = false;
-//       this.popupErrorVisible = false;
-//     },
+    resetForm() {
+      this.title = '';
+      this.author = '';
+      this.description = '';
+      this.genre = '';
+      this.lang = '';
+      this.page = '';
+      this.picture = null;
+      this.file = null;
+      this.errorMessage = '';
+      this.hasError = false;
+      this.popupErrorVisible = false;
+    },
 
-//     closePopup() {
-//       this.isClosing = true;
-//       setTimeout(() => {
-//         this.isClosing = false;
-//         this.$emit('close');
-//       }, 300);
-//     },
-//   },
-// };
+    closePopup() {
+      this.isClosing = true;
+      setTimeout(() => {
+        this.isClosing = false;
+        this.$emit('close');
+      }, 300);
+    },
+  },
+};
 </script>
 
 <template>
   <div v-if="visible || isClosing" :class="['popup-overlay', { closing: isClosing }]">
     <div :class="['popup-content', { closing: isClosing }]">
       <h1>Créer un livre</h1>
-      <form @submit.prevent="createBook">
+      <form @submit.prevent="create">
         <div class="form">
           <div class="file">
             <div class="file1">
@@ -202,8 +227,7 @@
           </div>
         </div>
         <div class="button">
-          <button v-if="isLoading" disabled>Chargement...</button>
-          <button v-else type="submit">Ajouter</button>
+          <button type="submit" :disabled="isLoading">{{ isLoading ? "Chargement..." : "Ajouter" }}</button>
           <button type="button" @click="closePopup">Annuler</button>
         </div>
         <ErrorPopup
