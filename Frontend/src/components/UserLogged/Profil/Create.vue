@@ -192,6 +192,9 @@ onMounted(() => {
     font-family: 'Poppins';
     font-size: 12px;
 }
+.profil img{
+    border: none; 
+}
 #buttonProfil{
     background-color: #4388ff67;
 }
