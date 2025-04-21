@@ -268,6 +268,7 @@ body{
   border-radius: 30px;
   transition: 0.5s;
   font-size: 12px;
+  font-family: 'poppins';
 }
 #seeMore:hover{
   background-color: transparent;
