@@ -179,6 +179,10 @@ onMounted(() => {
 </template>
 
 <style>
+.profil{
+    font-family: 'Poppins';
+    font-size: 12px;
+}
 .profil-content p{
     display: flex;
     margin-right: auto;

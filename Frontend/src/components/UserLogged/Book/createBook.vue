@@ -347,6 +347,8 @@ export default {
 .form .input label {
   color: rgb(219, 219, 219);
   margin-left: 3px;
+  font-family: "poppins";
+  font-size: 12px; 
 }
 
 .form .input .nbr{
