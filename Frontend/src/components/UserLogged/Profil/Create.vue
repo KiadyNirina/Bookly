@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useUser } from '@/composables/useUser';
+import { useFollowers } from '@/composables/useFollowers';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
 import CreateBook from '../Book/createBook.vue';
 
 const { user, isLoggedIn, isUserLoading } = useUser();
+const { followersCount, fetchFollowersCount } = useFollowers();
 const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4);
 
 const popupVisible = ref(false);
@@ -27,78 +29,20 @@ const create = () => {
   popupVisible.value = true;
 };
 
+watch(
+  () => user.value,
+  (newUser) => {
+    if (newUser?.id) {
+      fetchFollowersCount(newUser.id);
+    }
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
   loadMoreUserBook();
 });
 
-
-// export default {
-//     mixins: [userMixin],
-//     components: { 
-//         CreateBook,
-//     },
-//     data() {
-//         return {
-//             popupVisible: false,
-//             followers: null,
-//             following: null,
-//             user: null,
-//         }
-//     },
-//     methods: {
-//         isActive(route) {
-//             return this.$route.path === route;
-//         },
-//         create() {
-//             this.popupVisible = true; // Affiche le popup
-//         },
-//         formatDate(dateString) {
-//             const options = { day: '2-digit', month: 'long', year: 'numeric' };
-//             const date = new Date(dateString);
-//             return date.toLocaleDateString('fr-FR', options);
-//         },
-//         async getFollowersCount() {
-//             try{
-//                 if(this.user){
-//                     const response = await api.followersCount(this.user.id);
-//                     this.followers = response.data;
-//                     if(this.followers > 999) {
-//                         this.followers = Math.floor(this.followers / 1000) + 'k'; // Convertit en milliers
-//                     }
-//                 }
-//             } catch (error) {
-//                 console.error("Erreur lors de la récupération du nombre de followers", error);
-//             }
-//         },
-//         async getFollowingCount() {
-//             try {
-//                 if(this.user) {
-//                     const response = await api.followingCount(this.user.id);
-//                     this.following = response.data;
-//                     if(this.following > 999) {
-//                         this.following = Math.floor(this.following / 1000) + 'k'; // Convertit en milliers
-//                     }
-//                 }
-//             } catch (error) {
-//                 console.error("Erreur lors de la récupération du nombre de following", error);
-//             }
-//         },
-//     },
-//     async created() {
-//         await this.$nextTick();
-//         await this.getFollowersCount();
-//         await this.getFollowingCount();
-//     },
-//     watch: {
-//         // On surveille les changements de user
-//         'user'(newVal) {
-//             if(newVal) {
-//                 this.getFollowersCount();
-//                 this.getFollowingCount();
-//             }
-//         },
-//     }
-// };
 </script>
 
 <template>
@@ -106,7 +50,7 @@ onMounted(() => {
         <h1 id="pdp">K</h1>
             <h1>{{ isLoggedIn ? user.name : 'Chargement...' }}</h1>
             <div class="followers">
-                <p><b>{{ followers ?? 0 }}</b> suivi(e)s</p>
+                <p><b>{{ followersCount ?? 0 }}</b> suivi(e)s</p>
                 <p><b>{{ following ?? 0 }}</b> abonnements</p>
             </div>
             <div class="button">
