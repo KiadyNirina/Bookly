@@ -6,7 +6,7 @@ import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
 import CreateBook from '../Book/createBook.vue';
 
 const { user, isLoggedIn, isUserLoading } = useUser();
-const { followersCount, fetchFollowersCount } = useFollowers();
+const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount } = useFollowers();
 const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4);
 
 const popupVisible = ref(false);
@@ -34,6 +34,7 @@ watch(
   (newUser) => {
     if (newUser?.id) {
       fetchFollowersCount(newUser.id);
+      fetchFollowingCount(newUser.id);
     }
   },
   { immediate: true }
@@ -51,7 +52,7 @@ onMounted(() => {
             <h1>{{ isLoggedIn ? user.name : 'Chargement...' }}</h1>
             <div class="followers">
                 <p><b>{{ followersCount ?? 0 }}</b> suivi(e)s</p>
-                <p><b>{{ following ?? 0 }}</b> abonnements</p>
+                <p><b>{{ followingCount ?? 0 }}</b> abonnements</p>
             </div>
             <div class="button">
                 <button>Partager</button>
