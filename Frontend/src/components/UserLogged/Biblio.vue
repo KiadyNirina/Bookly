@@ -1,41 +1,38 @@
-<script>
-export default {
-    methods : {
-        formatDate(dateString) {
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', options);
-        }
-    }
-}
+<script setup>
+import { onMounted } from 'vue';
+import { useUser } from '@/composables/useUser';
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
+
+const { user, isLoggedIn, isUserLoading } = useUser();
+const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4);
+
+const getImageUrl = (imgPath) => {
+  return `http://localhost:8000/${imgPath}`;
+};
+
+const formatDate = (dateString) => {
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', options);
+};
+
+onMounted(() => {
+  loadMoreUserBook();
+});
+
 </script>
 
 <template>
     <div class="content-page">
         <section class="popular-books">
-            <div class="" v-if="users && users.length != 0">
-                <div class="users">
-                    <a href="/user/1/create" class="user" v-for="(user, index) in users" :key="index">
-                        <img src="../../../public/cover 1.jpg" alt="">
-                        <div class="">
-                            <h1>{{ user.name }}<img src="../../../public/icons/badge.png" alt=""></h1>
-                            <span><b>255</b> abonnés</span>
-                        </div>
-                    </a>
-                </div>
-                <router-link to="/books/popular" id="seeMore">Voir plus</router-link>
-            </div>
-        </section>
-
-        <section class="popular-books">
             <h2>Publiés</h2>
 
-            <div v-if="userBooks.length == 0" class="noResult">
+            <div v-if="books.length == 0" class="noResult">
                 <p>Merci de patienter un moment... ou commencez à partager un livre</p>
             </div>
             <div v-else class="">
                 <div class="card">
-                    <a :href="`/books/${book.id}`" class="book" v-for="(book, index) in userBooks.slice(0, 4)" :key="index">
+                    <a :href="`/books/${book.id}`" class="book" v-for="(book, index) in books.slice(0, 4)" :key="index">
                             <div v-if="(book.isPopular)" class="badge">
                             <div class="popular">
                                 Populaire
@@ -101,7 +98,7 @@ export default {
                                 <h3>{{ book.title }}</h3>
                                 <p>{{ book.author }}</p>
                                 <p id="postedBy">
-                                Publié par <b>{{ book.potedBy }}</b>,<br>
+                                Publié par <b>{{ book.postedBy }}</b>,<br>
                                 Le <b>{{ book.date }}</b>,<br>
                                 Lang : <b>FR</b>
                                 </p>
