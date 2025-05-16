@@ -19,6 +19,18 @@ export default {
                 return;
             }
 
+            if (name.value === "" || email.value === "" || password.value === "") {
+                errorMess.value = "Tous les champs sont obligatoires.";
+                hasError.value = true;
+                return;
+            }
+
+            if (email.value !== "" && !email.value.includes("@")) {
+                errorMess.value = "Veuillez entrer une adresse e-mail valide.";
+                hasError.value = true;
+                return;
+            }
+
             await signup({
                 name: name.value,
                 email: email.value,

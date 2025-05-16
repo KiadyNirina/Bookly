@@ -95,7 +95,9 @@ export function useAuth() {
             await request("post", "/register", userData);
         } catch (error) {
             hasError.value = true;
-            errorMess.value = error.response?.data?.message || "Une erreur est survenue.";
+            errorMess.value = Object.values(error.response?.data?.errors || {})
+                .flat()
+                .join('\n');
         } finally {
             isLoading.value = false;
         }
