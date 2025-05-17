@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/vue": "^5.0.0",
     "@jambonn/vue-carousel": "^0.1.1",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.7.7",
