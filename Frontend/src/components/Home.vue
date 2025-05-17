@@ -16,13 +16,16 @@ export default {
 
 
 <template>
-  <div class="content">
-    <div class="content-1">
+  <div class="content max-w-[1400px] mr-auto ml-auto">
+    <div class="content-1 w-1/2">
       <h1>Découvrez un univers de lecture illimité</h1>
       <p>Des milliers de livres à portée de main, où que vous soyez</p>
       <a href="">
         Explorer les nouveautés
       </a>
+    </div>
+    <div class="w-1/2">
+      <img src="../../public/reading.svg" alt="">
     </div>
   </div>
 
@@ -83,19 +86,12 @@ body{
   background-color: #010310;
 }
 .content{
-  background: url("../../public/background.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   padding: 50px;
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
   font-family: "poppins";
-}
-.content .content-1{
-  width: 50%;
 }
 .content .content-1 h1{
   color: #FAFAFA;
