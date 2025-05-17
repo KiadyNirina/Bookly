@@ -1,4 +1,5 @@
 <script>
+import { Icon } from '@iconify/vue'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBook } from '@/composables/useBook'
@@ -7,6 +8,9 @@ import { useUser } from '@/composables/useUser'
 import Swal from 'sweetalert2'
 
 export default {
+    components: {
+        Icon
+    },
   setup() {
     const route = useRoute()
     const router = useRouter()
@@ -33,8 +37,8 @@ export default {
     const hoveredStar = ref(0)
     const selectedRating = ref(0)
     const starIcons = {
-      filled: '/icons/note-active.png',
-      empty: '/icons/note.png'
+      filled: 'flowbite:star-solid',
+      empty: 'flowbite:star-outline'
     }
 
     // Chargement initial
@@ -145,31 +149,39 @@ export default {
                     </p>
                     <div class="content-book">
                         <div class="note">
-                            <img src="../../../../public/icons/note-active.png" alt="">
-                            <img src="../../../../public/icons/note-active.png" alt="">
-                            <img src="../../../../public/icons/note-active.png" alt="">
-                            <img src="../../../../public/icons/note-active.png" alt="">
-                            <img src="../../../../public/icons/note.png" alt="">
+                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" height="20" />
+                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" height="20" />
+                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" height="20" />
+                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" height="20" />
+                            <Icon icon="flowbite:star-outline" class="text-[#E67E22]" height="20" />
                             <span><i>(100 notes)</i></span>
                         </div>
-                        <span><img src="../../../../public/icons/oeil.png" alt=""> 1,3k</span>
-                        <span><img src="../../../../public/icons/coms.png" alt="">150</span>
-                        <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
+                        <span>
+                            <Icon icon="entypo:eye" class="mr-1" />
+                            1,3k
+                        </span>
+                        <span>
+                            <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                            112
+                        </span>
+                        <span>
+                            <Icon icon="ic:round-download" class="mr-1" />  
+                            900
+                        </span>
                     </div>
                 </div>
             </div>
 
             <div class="desc">
                 <div class="rating">
-                    <img
-                        v-for="star in 5"
+                    <Icon :icon="star <= hoveredStar || star <= selectedRating ? starIcons.filled : starIcons.empty" v-for="star in 5"
                         :key="star"
-                        :src="star <= hoveredStar || star <= selectedRating ? starIcons.filled : starIcons.empty"
                         alt="star"
-                        class="star"
                         @mouseover="handleStarHover(star)"
                         @mouseleave="handleStarHover(0)"
-                        @click="handleRatingSelection(star)"
+                        @click="handleRatingSelection(star)" 
+                        class="text-[#E67E22]" 
+                        height="40" 
                     />
                 </div>
                 
@@ -177,11 +189,17 @@ export default {
                 <p v-html="currentBook.description.replace(/\n/g, '<br>')"></p>
                 <div class="action">
                     <router-link :to="`/book/${currentBook.id}/file`">
-                        <img src="../../../../public/icons/livres.png" alt="">Lire
+                        <Icon icon="ant-design:read-filled" class="mr-1" />Lire
                     </router-link>  
-                    <a href="#save"><img src="../../../../public/icons/save.png" alt="">Enregistrer</a>
-                    <a href="#download"><img src="../../../../public/icons/download.png" alt="">Télécharger</a>
-                    <a href="#download"><img src="../../../../public/icons/partager.png" alt="">Partager</a>
+                    <a href="#save">
+                        <Icon icon="stash:save-ribbon" class="mr-1" />Enregistrer
+                    </a>
+                    <a href="#download">
+                        <Icon icon="ic:round-download" class="mr-1" />  Télécharger
+                    </a>
+                    <a href="#download">
+                        <Icon icon="mage:share-fill" class="mr-1" />Partager
+                    </a>
                 </div>
                 <form v-if="isAuthenticated" action="">
                     <img id="profil" src="../../../../public/cover 2.jpg" alt="">
@@ -196,7 +214,12 @@ export default {
                             <b><a href="">Nom</a></b>
                             <p><span> Le <b>15/02/2024</b></span>,<br>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
-                            <span class="answer">2mois <b>Répondre</b> <b><img src="../../../../public/icons/like.png" alt="">2</b></span>
+                            <span class="answer">
+                                2mois 
+                                <b class="mr-5 ml-5">Répondre</b> 
+                                <Icon icon="solar:like-broken" class="mr-1"/>
+                                <b>2</b>
+                            </span>
                         </div>
                     </div>
                     <div class="profile">
@@ -205,6 +228,12 @@ export default {
                             <b><a href="">Nom</a></b>
                             <p><span> Le <b>15/02/2024</b></span>,<br>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                            <span class="answer">
+                                2mois 
+                                <b class="mr-5 ml-5">Répondre</b> 
+                                <Icon icon="solar:like-broken" class="mr-1"/>
+                                <b>2</b>
+                            </span>
                         </div>
                     </div>
                     <div class="profile">
@@ -213,6 +242,12 @@ export default {
                             <b><a href="">Nom</a></b>
                             <p><span> Le <b>15/02/2024</b></span>,<br>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                            <span class="answer">
+                                2mois 
+                                <b class="mr-5 ml-5">Répondre</b> 
+                                <Icon icon="solar:like-broken" class="mr-1"/>
+                                <b>2</b>
+                            </span>
                         </div>
                     </div>
                     <div class="profile">
@@ -221,6 +256,12 @@ export default {
                             <b><a href="">Nom</a></b>
                             <p><span> Le <b>15/02/2024</b></span>,<br>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim unde doloribus ea optio aliquid sequi ducimus molestiae neque quos adipisci!</p>
+                            <span class="answer">
+                                2mois 
+                                <b class="mr-5 ml-5">Répondre</b> 
+                                <Icon icon="solar:like-broken" class="mr-1"/>
+                                <b>2</b>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -249,31 +290,44 @@ export default {
                             </p>
                             <div class="content-book">
                                 <div class="note">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../../public/icons/note.png" alt="">
+                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                    <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
                                 </div>
-                                <span><img src="../../../../public/icons/oeil.png" alt="">1,3k</span>
-                                <span><img src="../../../../public/icons/coms.png" alt="">150</span>
-                                <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
+                                <span>
+                                    <Icon icon="entypo:eye" class="mr-1" />
+                                    1,3k
+                                </span>
+                                <span>
+                                    <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                                    112
+                                </span>
+                                <span>
+                                    <Icon icon="ic:round-download" class="mr-1" />  
+                                    900
+                                </span>
                             </div>
                         </div>
                         <div class="desc">
-                            <p id="type">{{ bk.genre }}</p>
+                            <p id="type" class="rounded-tr-lg">{{ bk.genre }}</p>
                             <p v-html="truncateText((bk.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
-                                <a href="#save" class="actionButton"><img src="../../../../public/icons/save.png" alt=""></a>
+                                <a href="#save" class="actionButton">
+                                    <Icon icon="stash:save-ribbon" />
+                                </a>
                                 <a v-if="user && bk.posted_by.name === user.name" href="#save" class="actionButton">
-                                    <img src="../../../../public/icons/modifier.png" alt="">
+                                    <Icon icon="material-symbols:edit" />
                                 </a>
                                 <a v-if="user && bk.posted_by.name === user.name" href="#delete" 
                                    @click.prevent="handleDeleteBook(bk.id)" 
                                    class="actionButton">
-                                    <img src="../../../../public/icons/supprimer.png" alt="">
+                                   <Icon icon="ic:round-delete" />
                                 </a>
-                                <a href="#download" class="actionButton"><img src="../../../../public/icons/partager.png" alt=""></a>
+                                <a href="#download" class="actionButton">
+                                    <Icon icon="mage:share-fill" class="mr-1" />
+                                </a>
                             </div>
                         </div>
                     </a>
@@ -461,22 +515,11 @@ export default {
     font-family: 'Poppins';
 }
 .one .desc .avis .profile .coms .answer{
+    margin-top: 5px;
     display: flex;
     align-items: center;
     color: #AAAAAA;
     font-family: 'Poppins';
-}
-.one .desc .avis .profile .coms .answer b{
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.one .desc .avis .profile .coms .answer img{
-    height: 20px;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    object-fit: none;
-    width: auto;
 }
 
 #avis{

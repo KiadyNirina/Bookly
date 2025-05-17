@@ -1,4 +1,5 @@
 <script setup>
+import { Icon } from '@iconify/vue';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 
 const {
@@ -62,15 +63,24 @@ function getImageUrl(imgPath) {
                                 </p>
                                 <div class="content-book">
                                     <div class="note">
-                                        <img src="../../../public/iconsnote-active.png" alt="">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note.png" alt="">
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
                                     </div>
-                                    <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                                    <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                                    <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                                    <span>
+                                        <Icon icon="entypo:eye" class="mr-1" />
+                                        1,3k
+                                    </span>
+                                    <span>
+                                        <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                                        112
+                                    </span>
+                                    <span>
+                                        <Icon icon="ic:round-download" class="mr-1" />  
+                                        900
+                                    </span>
                                 </div>
                             </div>
                     </a>
@@ -112,15 +122,24 @@ function getImageUrl(imgPath) {
                                 </p>
                                 <div class="content-book">
                                     <div class="note">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../public/icons/note.png" alt="">
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
                                     </div>
-                                    <span><img src="../../../public/icons/oeil.png" alt="">1,3k</span>
-                                    <span><img src="../../../public/icons/coms.png" alt=""> 112</span>
-                                    <span><img src="../../../public/icons/download.png" alt=""> 900</span>
+                                    <span>
+                                        <Icon icon="entypo:eye" class="mr-1" />
+                                        1,3k
+                                    </span>
+                                    <span>
+                                        <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                                        112
+                                    </span>
+                                    <span>
+                                        <Icon icon="ic:round-download" class="mr-1" />  
+                                        900
+                                    </span>
                                 </div>
                             </div>
                     </a>

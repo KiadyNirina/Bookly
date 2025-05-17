@@ -1,4 +1,5 @@
 <script setup>
+import { Icon } from '@iconify/vue';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import { useUser } from '@/composables/useUser';
 
@@ -62,26 +63,43 @@ function formatDate(dateString) {
                             Langue : <b>{{ book.lang }}</b>
                             </p>
                             <div class="content-book">
-                                <div class="note">
-                                    <img src="../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../public/icons/note-active.png" alt="">
-                                    <img src="../../../public/icons/note.png" alt="">
+                                    <div class="note">
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                                        <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
+                                    </div>
+                                    <span>
+                                        <Icon icon="entypo:eye" class="mr-1" />
+                                        1,3k
+                                    </span>
+                                    <span>
+                                        <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                                        112
+                                    </span>
+                                    <span>
+                                        <Icon icon="ic:round-download" class="mr-1" />  
+                                        900
+                                    </span>
                                 </div>
-                                <span>👀1,3k</span>
-                                <span><img src="../../../public/icons/coms.png" alt="">150</span>
-                                <span><img src="../../../public/icons/download.png" alt=""> 900</span>
-                            </div>
                         </div>
                         <div class="desc">
                             <p id="type">{{ book.type }}</p>
                             <p v-html="truncateText((book.description.replace(/\n/g, '<br>')), 200)"></p>
                             <div class="action">
-                                <a href="#save" class="actionButton"><img src="../../../public/icons/save.png" alt=""></a>
-                                <a href="#save" class="actionButton"><img src="../../../public/icons/modifier.png" alt=""></a>
-                                <a href="#download" class="actionButton"><img src="../../../public/icons/supprimer.png" alt=""></a>
-                                <a href="#download" class="actionButton"><img src="../../../public/icons/partager.png" alt=""></a>
+                                <a href="#save" class="actionButton">
+                                    <Icon icon="stash:save-ribbon" />
+                                </a>
+                                <a href="#save" class="actionButton">
+                                    <Icon icon="material-symbols:edit" />
+                                </a>
+                                <a href="#delete" class="actionButton">
+                                   <Icon icon="ic:round-delete" />
+                                </a>
+                                <a href="#download" class="actionButton">
+                                    <Icon icon="mage:share-fill" class="mr-1" />
+                                </a>
                             </div>
                         </div>
                     </a>

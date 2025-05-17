@@ -2,8 +2,12 @@
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
+import { Icon } from '@iconify/vue';
 
 export default {
+  components: {
+    Icon
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -44,13 +48,13 @@ export default {
       </div>
       <div class="nav-img">
         <router-link to="/dashboard" :class="{ 'active-link': isActive('/dashboard') }">
-          <img :src="isActive('/dashboard') ? '/icons/active/accueil.png' : '/icons/accueil.png'" alt="">
+          <Icon :icon="isActive('/dashboard') ? 'lets-icons:home-fill' : 'lets-icons:home'" :class="isActive('/dashboard') ? 'text-[#E67E22]' : ''" height="30"/>
         </router-link>
         <router-link to="/biblio" :class="{ 'active-link': isActive('/biblio') }">
-          <img :src="isActive('/biblio') ? '/icons/active/biblio.png' : '/icons/biblio.png'" alt="">
+          <Icon :icon="isActive('/biblio') ? 'ic:baseline-library-add' : 'ic:outline-library-add'" :class="isActive('/biblio') ? 'text-[#E67E22]' : ''" height="30"/>
         </router-link>
         <router-link to="/notif" :id="isActive('/notif') ? 'active-link' : ''">
-            <img :src="isActive('/notif') ? '/icons/active/notif.png' : '/icons/notif.png'" alt="">
+          <Icon :icon="isActive('/notif') ? 'ri:notification-fill' : 'ri:notification-line'" :class="isActive('/notif') ? 'text-[#E67E22]' : ''" height="30"/>
         </router-link>
       </div>
       <div class="search w-2/3">
@@ -58,10 +62,10 @@ export default {
       </div>
       <div class="nav-right">
         <router-link to="/profil/create" :class="{ 'active-link': isActive('/profil/saved') || isActive('/profil/create') }">
-          <img :src="isActive('/profil/saved') || isActive('/profil/create') ? '/icons/active/user.png' : '/icons/user.png'" alt="">
+          <Icon :icon="isActive('/profil/saved') || isActive('/profil/create') ? 'iconamoon:profile-fill' : 'iconamoon:profile-light'" :class="isActive('/profil/saved') || isActive('/profil/create') ? 'text-[#E67E22]' : ''" height="30"/>
         </router-link>
         <router-link to="/settings" :class="{ 'active-link': isActive('/settings') }">
-          <img :src="isActive('/settings') ? '/icons/active/paramètres.png' : '/icons/paramètres.png'" src="/icons/paramètres.png" alt="">
+          <Icon :icon="isActive('/settings') ? 'typcn:th-menu' : 'typcn:th-menu-outline'" :class="isActive('/settings') ? 'text-[#E67E22]' : ''" height="30"/>
         </router-link>
         <button id="button" @click="logout">Déconnexion</button>
       </div>
