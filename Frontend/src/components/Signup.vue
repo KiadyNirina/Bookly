@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useAuth } from "@/composables/useAuth";
 import { useRouter } from "vue-router";
+import { onMounted } from "vue";
 
 export default {
     setup() {
@@ -10,7 +11,7 @@ export default {
         const password = ref("");
         const confirmPassword = ref("");
         const router = useRouter();
-        const { signup, errorMess, isLoading, hasError } = useAuth();
+        const { signup, isPasswordVisible, errorMess, isLoading, hasError, initializeGoogleLogin } = useAuth();
 
         const handleSignup = async () => {
             if (password.value !== confirmPassword.value) {
@@ -43,13 +44,17 @@ export default {
             }
         };
 
-        return { name, email, password, confirmPassword, handleSignup, errorMess, isLoading, hasError };
+        onMounted(() => {
+            initializeGoogleLogin();
+        });
+
+        return { name, email, password, confirmPassword, isPasswordVisible, handleSignup, errorMess, isLoading, hasError };
     }
 };
 </script>
 
 <template>
-    <div class="content-login">
+    <div class="content-login h-screen flex items-center justify-center">
         <div class="form-login">
             <img src="../../public/giphy_book (4).gif" alt="">
             <div :class="['sect2', { 'error-border': hasError }]">
@@ -63,15 +68,26 @@ export default {
                     <input type="text" v-model="email" placeholder="Entrer votre email">
 
                     <label id="label">Mot de passe :</label>
-                    <div class="double">
-                        <input type="password" class="password" v-model="password" placeholder="Entrez votre mot de passe">
-                        <input type="password" class="password" v-model="confirmPassword" placeholder="Confirmer votre mot de passe">
-                    </div><br>
+                    <div class="">
+                        <input :type="isPasswordVisible ? 'text' : 'password'" class="" v-model="password" placeholder="Entrez votre mot de passe">
+                        <input :type="isPasswordVisible ? 'text' : 'password'" class="" v-model="confirmPassword" placeholder="Confirmer votre mot de passe">
+                    </div>
 
-                    <button v-if="isLoading" disabled>Loading...</button>
-                    <button v-else>S'inscrire</button>
+                    <label>
+                        <input class="mr-1" type="checkbox" v-model="isPasswordVisible" />
+                        Afficher le mot de passe
+                    </label>
+
+                    <button class="mt-2" v-if="isLoading" disabled>Loading...</button>
+                    <button class="mt-2" v-else>S'inscrire</button>
                 </form>
-                <p id="foot">Vous êtes déjà membre? <router-link to="/login">Se connecter</router-link></p>
+
+                <p class="mt-2 mb-2">Ou</p>
+                <div class="other">
+                    <div id="google-signin-button"></div>
+                </div>
+
+                <p class="mb-3" id="foot">Vous êtes déjà membre? <router-link class="hover:text-blue-500" to="/login">Se connecter</router-link></p>
             </div>
         </div>
     </div>
@@ -79,12 +95,9 @@ export default {
 
 <style>
 #label {
-    margin: 10px 0 0 0;
+    margin: 5px 0 0 0;
 }
-.double{
-    display: flex;
-}
-.double input{
-    margin: 1px;
+#google-signin-button {
+    width: 90%; 
 }
 </style>

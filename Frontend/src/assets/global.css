@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: 'MaPolice';
+    src: url('../../public/font/RubikWetPaint-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../../../public/font/Poppins/Poppins-Light.ttf');
+}

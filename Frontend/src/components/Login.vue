@@ -17,7 +17,7 @@ onMounted(initializeGoogleLogin);
 </script>
 
 <template>
-    <div class="content-login">
+    <div class="content-login h-screen flex items-center justify-center">
         <div class="form-login">
             <img src="../../public/giphy_book (4).gif" alt="">
             <div :class="['sect2', { 'error-border': hasError }]">
@@ -31,18 +31,18 @@ onMounted(initializeGoogleLogin);
                     <input :type="isPasswordVisible ? 'text' : 'password'" v-model="password"
                         placeholder="Entrez votre mot de passe" />
                     <label>
-                        <input type="checkbox" v-model="isPasswordVisible" />
+                        <input class="mr-1" type="checkbox" v-model="isPasswordVisible" />
                         Afficher le mot de passe
                     </label>
                     <a href="#" id="passwordForgot">Mot de passe oublié?</a>
                     <button v-if="isLoading" disabled>Chargement...</button>
                     <button v-else>Se connecter</button>
                 </form>
-                <p>Ou :</p>
+                <p class="mt-2 mb-2">Ou</p>
                 <div class="other">
                     <div id="google-signin-button"></div>
                 </div>
-                <p id="foot">Vous n'êtes pas encore inscrit? <router-link to="/signup">S'inscrire</router-link></p>
+                <p class="mb-3" id="foot">Vous n'êtes pas encore inscrit? <router-link class="hover:text-blue-500" to="/signup">S'inscrire</router-link></p>
             </div>
         </div>
     </div>
@@ -77,7 +77,6 @@ onMounted(initializeGoogleLogin);
     flex-direction: column; /* Empile les éléments verticalement */
     justify-content: center; /* Centre verticalement */
     align-items: center; /* Centre horizontalement */
-    padding: 10px;
     width: 50%;
     box-sizing: border-box;
 }
@@ -87,14 +86,15 @@ onMounted(initializeGoogleLogin);
     font-weight: 100;    
     text-align: center;
     font-size: 40px;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
+    margin-top: 10px;
 }
 .content-login .form-login .sect2 form {
     width: 80%;
 }
 .content-login .form-login .sect2 form input[type='text'], .content-login .form-login .sect2 form input[type='password']{
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     height: 40px;
     background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.183);
