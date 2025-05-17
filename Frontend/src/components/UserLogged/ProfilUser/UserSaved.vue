@@ -82,7 +82,6 @@
     text-align: center;
     color: white;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 35px;
 }
 .profil img{
     height: 120px;

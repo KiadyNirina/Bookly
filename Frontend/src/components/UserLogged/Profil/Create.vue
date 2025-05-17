@@ -47,9 +47,13 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="profil">
-        <h1 id="pdp">K</h1>
-            <h1>{{ isLoggedIn ? user.name : 'Chargement...' }}</h1>
+    <div class="profil mt-6">
+        <div class="flex justify-center items-center">
+            <h1 class="text-8xl bg-gray-500 w-30 h-30 flex justify-center items-center rounded-full">
+                K
+            </h1>
+        </div>
+            <h1 class="text-[35px]">{{ isLoggedIn ? user.name : 'Chargement...' }}</h1>
             <div class="followers">
                 <p><b>{{ followersCount ?? 0 }}</b> suivi(e)s</p>
                 <p><b>{{ followingCount ?? 0 }}</b> abonnements</p>
