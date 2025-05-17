@@ -38,7 +38,7 @@ export default {
     </div>
 
     <!-- Navbar si l'utilisateur est authentifié -->
-    <div v-else class="nav">
+    <div v-else class="nav fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[1400px] z-50">
       <div class="nav-left">
         <img src="/logo.jpg" alt="Logo">
       </div>
@@ -53,7 +53,7 @@ export default {
             <img :src="isActive('/notif') ? '/icons/active/notif.png' : '/icons/notif.png'" alt="">
         </router-link>
       </div>
-      <div class="search">
+      <div class="search w-2/3">
         <input type="search" placeholder="Rechercher un livre, un auteur, un utilisateur">
       </div>
       <div class="nav-right">
