@@ -21,11 +21,11 @@ export default {
 <template>
   <main>
     <!-- Navbar si l'utilisateur n'est pas authentifié -->
-    <div v-if="!isAuthenticated" class="nav">
+    <div v-if="!isAuthenticated" class="nav fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[1400px] z-50">
       <div class="nav-left">
         <img src="/logo.jpg" alt="Logo">
       </div>
-      <div class="search">
+      <div class="search w-3/5">
         <input type="search" placeholder="Rechercher un livre, un auteur, un utilisateur">
       </div>
       <div class="nav-right">
@@ -75,9 +75,7 @@ export default {
     align-items: center;
     background-color: #010310;
     padding: 10px;
-    position: fixed;
     width: 100%;
-    z-index: 10;
 }
 .nav img{
     height: 30px;
@@ -107,7 +105,6 @@ export default {
     margin-right: 10px;
 }
 .search{
-    width: 70%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -126,7 +123,6 @@ export default {
 }
 .nav-right{
     margin-left: auto;
-    width: auto;
     display: flex;
     align-items: center;
 }
