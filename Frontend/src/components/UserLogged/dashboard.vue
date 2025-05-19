@@ -51,7 +51,7 @@ function getImageUrl(imgPath) {
                                     Recommandé
                                 </div>
                             </div>
-                            <img :src="book.cover ? book.cover : 'storage/images/default.jpg'" :alt="book.title">
+                            <img :src="getImageUrl(book.picture)" :alt="book.title">
                             <p id="type">Fiction</p>
                             <div class="book-info">
                                 <h3>{{ book.title }}</h3>
@@ -110,7 +110,7 @@ function getImageUrl(imgPath) {
                                     Recommandé
                                 </div>
                             </div>
-                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                            <img :src="getImageUrl(book.picture)" :alt="book.title" />
                             <p id="type">Fiction</p>
                             <div class="book-info">
                                 <h3>{{ book.title }}</h3>

@@ -44,7 +44,7 @@ onMounted(() => {
                                 Recommandé
                             </div>
                             </div>
-                            <img :src="book.picture ? getImageUrl(book.picture) : getImageUrl(defaultImg)" :alt="book.title" />
+                            <img :src="getImageUrl(book.picture)" :alt="book.title" />
                             <p id="type">Fiction</p>
                             <div class="book-info">
                                 <h3>{{ book.title }}</h3>
@@ -102,7 +102,7 @@ onMounted(() => {
                                 Recommandé
                             </div>
                             </div>
-                            <img :src="book.cover" :alt="book.title">
+                            <img :src="getImageUrl(book.picture)" :alt="book.title">
                             <p id="type">Fiction</p>
                             <div class="book-info">
                                 <h3>{{ book.title }}</h3>
@@ -161,7 +161,7 @@ onMounted(() => {
                                 Recommandé
                             </div>
                             </div>
-                            <img :src="book.cover" :alt="book.title">
+                            <img :src="getImageUrl(book.picture)" :alt="book.title">
                             <p id="type">Fiction</p>
                             <div class="book-info">
                                 <h3>{{ book.title }}</h3>
