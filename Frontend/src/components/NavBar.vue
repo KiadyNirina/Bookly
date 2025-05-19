@@ -1,8 +1,9 @@
 <script>
-import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { Icon } from '@iconify/vue';
+import { useSearchStore } from '@/stores/searchStore';
+import { watch } from 'vue';
 
 export default {
   components: {
@@ -12,12 +13,29 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const { isAuthenticated, logout } = useAuth();
+    const store = useSearchStore();
 
     const isActive = (path) => {
       return route.path.startsWith(path);
     };
 
-    return { isAuthenticated, logout, isActive };
+    watch(() => store.query, (newQuery, oldQuery) => {
+      const trimmed = newQuery.trim();
+
+      if (trimmed && route.path !== '/search') {
+        // Sauvegarde la page d'origine (mais une seule fois)
+        store.previousPath = route.fullPath;
+        router.push({ path: '/search', query: { q: trimmed } });
+      }
+
+      if (!trimmed && route.path === '/search') {
+        // Si la recherche est vide, retourne à la page précédente
+        const fallback = store.previousPath || '/';
+        router.push(fallback);
+      }
+    });
+
+    return { isAuthenticated, logout, isActive, store };
   }
 };
 </script>
@@ -29,8 +47,14 @@ export default {
       <div class="nav-left">
         <img src="/logo.jpg" alt="Logo">
       </div>
-      <div class="search w-3/5">
-        <input type="search" placeholder="Rechercher un livre, un auteur, un utilisateur">
+      <div class="search relative w-3/5">
+        <input
+          type="search"
+          v-model="store.query"
+          placeholder="Rechercher un livre, un auteur, un utilisateur"
+          class="w-full p-2 border rounded"
+        />
+        <SearchResultBox />
       </div>
       <div class="nav-right">
         <router-link to="/" :class="{ 'active-link': isActive('/') }">Accueil</router-link>
@@ -58,7 +82,11 @@ export default {
         </router-link>
       </div>
       <div class="search w-2/3">
-        <input type="search" placeholder="Rechercher un livre, un auteur, un utilisateur">
+        <input 
+          type="search" 
+          placeholder="Rechercher un livre, un auteur, un utilisateur"
+          v-model="store.query"
+        />
       </div>
       <div class="nav-right">
         <router-link to="/profil/create" :class="{ 'active-link': isActive('/profil/saved') || isActive('/profil/create') }">

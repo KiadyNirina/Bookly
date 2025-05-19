@@ -14,6 +14,7 @@ import Create from '@/components/UserLogged/Profil/Create.vue';
 import Posted from '@/components/books/Posted.vue';
 import Recent from '@/components/books/Recent.vue';
 import BookReader from '@/components/books/BookReader.vue';
+import SearchBook from '@/components/UserLogged/Book/SearchBook.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -31,6 +32,7 @@ const routes = [
     { path: '/user/:id/saved', component: UserSaved },
     { path: '/profil/create', component: Create },
     { path: '/profil/saved', component: Saved },
+    { path: '/search', component: SearchBook },
 ];
 
 const router = createRouter({

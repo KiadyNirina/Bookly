@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router/router'; // Importation du routeur Vue
 //import store from './store'; // Importation du store (Vuex)
@@ -11,5 +12,6 @@ const app = createApp(App);
 app.config.globalProperties.$api = apiClient;
 
 app.use(router);
+app.use(createPinia());
 //app.use(store);
 app.mount('#app');
