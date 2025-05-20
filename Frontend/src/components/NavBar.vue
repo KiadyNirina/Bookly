@@ -12,13 +12,13 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const { isAuthenticated, logout } = useAuth();
-    const { searchQuery, updateSearch } = useSearch();
+    const { searchQuery } = useSearch();
 
     const isActive = (path) => {
       return route.path.startsWith(path);
     };
 
-    return { isAuthenticated, logout, isActive, searchQuery, updateSearch };
+    return { isAuthenticated, logout, isActive, searchQuery };
   }
 };
 </script>
@@ -34,7 +34,6 @@ export default {
         <input
           type="search"
           v-model="searchQuery"
-          @input = "updateSearch"
           placeholder="Rechercher un livre, un auteur, un utilisateur"
           class="w-full p-2 border rounded"
         />
@@ -69,7 +68,6 @@ export default {
         <input
           type="search"
           v-model="searchQuery"
-          @input = "updateSearch"
           placeholder="Rechercher un livre, un auteur, un utilisateur"
         />
       </div>

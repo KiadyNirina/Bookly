@@ -1,7 +1,28 @@
 <script setup>
-import { useSearch } from '@/composables/useSearch';
+import { useRoute } from 'vue-router';
+import { ref, watch } from 'vue';
+import apiClient from '@/plugins/axios';
 
-const { searchQuery, results, loading } = useSearch();
+const route = useRoute();
+const results = ref({ books: [], users: [] });
+
+const fetchResults = async (query) => {
+  try {
+    const res = await apiClient.get('/search', { params: { q: query } });
+    results.value = res.data;
+  } catch {
+    results.value = { books: [], users: [] };
+  }
+};
+
+watch(
+  () => route.query.q,
+  (q) => {
+    if (q) fetchResults(q);
+    else results.value = { books: [], users: [] };
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
