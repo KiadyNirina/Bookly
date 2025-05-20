@@ -44,6 +44,7 @@ Route::get('/books/{id}', [BookController::class, 'show']);
 Route::get('/user/books', [BookController::class, 'getBooksByUser'])->middleware('auth:sanctum');
 Route::get('/user/{id}/books', [BookController::class, 'getBooksByUserSelected']);
 Route::get('/books/{id}/file', [BookController::class, 'getFile']);
+Route::get('/search', [BookController::class, 'search']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/{user}/follow', [FollowerController::class, 'follow']);

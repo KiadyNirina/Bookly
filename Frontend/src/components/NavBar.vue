@@ -2,8 +2,7 @@
 import { useRoute, useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { Icon } from '@iconify/vue';
-import { useSearchStore } from '@/stores/searchStore';
-import { watch } from 'vue';
+import { useSearch } from '@/composables/useSearch';
 
 export default {
   components: {
@@ -13,29 +12,13 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const { isAuthenticated, logout } = useAuth();
-    const store = useSearchStore();
+    const { searchQuery, updateSearch } = useSearch();
 
     const isActive = (path) => {
       return route.path.startsWith(path);
     };
 
-    watch(() => store.query, (newQuery, oldQuery) => {
-      const trimmed = newQuery.trim();
-
-      if (trimmed && route.path !== '/search') {
-        // Sauvegarde la page d'origine (mais une seule fois)
-        store.previousPath = route.fullPath;
-        router.push({ path: '/search', query: { q: trimmed } });
-      }
-
-      if (!trimmed && route.path === '/search') {
-        // Si la recherche est vide, retourne à la page précédente
-        const fallback = store.previousPath || '/';
-        router.push(fallback);
-      }
-    });
-
-    return { isAuthenticated, logout, isActive, store };
+    return { isAuthenticated, logout, isActive, searchQuery, updateSearch };
   }
 };
 </script>
@@ -50,7 +33,8 @@ export default {
       <div class="search relative w-3/5">
         <input
           type="search"
-          v-model="store.query"
+          v-model="searchQuery"
+          @input = "updateSearch"
           placeholder="Rechercher un livre, un auteur, un utilisateur"
           class="w-full p-2 border rounded"
         />
@@ -82,10 +66,11 @@ export default {
         </router-link>
       </div>
       <div class="search w-2/3">
-        <input 
-          type="search" 
+        <input
+          type="search"
+          v-model="searchQuery"
+          @input = "updateSearch"
           placeholder="Rechercher un livre, un auteur, un utilisateur"
-          v-model="store.query"
         />
       </div>
       <div class="nav-right">

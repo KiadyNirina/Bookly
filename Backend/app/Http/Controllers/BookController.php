@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -190,6 +191,31 @@ class BookController extends Controller
         return response()->file($filePath, [
             'Content-Type' => 'application/epub+zip',
             'Access-Control-Allow-Origin' => 'http://localhost:5173',
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->query('q');
+
+        if (!$q) {
+            return response()->json([
+                'books' => [],
+                'users' => [],
+            ]);
+        }
+
+        $books = Book::where('title', 'like', "%$q%")
+                    ->orWhere('author', 'like', "%$q%")
+                    ->get();
+
+        $users = User::where('name', 'like', "%$q%")
+                    ->orWhere('email', 'like', "%$q%")
+                    ->get();
+
+        return response()->json([
+            'books' => $books,
+            'users' => $users,
         ]);
     }
 }
