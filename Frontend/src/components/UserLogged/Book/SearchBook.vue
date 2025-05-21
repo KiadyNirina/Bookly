@@ -37,7 +37,7 @@ watch(
 
 <template>
   <div class="p-6 max-w-4xl mx-auto mt-10 text-white">
-    <h1 class="text-2xl font-bold mb-4">Résultats pour "{{ searchQuery }}"</h1>
+    <h1 class="text-2xl font-bold mb-4">Résultats pour "{{ route.query.q }}"</h1>
 
     <div v-if="loading">Chargement...</div>
 
