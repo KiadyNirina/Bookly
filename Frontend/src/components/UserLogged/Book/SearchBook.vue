@@ -15,6 +15,16 @@ const fetchResults = async (query) => {
   }
 };
 
+function formatDate(dateString) {
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', options);
+}
+
+function getImageUrl(imgPath) {
+  return `http://localhost:8000/${imgPath}`;
+}
+
 watch(
   () => route.query.q,
   (q) => {
@@ -33,11 +43,42 @@ watch(
 
     <div v-else>
       <h2 class="text-xl font-semibold mt-4">📚 Livres</h2>
-      <ul>
-        <li v-for="book in results.books" :key="book.id">
-          {{ book.title }} — {{ book.author }}
-        </li>
-      </ul>
+      <div class="card">
+        <a :href="`/books/${book.id}`" class="book" v-for="book in results.books" :key="book.id">
+          <img :src="getImageUrl(book.picture)" :alt="book.title">
+          <p id="type">{{ book.genre }}</p>
+          <div class="book-info">
+            <h3>{{ book.title }}</h3>
+            <p>{{ book.author }}</p>
+            <p id="postedBy">
+              Publié par <b>{{ book.posted_by.name }}</b>,<br>
+              Le <b>{{ formatDate(book.created_at) }}</b>,<br>
+              Lang : <b>FR</b>
+            </p>
+            <div class="content-book">
+              <div class="note">
+                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
+              </div>
+              <span>
+                <Icon icon="entypo:eye" class="mr-1" />
+                1,3k
+              </span>
+              <span>
+                <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                112
+              </span>
+              <span>
+                <Icon icon="ic:round-download" class="mr-1" />  
+                900
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
 
       <h2 class="text-xl font-semibold mt-4">👤 Utilisateurs</h2>
       <ul>

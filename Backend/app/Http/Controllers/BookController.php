@@ -207,6 +207,7 @@ class BookController extends Controller
 
         $books = Book::where('title', 'like', "%$q%")
                     ->orWhere('author', 'like', "%$q%")
+                    ->with('posted_by')
                     ->get();
 
         $users = User::where('name', 'like', "%$q%")
