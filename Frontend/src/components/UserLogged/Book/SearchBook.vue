@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
 import apiClient from '@/plugins/axios';
+import { Icon } from '@iconify/vue';
 
 const route = useRoute();
 const results = ref({ books: [], users: [] });
@@ -36,16 +37,16 @@ watch(
 </script>
 
 <template>
-  <div class="p-6 max-w-4xl mx-auto mt-10 text-white">
+  <div class="p-[50px] max-w-[1300px] mx-auto mt-10 text-white">
     <h1 class="text-2xl font-bold mb-4">Résultats pour "{{ route.query.q }}"</h1>
 
     <div v-if="loading">Chargement...</div>
 
     <div v-else>
       <h2 class="text-xl font-semibold mt-4">📚 Livres</h2>
-      <div class="card">
-        <a :href="`/books/${book.id}`" class="book" v-for="book in results.books" :key="book.id">
-          <img :src="getImageUrl(book.picture)" :alt="book.title">
+      <div class="mt-4 grid grid-cols-4 gap-x-3 gap-y-4">
+        <a :href="`/books/${book.id}`" class="book border-1 border-[#4388ff27] rounded-2xl transition duration-200 hover:shadow-[0_0_10px_#3355ffc2]" v-for="book in results.books" :key="book.id">
+          <img style="height: 200px; width: 100%; object-fit: cover;" class="rounded-t-2xl" :src="getImageUrl(book.picture)" :alt="book.title">
           <p id="type">{{ book.genre }}</p>
           <div class="book-info">
             <h3>{{ book.title }}</h3>
