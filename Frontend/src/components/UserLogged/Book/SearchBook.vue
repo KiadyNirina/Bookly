@@ -52,7 +52,7 @@ watch(
             <h3>{{ book.title }}</h3>
             <p>{{ book.author }}</p>
             <p id="postedBy">
-              Publié par <b>{{ book.posted_by.name }}</b>,<br>
+              Publié par <b>{{ book.poster_name }}</b>,<br>
               Le <b>{{ formatDate(book.created_at) }}</b>,<br>
               Lang : <b>FR</b>
             </p>

@@ -205,9 +205,14 @@ class BookController extends Controller
             ]);
         }
 
-        $books = Book::where('title', 'like', "%$q%")
-                    ->orWhere('author', 'like', "%$q%")
-                    ->with('posted_by')
+        $books = Book::query()
+                    ->leftJoin('users', 'books.posted_by', '=', 'users.id')
+                    ->where(function ($query) use ($q) {
+                        $query->where('books.title', 'like', "%$q%")
+                            ->orWhere('books.author', 'like', "%$q%")
+                            ->orWhere('users.name', 'like', "%$q%");
+                    })
+                    ->select('books.*', 'users.name as poster_name')
                     ->get();
 
         $users = User::where('name', 'like', "%$q%")
