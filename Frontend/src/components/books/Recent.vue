@@ -47,75 +47,53 @@ function formatDate(dateString) {
         <section class="popular-books">
             <h2>Les livres les plus récents</h2>
 
-            <div v-if="books.length != 0" class="row">
-                <div class="books" v-for="(book, index) in books" :key="index">
-                    <a :href="`/books/${book.id}`">
-                        <div class="img">
-                            <img :src="getImageUrl(book.picture)" :alt="book.title" />
-                        </div>
-                        <div class="info">
-                            <h3>{{ book.title }}</h3>
-                            <p>{{ book.author }}</p>
-                            <p id="poste">
-                            Publié par <b>{{ book.posted_by.name }}</b>,<br>
-                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
-                            Lang : <b>{{ book.lang }}</b>
-                            </p>
-                            <div class="content-book">
-                                <div class="note">
-                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                    <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
-                                </div>
-                                <span>
-                                    <Icon icon="entypo:eye" class="mr-1" />
-                                    1,3k
-                                </span>
-                                <span>
-                                    <Icon icon="iconamoon:comment-fill" class="mr-1" />
-                                    112
-                                </span>
-                                <span>
-                                    <Icon icon="ic:round-download" class="mr-1" />  
-                                    900
-                                </span>
-                            </div>
-                        </div>
-                        <div class="desc">
-                            <p id="type">{{ book.genre }}</p>
-                            <p v-html="truncateText((book.description.replace(/\n/g, '<br>')), 200)"></p>
-                            <div class="action">
-                                <a href="#save" class="actionButton">
-                                    <Icon icon="stash:save-ribbon" />
-                                </a>
-                                <a v-if="user && book.posted_by.name === user.name" href="#save" class="actionButton">
-                                    <Icon icon="material-symbols:edit" />
-                                </a>
-                                <a v-if="user && book.posted_by.name === user.name" href="#delete" class="actionButton">
-                                   <Icon icon="ic:round-delete" />
-                                </a>
-                                <a href="#download" class="actionButton">
-                                    <Icon icon="mage:share-fill" class="mr-1" />
-                                </a>
-                            </div>
-                        </div>
-                    </a>
+            <div  v-if="books.length != 0" class="mt-4 grid grid-cols-4 gap-x-3 gap-y-4">
+                <a :href="`/books/${book.id}`" class="book border-1 border-[#4388ff27] rounded-2xl transition duration-200 hover:shadow-[0_0_10px_#3355ffc2]" v-for="book in books" :key="book.id">
+                <img style="height: 200px; width: 100%; object-fit: cover;" class="rounded-t-2xl" :src="getImageUrl(book.picture)" :alt="book.title">
+                <p id="type">{{ book.genre }}</p>
+                <div class="book-info">
+                    <h3>{{ book.title }}</h3>
+                    <p>{{ book.author }}</p>
+                    <p id="postedBy">
+                    Publié par <b>{{ book.posted_by.name }}</b>,<br>
+                    Le <b>{{ formatDate(book.created_at) }}</b>,<br>
+                    Lang : <b>FR</b>
+                    </p>
+                    <div class="content-book">
+                    <div class="note">
+                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                        <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
+                        <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
+                    </div>
+                    <span>
+                        <Icon icon="entypo:eye" class="mr-1" />
+                        1,3k
+                    </span>
+                    <span>
+                        <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                        112
+                    </span>
+                    <span>
+                        <Icon icon="ic:round-download" class="mr-1" />  
+                        900
+                    </span>
+                    </div>
                 </div>
-
-                <button
+                </a>
+            </div>
+            <div v-else class="">
+                <p style="font-size: 12px;">Chargement...</p>
+            </div>
+            <button
                 v-if="hasMore && books.length > 0"
                 @click="loadMore"
                 :disabled="isLoading"
                 id="seeMore"
                 >
                     {{ isLoading ? 'Chargement...' : 'Voir plus' }}
-                </button>
-            </div>
-            <div v-else class="">
-                <p style="font-size: 12px;">Chargement...</p>
-            </div>
+            </button>
 
         </section>
     </div>
