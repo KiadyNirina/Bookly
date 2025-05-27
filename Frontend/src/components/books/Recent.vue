@@ -10,19 +10,12 @@ const {
   hasMore,
   error,
   loadMore
-} = useLoadMoreBooks(5) // 5 livres à la fois
+} = useLoadMoreBooks(8) // 8 livres à la fois
 
 loadMore()
 
 function getImageUrl(imgPath) {
   return `http://localhost:8000/${imgPath}`;
-}
-
-function truncateText(text, maxlength) {
-    if(text.length > maxlength) {
-        return text.slice(0, maxlength) + '...';
-    }
-    return text;
 }
 
 function formatDate(dateString) {
