@@ -10,7 +10,7 @@ const {
   hasMore,
   error,
   loadMore
-} = useLoadMoreBooks(5) // 5 livres à la fois
+} = useLoadMoreBooks(8) // 8 livres à la fois
 
 loadMore()
 
