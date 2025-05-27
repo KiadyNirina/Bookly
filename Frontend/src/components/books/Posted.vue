@@ -19,13 +19,6 @@ function getImageUrl(imgPath) {
   return `http://localhost:8000/${imgPath}`;
 }
 
-function truncateText(text, maxlength) {
-    if(text.length > maxlength) {
-        return text.slice(0, maxlength) + '...';
-    }
-    return text;
-}
-
 function formatDate(dateString) {
     const options = { day: '2-digit', month: 'long', year: 'numeric' };
     const date = new Date(dateString);
