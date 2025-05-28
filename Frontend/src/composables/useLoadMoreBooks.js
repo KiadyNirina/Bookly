@@ -66,6 +66,24 @@ export function useLoadMoreBooks(perPage = 5) {
     }
   };
 
+  const loadMoreBooks = async (userId) => {
+    if (!hasMore.value || isLoading.value) return;
+
+    isLoading.value = true;
+    try {
+      const response = await request(
+        'GET',
+        `/user/${userId}/books?page=${currentPage.value}&per_page=${perPage}`
+      );
+      handleResponse(response);
+    } catch (err) {
+      error.value = 'Erreur lors du chargement des livres de l\'utilisateur.';
+      console.error(err);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     books,
     isLoading,
@@ -73,5 +91,6 @@ export function useLoadMoreBooks(perPage = 5) {
     error,
     loadMore,
     loadMoreUserBook,
+    loadMoreBooks,
   };
 }

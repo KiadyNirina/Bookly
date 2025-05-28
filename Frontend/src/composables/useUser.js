@@ -2,6 +2,7 @@ import { ref, computed, watchEffect } from 'vue';
 import { useApi } from '@/composables/useApi';
 
 const user = ref(null);
+const userOne = ref(null);
 const hasUserError = ref(false);
 
 export function useUser() {
@@ -26,6 +27,20 @@ export function useUser() {
         }
     };
 
+    const fetchOneUser = async (userId) => {
+        hasUserError.value = false;
+
+        try {
+            const response = await request('GET', `/users/${userId}`);
+            userOne.value = response.data;
+            console.log("Utilisateur récupéré :", userOne.value);
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'utilisateur :", error);
+            userOne.value = null;
+            hasUserError.value = true;
+        }
+    };
+
     const isLoggedIn = computed(() => !!user.value);
 
     // Pour automatiquement chercher l'utilisateur si un token est présent
@@ -38,8 +53,10 @@ export function useUser() {
 
     return {
         user,
+        userOne,
         isLoggedIn,
         hasUserError,
-        fetchUser
+        fetchUser,
+        fetchOneUser
     };
 }
