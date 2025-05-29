@@ -61,8 +61,8 @@ onMounted(() => {
             </div>
             <FollowButton v-if="userOne" :userId="userOne.id" />
             <div class="section">
-                <a :href="`/profil/create`" :id="isActive('/profil/create') ? 'act-link' : ''">Créees</a>
-                <a :href="`/profil/saved`" :id="isActive('/profil/saved') ? 'act-link' : ''">Enregistrées</a>
+                <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créees</a>
+                <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
             </div>
             
             <section class="popular-books">
