@@ -60,7 +60,7 @@ onMounted(() => {
                 <router-link to="">Modifier le profil</router-link>
             </div>
             <FollowButton v-if="userOne" :userId="userOne.id" />
-            <div class="section">
+            <div class="section" v-if="userOne">
                 <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créees</a>
                 <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
             </div>
