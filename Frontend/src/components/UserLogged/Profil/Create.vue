@@ -100,26 +100,22 @@ onMounted(() => {
                                     Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                                     Lang : <b>FR</b>
                                     </p>
-                                    <div class="content-book">
-                                        <div class="note">
-                                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                            <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                            <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
+                                    <div class="flex justify-between items-center text-sm mt-3 text-gray-500">
+                                        <div class="flex items-center gap-1 text-[#E67E22]">
+                                            <Icon icon="flowbite:star-solid" v-for="i in 4" :key="i" />
+                                            <Icon icon="flowbite:star-outline" />
                                         </div>
-                                        <span>
-                                            <Icon icon="entypo:eye" class="mr-1" />
-                                            1,3k
-                                        </span>
-                                        <span>
-                                            <Icon icon="iconamoon:comment-fill" class="mr-1" />
-                                            112
-                                        </span>
-                                        <span>
-                                            <Icon icon="ic:round-download" class="mr-1" />  
-                                            900
-                                        </span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="flex items-center">
+                                            <Icon icon="entypo:eye" class="mr-1" /> 1,3k
+                                            </span>
+                                            <span class="flex items-center">
+                                            <Icon icon="iconamoon:comment-fill" class="mr-1" /> 112
+                                            </span>
+                                            <span class="flex items-center">
+                                            <Icon icon="ic:round-download" class="mr-1" /> 900
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </a>

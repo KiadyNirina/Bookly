@@ -71,7 +71,7 @@ onMounted(() => {
                 </div>
                 <div v-else class="">
                     <div class="mt-4 grid grid-cols-4 gap-x-3 gap-y-4">
-                        <a :href="`/books/${book.id}`" class="book border-1 border-[#4388ff27] rounded-2xl transition duration-200 hover:shadow-[0_0_10px_#3355ffc2]" v-for="book in books" :key="book.id">
+                        <a :href="`/books/${book.id}`" class="border-1 border-[#4388ff27] rounded-2xl transition duration-200 hover:shadow-[0_0_10px_#3355ffc2]" v-for="book in books" :key="book.id">
                         <img style="height: 200px; width: 100%; object-fit: cover;" class="rounded-t-2xl" :src="getImageUrl(book.picture)" :alt="book.title">
                         <p id="type">{{ book.genre }}</p>
                         <div class="book-info">
@@ -82,26 +82,22 @@ onMounted(() => {
                             Le <b>{{ formatDate(book.created_at) }}</b>,<br>
                             Lang : <b>FR</b>
                             </p>
-                            <div class="content-book">
-                            <div class="note">
-                                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                                <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
-                            </div>
-                            <span>
-                                <Icon icon="entypo:eye" class="mr-1" />
-                                1,3k
-                            </span>
-                            <span>
-                                <Icon icon="iconamoon:comment-fill" class="mr-1" />
-                                112
-                            </span>
-                            <span>
-                                <Icon icon="ic:round-download" class="mr-1" />  
-                                900
-                            </span>
+                            <div class="flex justify-between items-center text-sm mt-3 text-gray-500">
+                                <div class="flex items-center gap-1 text-[#E67E22]">
+                                    <Icon icon="flowbite:star-solid" v-for="i in 4" :key="i" />
+                                    <Icon icon="flowbite:star-outline" />
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="flex items-center">
+                                    <Icon icon="entypo:eye" class="mr-1" /> 1,3k
+                                    </span>
+                                    <span class="flex items-center">
+                                    <Icon icon="iconamoon:comment-fill" class="mr-1" /> 112
+                                    </span>
+                                    <span class="flex items-center">
+                                    <Icon icon="ic:round-download" class="mr-1" /> 900
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         </a>
@@ -146,7 +142,7 @@ onMounted(() => {
 .profil img{
     height: 120px;
     border: 1px solid white;
-    border-radius: 100%;
+    /*border-radius: 100%;*/
     display: flex;
     margin-left: auto;
     margin-right: auto;
