@@ -1,150 +1,118 @@
-<script>
-// import api from '@/api';
-// import FollowButton from './FollowButton.vue';
+<script setup>
+import { Icon } from '@iconify/vue';
+import { ref, onMounted, watch } from 'vue';
+import { useUser } from '@/composables/useUser';
+import { useRoute } from 'vue-router';
+import { useFollowers } from '@/composables/useFollowers';
+import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
+import FollowButton from './FollowButton.vue';
 
-// export default {
-//     data() {
-//         return {
-//             userOne: null,
-//             FollowersCount: null,
-//             FollowingCount: null,
-//             userSelectedBooks: [],
-//             currentPageUserSelected: 1,
-//             lastPageUserSelected: 1,
-//             perPageUserSelected: 4,
-//             defaultImg: '/path/to/default/image.jpg', // À remplacer par une image par défaut
-//         }
-//     },
-//     components: {
-//         FollowButton,
-//     },
-//     methods: {
-//         isActive(route) {
-//             return this.$route.path === route;
-//         },
-//         async getUserOne() {
-//             try {
-//                 const idUser = this.$route.params.id;
-//                 const response = await api.getOneUser(idUser);
-//                 this.userOne = response.data.data;
-//                 console.log("Utilisateur récupéré :", this.userOne);
-//             } catch (error) {
-//                 console.error("Erreur de récupération des données de l'utilisateur :", error);
-//             }
-//         },
-//         async getSelectedUserBooks() {
-//             try {
-//                 const idUser = this.$route.params.id;
-//                 const response = await api.getUserSelectedBooks(idUser, this.currentPageUserSelected, this.perPageUserSelected);
-//                 this.userSelectedBooks = response.data.data;
-//                 console.log("Livres récupérés : ", this.userSelectedBooks);
-//             } catch (error) {
-//                 console.error("Erreur de récupération des livres de l'utilisateur sélectionné :", error.message);
-//             }
-//         },
-//         async getFollowersNumber() {
-//             try {
-//                 const idUser = this.$route.params.id;
-//                 const response = await api.followersCount(idUser);
-//                 this.FollowersCount = response.data;
-//             } catch (error) {
-//                 console.error("Erreur lors de récupération de nombre de suivi");
-//             }
-//         },
-//         async getFollowingNumber() {
-//             try {
-//                 const idUser = this.$route.params.id;
-//                 const response = await api.followingCount(idUser);
-//                 this.FollowingCount = response.data;
-//             } catch (error) {
-//                 console.error("Erreur lors de récupération de nombre de suivi");
-//             }
-//         },
-//         getImageUrl(imagePath) {
-//             return imagePath ? `/uploads/${imagePath}` : this.defaultImg;
-//         },
-//         formatDate(date) {
-//             return new Date(date).toLocaleDateString('fr-FR');
-//         }
-//     },
-//     created() {
-//         this.getUserOne();
-//         this.getSelectedUserBooks();
-//         this.getFollowersNumber();
-//         this.getFollowingNumber();
-//     }
-// };
+const { userOne, fetchOneUser } = useUser();
+const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount } = useFollowers();
+const { books, isLoading, hasMore, error, loadMoreBooks } = useLoadMoreBooks(4);
+
+const route = useRoute();
+const idUser = route.params.id;
+
+const isActive = (linkPath) => route.path === linkPath;
+
+const getImageUrl = (imgPath) => {
+  return `http://localhost:8000/${imgPath}`;
+};
+
+const formatDate = (dateString) => {
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', options);
+};
+
+watch(
+    () => userOne.value,
+    (newUser) => {
+        if (newUser?.id) {
+            fetchFollowersCount(newUser.id);
+            fetchFollowingCount(newUser.id);
+        }
+    },
+    { immediate: true }
+);
+
+onMounted(() => {
+    fetchOneUser(idUser);
+    loadMoreBooks(idUser);
+});
 </script>
 
 <template>
-    <!-- <div v-if="userOne" class="profil">
-        <h1 id="pdp">K</h1>
-        <h1>{{ userOne.name }}</h1>
-        <div class="followers">
-            <p><b>{{ FollowersCount }}</b> suivi(e)s</p>
-            <p><b>{{ FollowingCount }}</b> abonnements</p>
+    <div class="profil mt-6">
+        <div class="flex justify-center items-center">
+            <h1 class="text-8xl bg-gray-500 w-30 h-30 flex justify-center items-center rounded-full">
+                K
+            </h1>
         </div>
-        <FollowButton v-if="userOne" :userId="userOne.id" />
-        <div class="section">
-            <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créées</a>
-            <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
-        </div>
-
-        <div class="popular-books">
-            <div v-if="userSelectedBooks.length === 0" class="profil-content">
-                <p>Rien à afficher… pour l’instant ! Les Épingles que {{ userOne.name }} crée s’afficheront ici.</p>
+            <h1 class="text-[35px]">{{ userOne ? userOne.name : 'Chargement...' }}</h1>
+            <div class="followers">
+                <p><b>{{ followersCount ?? 0 }}</b> suivi(e)s</p>
+                <p><b>{{ followingCount ?? 0 }}</b> abonnements</p>
             </div>
-            <div v-else>
-                <div class="card">
-                    <div class="book" v-for="book in userSelectedBooks.slice(0, 4)" :key="book.id">
-                        <a :href="`/books/${book.id}`">
-                            <div v-if="book.isPopular" class="badge">
-                                <div class="popular">Populaire</div>
-                            </div>
-                            <div v-else-if="book.isRecommended" class="badge">
-                                <div class="recommended">Recommandé</div>
-                            </div>
-                            <img :src="getImageUrl(book.picture)" :alt="book.title" />
-                            <p id="type">Fiction</p>
-                            <div class="book-info">
-                                <h3>{{ book.title }}</h3>
-                                <p>{{ book.author }}</p>
-                                <p id="postedBy">
-                                    Publié par <b>{{ userOne.name }}</b>,<br>
-                                    Le <b>{{ formatDate(book.created_at) }}</b>,<br>
-                                    Lang : <b>FR</b>
-                                </p>
-                                <div class="content-book">
-                                    <div class="note">
-                                        <img src="../../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../../public/icons/note-active.png" alt="">
-                                        <img src="../../../../public/icons/note.png" alt="">
-                                    </div>
-                                    <span>👀1,3k</span>
-                                    <span><img src="../../../../public/icons/coms.png" alt=""> 112</span>
-                                    <span><img src="../../../../public/icons/download.png" alt=""> 900</span>
+            <div class="button">
+                <button>Partager</button>
+                <router-link to="">Modifier le profil</router-link>
+            </div>
+            <FollowButton v-if="userOne" :userId="userOne.id" />
+            <div class="section" v-if="userOne">
+                <a :href="`/user/${userOne.id}/create`" :id="isActive(`/user/${userOne.id}/create`) ? 'act-link' : ''">Créees</a>
+                <a :href="`/user/${userOne.id}/saved`" :id="isActive(`/user/${userOne.id}/saved`) ? 'act-link' : ''">Enregistrées</a>
+            </div>
+            
+            <section class="popular-books">
+                <div v-if="books.length == 0" class="profil-content">
+                    <p>Rien à afficher… pour l’instant ! Les Épingles que vous créez s’installeront ici.</p>
+                </div>
+                <div v-else class="">
+                    <div class="mt-4 grid grid-cols-4 gap-x-3 gap-y-4">
+                        <a :href="`/books/${book.id}`" class="border-1 border-[#4388ff27] rounded-2xl transition duration-200 hover:shadow-[0_0_10px_#3355ffc2]" v-for="book in books" :key="book.id">
+                        <img style="height: 200px; width: 100%; object-fit: cover;" class="rounded-t-2xl" :src="getImageUrl(book.picture)" :alt="book.title">
+                        <p id="type">{{ book.genre }}</p>
+                        <div class="book-info">
+                            <h3>{{ book.title }}</h3>
+                            <p>{{ book.author }}</p>
+                            <p id="postedBy">
+                            Publié par <b>{{ userOne.name }}</b>,<br>
+                            Le <b>{{ formatDate(book.created_at) }}</b>,<br>
+                            Lang : <b>FR</b>
+                            </p>
+                            <div class="flex justify-between items-center text-sm mt-3 text-gray-500">
+                                <div class="flex items-center gap-1 text-[#E67E22]">
+                                    <Icon icon="flowbite:star-solid" v-for="i in 4" :key="i" />
+                                    <Icon icon="flowbite:star-outline" />
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="flex items-center">
+                                    <Icon icon="entypo:eye" class="mr-1" /> 1,3k
+                                    </span>
+                                    <span class="flex items-center">
+                                    <Icon icon="iconamoon:comment-fill" class="mr-1" /> 112
+                                    </span>
+                                    <span class="flex items-center">
+                                    <Icon icon="ic:round-download" class="mr-1" /> 900
+                                    </span>
                                 </div>
                             </div>
+                        </div>
                         </a>
                     </div>
+                    <button
+                        v-if="hasMore && books.length > 0"
+                        @click="loadMoreBooks(userOne.id)"
+                        :disabled="isLoading"
+                        id="seeMore"
+                        >
+                            {{ isLoading ? 'Chargement...' : 'Voir plus' }}
+                    </button>
                 </div>
-                <router-link to="/books/posted" id="seeMore">Voir plus</router-link>
-            </div>
-        </div>
+            </section>
     </div>
-    <div v-else class="profil">
-        <h1 id="pdp">K</h1>
-        <h1>Chargement...</h1>
-        <div class="followers">
-            <p><b>0</b> suivi(e)s</p>
-            <p><b>0</b> abonnements</p>
-        </div>
-        <div class="button">
-            <button>S'abonner</button>
-        </div>
-    </div> -->
 </template>
 
 <style>
@@ -174,7 +142,7 @@
 .profil img{
     height: 120px;
     border: 1px solid white;
-    border-radius: 100%;
+    /*border-radius: 100%;*/
     display: flex;
     margin-left: auto;
     margin-right: auto;
