@@ -54,7 +54,6 @@ onMounted(initializeGoogleLogin);
     src: url('../../public/font/RubikWetPaint-Regular.ttf') format('truetype');
 }
 .content-login{
-    padding: 100px;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -64,7 +63,8 @@ onMounted(initializeGoogleLogin);
 .content-login .form-login{
     display: flex;
     border: 1px solid rgba(255, 255, 255, 0.102);
-    height: auto;
+    height: 600px;
+    width: 100%;
     border-radius: 20px;
 }
 .content-login .form-login img{

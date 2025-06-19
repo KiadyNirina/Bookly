@@ -11,6 +11,7 @@ export default {
         const password = ref("");
         const confirmPassword = ref("");
         const router = useRouter();
+        const successMessage = ref("");
         const { signup, isPasswordVisible, errorMess, isLoading, hasError, initializeGoogleLogin } = useAuth();
 
         const handleSignup = async () => {
@@ -40,7 +41,9 @@ export default {
             });
 
             if (!hasError.value) {
-                router.push("/welcome");
+                successMessage.value = "Inscription réussie! Vous pouvez maintenant vous connecter.";
+                errorMess.value = "";
+                hasError.value = false;
             }
         };
 
@@ -48,7 +51,7 @@ export default {
             initializeGoogleLogin();
         });
 
-        return { name, email, password, confirmPassword, isPasswordVisible, handleSignup, errorMess, isLoading, hasError };
+        return { name, email, password, confirmPassword, isPasswordVisible, handleSignup, errorMess, successMessage, isLoading, hasError };
     }
 };
 </script>
@@ -60,6 +63,7 @@ export default {
             <div :class="['sect2', { 'error-border': hasError }]">
                 <h1>S'inscrire</h1>
                 <p id="error" v-if="errorMess">{{ errorMess }}</p>
+                <p id="success" class="text-green-500" v-if="successMessage">{{ successMessage }}</p>
                 <form @submit.prevent="handleSignup">
                     <label id="label">Nom :</label>
                     <input type="text" v-model="name" placeholder="Entrer votre nom d'utilisateur">
