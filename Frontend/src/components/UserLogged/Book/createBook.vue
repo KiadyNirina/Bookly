@@ -84,9 +84,19 @@ export default {
       }
 
       if (type === 'picture') {
-        const allowedImageFormats = ['image/jpeg', 'image/png'];
+        const allowedImageFormats = [
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+          'image/svg+xml'
+        ];
+
         if (!allowedImageFormats.includes(file.type)) {
-          this.showError('Format de fichier image non valide. Veuillez sélectionner un fichier JPEG ou PNG.');
+          this.showError(
+            `Format de fichier non valide. Formats acceptés : ${allowedImageFormats
+              .map(type => type.split('/')[1].toUpperCase())
+              .join(', ')}`
+          );
           return;
         }
         this.picture = file;

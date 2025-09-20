@@ -22,7 +22,7 @@ class BookController extends Controller
             'lang' => 'required|string|max:10',
             'page' => 'required|integer',
             'date' => 'nullable|date',
-            'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'file' => 'required|file|mimes:pdf,doc,docx',
         ]);
 
@@ -30,7 +30,7 @@ class BookController extends Controller
             $imagePath = $request->file('picture')->store('public/images');
             $validatedData['picture'] = str_replace('public/', 'storage/', $imagePath);
         } else {
-            $validatedData['picture'] = 'storage/images/default.jpg';
+            $validatedData['picture'] = 'images/default.jpg';
         }
 
         if ($request->hasFile('file')) {
