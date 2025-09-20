@@ -1,92 +1,173 @@
-<script>
+<script setup>
 import { Icon } from '@iconify/vue';
-export default {
-  components: {
-    Icon
-  },
-  data() {
-    return {
-      books: [
-        { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', potedBy: 'John Doe', cover: '../../public/cover 1.jpg', isPopular: true, link: 1 },
-        { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', potedBy: 'John Doe', cover: '../../public/cover 2.jpg', isRecommended: true, link: 2 },
-        { title: 'Titre du Livre 1', author: 'Auteur 1', potedBy: 'John Doe', cover: '../../public/cover 3.jpg', isPopular: true, link: 3 },
-        { title: 'Titre du Livre 2', author: 'Auteur 2', potedBy: 'John Doe', cover: '../../public/cover 4.jfif', isRecommended: true, link: 4 },
-      ]
-    };
-  }
-}
+import { ref, onMounted } from 'vue';
+
+const books = ref([
+  { title: 'Titre du Livre 1', author: 'Christophe RABEARIMANANA', postedBy: 'John Doe', cover: '../../public/cover 1.jpg', isPopular: true, link: 1 },
+  { title: 'Titre du Livre 2', author: 'Nanja RAZAFINDRAKOTO', postedBy: 'John Doe', cover: '../../public/cover 2.jpg', isRecommended: true, link: 2 },
+  { title: 'Titre du Livre 3', author: 'Auteur 1', postedBy: 'John Doe', cover: '../../public/cover 3.jpg', isPopular: true, link: 3 },
+  { title: 'Titre du Livre 4', author: 'Auteur 2', postedBy: 'John Doe', cover: '../../public/cover 4.jfif', isRecommended: true, link: 4 },
+]);
+
+const currentSlide = ref(0);
+const isMobile = ref(false);
+
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % books.value.length;
+};
+
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + books.value.length) % books.value.length;
+};
+
+onMounted(() => {
+  isMobile.value = window.innerWidth < 768;
+  
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth < 768;
+  });
+  
+  setInterval(nextSlide, 5000);
+});
 </script>
 
 
 <template>
-  <div class="content max-w-[1400px] mr-auto ml-auto">
-    <div class="content-1 w-1/2">
-      <h1>Découvrez un univers de lecture illimité</h1>
-      <p>Des milliers de livres à portée de main, où que vous soyez</p>
-      <a href="">
-        Explorer les nouveautés
-      </a>
-    </div>
-    <div class="w-1/2">
-      <img src="../../public/reading.svg" alt="">
-    </div>
-  </div>
-
-  <section class="popular-books">
-    <h2>Populaires</h2>
-
-    <div class="card">
-      <div class="book" v-for="(book, index) in books" :key="index">
-        <a href="/books/detail">
-          <div v-if="(book.isPopular)" class="badge">
-            <div class="popular">
-              Populaire
-            </div>
-          </div>
-          <div v-else-if="(book.isRecommended)" class="badge">
-            <div class="recommended">
-              Recommandé
-            </div>
-          </div>
-          <img :src="book.cover" :alt="book.title">
-          <p id="type">Fiction</p>
-          <div class="book-info">
-              <h3>{{ book.title }}</h3>
-              <p>{{ book.author }}</p>
-              <p id="postedBy">
-                Publié par <b>{{ book.potedBy }}</b><br>
-                Lang : <b>FR</b>
-              </p>
-              <div class="content-book">
-                <div class="note">
-                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                    <Icon icon="flowbite:star-solid" class="text-[#E67E22]" />
-                    <Icon icon="flowbite:star-outline" class="text-[#E67E22]" />
-                </div>
-                <span>
-                    <Icon icon="entypo:eye" class="mr-1" />
-                    1,3k
-                </span>
-                <span>
-                    <Icon icon="iconamoon:comment-fill" class="mr-1" />
-                    112
-                </span>
-                <span>
-                    <Icon icon="ic:round-download" class="mr-1" />  
-                    900
-                </span>
-              </div>
-          </div>
+  <main class="min-h-screen text-white">
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 py-12 md:py-24 flex flex-col md:flex-row items-center justify-between">
+      <div class="w-full md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#E67E22] to-orange-600 mb-6 font-[poppins-bold]">
+          Découvrez un univers de lecture illimité
+        </h1>
+        <p class="text-xl text-gray-300 mb-8">
+          Des milliers de livres à portée de main, où que vous soyez
+        </p>
+        <a href="/books" class="inline-block px-8 py-4 bg-gradient-to-r from-[#E67E22] to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white font-semibold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg">
+          Explorer les nouveautés
         </a>
       </div>
-    </div>
+      <div class="w-full md:w-1/2 flex justify-center">
+        <img src="../../public/reading.svg" alt="Person reading" class="w-full max-w-md lg:max-w-lg xl:max-w-xl">
+      </div>
+    </section>
 
-    <a href="/books/popular" id="seeMore">Voir plus</a>
+    <!-- Popular Books Section -->
+    <section class="container mx-auto px-4 py-12">
+      <div class="flex justify-between items-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-bold text-white">Livres Populaires</h2>
+        <a href="/books/popular" class="text-orange-400 hover:text-orange-300 flex items-center transition-colors">
+          Voir plus
+          <Icon icon="ic:round-arrow-forward" class="ml-2" />
+        </a>
+      </div>
 
-  </section>
+      <!-- Desktop Grid View -->
+      <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div v-for="(book, index) in books" :key="index" class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 transition-all duration-300 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/20">
+          <router-link :to="`/books/detail/${book.link}`">
+            <div class="relative">
+              <div v-if="book.isPopular" class="absolute top-3 left-3 z-10">
+                <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">Populaire</span>
+              </div>
+              <div v-else-if="book.isRecommended" class="absolute top-3 left-3 z-10">
+                <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Recommandé</span>
+              </div>
+              <img :src="book.cover" :alt="book.title" class="w-full h-60 object-cover">
+            </div>
+            
+            <div class="p-4">
+              <span class="inline-block bg-blue-900 bg-opacity-50 text-blue-200 text-xs font-semibold px-2 py-1 rounded mb-3">Fiction</span>
+              
+              <h3 class="text-lg font-bold text-white mb-1 truncate">{{ book.title }}</h3>
+              <p class="text-sm text-gray-400 mb-3">{{ book.author }}</p>
+              
+              <div class="text-xs text-gray-500 mb-4">
+                <p>Publié par <span class="font-semibold text-gray-300">{{ book.postedBy }}</span></p>
+                <p>Lang : <span class="font-semibold text-gray-300">FR</span></p>
+              </div>
+              
+              <div class="flex justify-between items-center text-sm text-gray-400">
+                <div class="flex items-center">
+                  <Icon icon="flowbite:star-solid" class="text-orange-500 mr-1" v-for="i in 4" :key="i" />
+                  <Icon icon="flowbite:star-outline" class="text-orange-500" />
+                </div>
+                
+                <div class="flex space-x-4">
+                  <span class="flex items-center">
+                    <Icon icon="entypo:eye" class="mr-1" />
+                    1,3k
+                  </span>
+                  <span class="flex items-center">
+                    <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                    112
+                  </span>
+                </div>
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </div>
 
+      <!-- Mobile Carousel View -->
+      <div class="md:hidden relative">
+        <div class="overflow-hidden">
+          <div class="flex transition-transform duration-500 ease-in-out" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
+            <div v-for="(book, index) in books" :key="index" class="w-full flex-shrink-0 px-3">
+              <div class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700">
+                <router-link :to="`/books/detail/${book.link}`">
+                  <div class="relative">
+                    <div v-if="book.isPopular" class="absolute top-3 left-3 z-10">
+                      <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">Populaire</span>
+                    </div>
+                    <div v-else-if="book.isRecommended" class="absolute top-3 left-3 z-10">
+                      <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Recommandé</span>
+                    </div>
+                    <img :src="book.cover" :alt="book.title" class="w-full h-48 object-cover">
+                  </div>
+                  
+                  <div class="p-4">
+                    <span class="inline-block bg-blue-900 bg-opacity-50 text-blue-200 text-xs font-semibold px-2 py-1 rounded mb-3">Fiction</span>
+                    
+                    <h3 class="text-lg font-bold text-white mb-1">{{ book.title }}</h3>
+                    <p class="text-sm text-gray-400 mb-3 truncate">{{ book.author }}</p>
+                    
+                    <div class="flex justify-between items-center text-sm text-gray-400">
+                      <div class="flex items-center">
+                        <Icon icon="flowbite:star-solid" class="text-orange-500 mr-1" v-for="i in 4" :key="i" />
+                        <Icon icon="flowbite:star-outline" class="text-orange-500" />
+                      </div>
+                      
+                      <span class="flex items-center">
+                        <Icon icon="entypo:eye" class="mr-1" />
+                        1,3k
+                      </span>
+                    </div>
+                  </div>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Carousel Controls -->
+        <button @click="prevSlide" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full p-2">
+          <Icon icon="ic:round-arrow-back" class="text-white text-xl" />
+        </button>
+        <button @click="nextSlide" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full p-2">
+          <Icon icon="ic:round-arrow-forward" class="text-white text-xl" />
+        </button>
+        
+        <!-- Carousel Indicators -->
+        <div class="flex justify-center mt-4 space-x-2">
+          <button v-for="i in books.length" :key="i" 
+                  @click="currentSlide = i - 1" 
+                  :class="['w-2 h-2 rounded-full', currentSlide === i - 1 ? 'bg-orange-500' : 'bg-gray-600']">
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 </template>
 
 <style>
@@ -94,193 +175,35 @@ export default {
   font-family: 'Poppins-bold';
   src: url('../../../../public/font/Poppins/Poppins-Bold.ttf');
 }
-body{
-  background-color: #010310;
+
+/* Custom animations */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
 }
-.content{
-  padding: 50px;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "poppins";
-}
-.content .content-1 h1{
-  color: #FAFAFA;
-  font-family: "poppins-bold";
-  font-size: 50px;
-}
-.content .content-1 p{
-  color: #FAFAFA;
-  margin-bottom: 50px;
-}
-.content .content-1 a{
-  text-decoration: none;
-  color: white;
-  background-color: #E67E22;
-  padding: 15px;
-  border-radius: 30px;
-  font-size: 15px;
-  font-weight: bold;
-  transition: 0.5s;
-  border: 2px solid #E67E22;
-}
-.content .content-1 a:hover{
-  color: #E67E22;
-  background-color: transparent;
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 
-.popular-books {
-  background-color: #010310;
-  padding-top: 50px;
-  /* height: 510px; */
-  max-width: 1300px;
-  margin-left: auto;
-  margin-right: auto;
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
-.popular-books h2 {
-  font-family: 'poppins';
-  font-size: 1.5rem;
-  color: white; 
-  margin-bottom: 20px;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.badge {
-  position: absolute;
+::-webkit-scrollbar-track {
+  background: #1a202c;
 }
 
-.badge .popular, .badge .recommended {
-  background-color: #E67E22;
-  color: white;
-  padding: 10px;
-  font-family: 'poppins';
-  border-radius: 100%;
-  font-size: 12px;
+::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
 }
 
-.badge .popular{
-  background-color: #E67E22;
+::-webkit-scrollbar-thumb:hover {
+  background: #718096;
 }
-
-.badge .recommended {
-  background-color: #2ECC71;
-}
-
-.card {
-  display: flex;
-  width: 100%;
-  padding: 0;
-}
-
-.card .book{
-  width: 25%;
-  margin: 5px;
-  padding: 0;
-  border: 1px solid #4388ff27;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.card .book:hover{
-  box-shadow: 0px 0px 10px #3355ffc2;
-}
-
-.card .book a{
-  text-decoration: none;
-}
-
-.card .book img{
-  height: 200px;
-  object-fit: cover;
-  width: 100%;
-  border-radius: 20px 20px 0px 0px;
-}
-
-#type{
-  text-decoration: none;
-  background-color: #4388ff67;
-  color: #FAFAFA;
-  text-transform: uppercase;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-weight: bold;
-  font-style: italic;
-  padding-left: 20px;
-}
-
-.book-info {
-  padding : 20px;
-  font-family: 'poppins';
-}
-
-.book-info h3{
-  font-size: 20px;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  text-transform: uppercase;
-  color: #4388ff;
-  margin: 0;
-}
-
-.book-info p{
-  color: rgba(255, 255, 255, 0.352);
-  margin: 0;
-  font-size: 15px;
-}
-
-#postedBy{
-  font-size: 12px;
-  margin: 10px 0px 10px 0px;
-}
-
-.content-book {
-  display: flex;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.587);
-  margin-bottom: 10px;
-}
-
-.content-book .note{
-  padding: 5px;
-  width: auto;
-  display: flex;
-  align-items: center;
-}
-
-.content-book .note img{
-  height: 15px;
-  width: auto;
-  object-fit: cover;
-}
-
-.content-book span{
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  margin: auto;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.card .book .content-book span img{
-  height: 12px;
-  width: auto;
-  margin-right: 2px;
-}
-
-#seeMore{
-  text-decoration: none;
-  color: white;
-  background-color: #E67E22;
-  border: 2px solid #E67E22;
-  padding: 15px;
-  border-radius: 30px;
-  transition: 0.5s;
-  font-size: 12px;
-  font-family: 'poppins';
-}
-#seeMore:hover{
-  background-color: transparent;
-  color: #E67E22;
-}
-
 </style>
