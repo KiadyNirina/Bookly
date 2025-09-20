@@ -125,7 +125,7 @@ onMounted(() => {
             :key="index" 
             class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 transition-all duration-300 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/20"
           >
-            <router-link :to="`/books/detail/${book.id}`" class="block h-full">
+            <router-link :to="`/books/${book.id}`" class="block h-full">
               <div class="relative">
                 <div class="absolute top-3 left-3 z-10">
                   <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">Populaire</span>
@@ -195,7 +195,7 @@ onMounted(() => {
             :key="book.id" 
             class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 transition-all duration-300 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20"
           >
-            <router-link :to="`/books/detail/${book.id}`" class="block h-full">
+            <router-link :to="`/books/${book.id}`" class="block h-full">
               <img 
                 :src="getImageUrl(book.picture)" 
                 :alt="book.title" 
