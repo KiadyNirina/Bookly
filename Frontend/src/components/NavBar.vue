@@ -245,10 +245,6 @@ export default {
 #active-link {
   color: #E67E22;
 }
-*{
-    font-family: "poppins";
-    font-size: 12px;
-}
 
 /* Styles responsives */
 @media (max-width: 1023px) {
