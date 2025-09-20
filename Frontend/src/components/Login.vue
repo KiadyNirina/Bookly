@@ -92,7 +92,7 @@ onMounted(() => {
                     <button
                         type="submit"
                         :disabled="isLoading"
-                        class="w-full py-3 px-4 bg-[#E67E22] hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
+                        class="w-full py-3 px-4 bg-[#E67E22] hover:bg-orange-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         <span v-if="isLoading" class="flex items-center justify-center">
                             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ onMounted(() => {
                         <div class="w-full border-t border-gray-600"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-gray-800 text-gray-400">Ou</span>
+                        <span class="px-2 bg-gray-900 text-gray-400">Ou</span>
                     </div>
                 </div>
 
