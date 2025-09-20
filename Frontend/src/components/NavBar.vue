@@ -172,7 +172,7 @@ export default {
 .nav{
     display: flex;
     align-items: center;
-    background-color: #010310;
+    background-color: #191c2fff;
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
