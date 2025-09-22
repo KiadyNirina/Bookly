@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useAuth } from '@/composables/useAuth';
 
 const {
@@ -13,36 +13,117 @@ const {
     initializeGoogleLogin
 } = useAuth();
 
-onMounted(initializeGoogleLogin);
+const isMobile = ref(window.innerWidth < 768);
+
+onMounted(() => {
+  initializeGoogleLogin();
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth < 768;
+  });
+});
 </script>
 
 <template>
-    <div class="content-login h-screen flex items-center justify-center">
-        <div class="form-login">
-            <img src="../../public/giphy_book (4).gif" alt="">
-            <div :class="['sect2', { 'error-border': hasError }]">
-                <h1>Se connecter</h1>
-                <p v-if="errorMess" id="error">{{ errorMess }}</p>
-                <form @submit.prevent="login">
-                    <label id="label">Email :</label>
-                    <input type="text" v-model="email" placeholder="Entrer votre email" />
-
-                    <label id="label">Mot de passe :</label>
-                    <input :type="isPasswordVisible ? 'text' : 'password'" v-model="password"
-                        placeholder="Entrez votre mot de passe" />
-                    <label>
-                        <input class="mr-1" type="checkbox" v-model="isPasswordVisible" />
-                        Afficher le mot de passe
-                    </label>
-                    <a href="#" id="passwordForgot">Mot de passe oublié?</a>
-                    <button v-if="isLoading" disabled>Chargement...</button>
-                    <button v-else>Se connecter</button>
-                </form>
-                <p class="mt-2 mb-2">Ou</p>
-                <div class="other">
-                    <div id="google-signin-button"></div>
+    <div class="min-h-screen flex items-center justify-center p-4 md:p-6">
+        <div class="w-full max-w-5xl bg-gray-900 bg-opacity-50 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+            <!-- Image section - hidden on mobile -->
+            <div class="hidden md:block md:w-1/2 relative">
+                <img src="../../public/giphy_book (4).gif" alt="Animated book" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                <div class="absolute bottom-6 left-6 text-white">
+                    <h2 class="text-2xl font-bold">Bienvenue sur Bookly</h2>
+                    <p class="text-blue-200 mt-2">Partagez et découvrez des livres extraordinaires</p>
                 </div>
-                <p class="mb-3" id="foot">Vous n'êtes pas encore inscrit? <router-link class="hover:text-blue-500" to="/signup">S'inscrire</router-link></p>
+            </div>
+            
+            <!-- Form section -->
+            <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-[#E67E22] font-rubik">
+                        Se connecter
+                    </h1>
+                    <p class="text-gray-400 mt-2">Accédez à votre compte Bookly</p>
+                </div>
+
+                <div v-if="errorMess" class="mb-4 p-3 bg-red-900 bg-opacity-40 border border-red-500 rounded-lg text-red-200 text-sm">
+                    {{ errorMess }}
+                </div>
+
+                <form @submit.prevent="login" class="space-y-4">
+                    <div>
+                        <label for="email" class="block font-medium text-gray-300 mb-1">Email</label>
+                        <input 
+                            id="email"
+                            type="text" 
+                            v-model="email" 
+                            placeholder="Entrer votre email"
+                            :class="{'border-red-500': hasError, 'focus:ring-[#E67E22]': !hasError}"
+                            class="w-full px-4 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200" 
+                        />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block font-medium text-gray-300 mb-1">Mot de passe</label>
+                        <input 
+                            id="password"
+                            :type="isPasswordVisible ? 'text' : 'password'" 
+                            v-model="password" 
+                            placeholder="Entrez votre mot de passe"
+                            :class="{'border-red-500': hasError, 'focus:ring-[#E67E22]': !hasError}"
+                            class="w-full px-4 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200" 
+                        />
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center text-gray-400">
+                            <input 
+                                type="checkbox" 
+                                v-model="isPasswordVisible" 
+                                class="h-4 w-4 text-[#E67E22] focus:ring-[#E67E22] border-gray-600 rounded bg-gray-700" 
+                            />
+                            <span class="ml-2">Afficher le mot de passe</span>
+                        </label>
+                        
+                        <a href="#" class="text-blue-400 hover:text-blue-300 transition duration-150">
+                            Mot de passe oublié?
+                        </a>
+                    </div>
+
+                    <button
+                        type="submit"
+                        :disabled="isLoading"
+                        class="w-full py-3 px-4 bg-[#E67E22] hover:bg-orange-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                        <span v-if="isLoading" class="flex items-center justify-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Chargement...
+                        </span>
+                        <span v-else>Se connecter</span>
+                    </button>
+                </form>
+
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-600"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-gray-900 text-gray-400">Ou</span>
+                    </div>
+                </div>
+
+                <div class="other flex justify-center">
+                    <div id="google-signin-button" class="w-full max-w-xs"></div>
+                </div>
+
+                <p class="text-center text-gray-400 mt-6 text-sm">
+                    Vous n'êtes pas encore inscrit? 
+                    <router-link to="/signup" class="text-[#E67E22] hover:text-orange-300 font-medium ml-1 transition duration-150">
+                        S'inscrire
+                    </router-link>
+                </p>
             </div>
         </div>
     </div>
@@ -50,123 +131,38 @@ onMounted(initializeGoogleLogin);
 
 <style>
 @font-face {
-    font-family: 'MaPolice';
+    font-family: 'RubikWetPaint';
     src: url('../../public/font/RubikWetPaint-Regular.ttf') format('truetype');
 }
-.content-login{
-    padding: 100px;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: "Poppins";
-    font-size: 12px;
+
+.font-rubik {
+    font-family: 'RubikWetPaint', sans-serif;
 }
-.content-login .form-login{
+
+/* Styles pour le bouton Google */
+#google-signin-button {
     display: flex;
-    border: 1px solid rgba(255, 255, 255, 0.102);
-    height: auto;
-    border-radius: 20px;
-}
-.content-login .form-login img{
-    width: 50%;
-    object-fit: cover;
-    border-radius: 20px 0px 0px 20px;
-}
-.content-login .form-login .sect2{
-    display: flex; 
-    flex-direction: column; /* Empile les éléments verticalement */
-    justify-content: center; /* Centre verticalement */
-    align-items: center; /* Centre horizontalement */
-    width: 50%;
-    box-sizing: border-box;
-}
-.content-login .form-login .sect2 h1 {
-    color: white;
-    font-family: 'MaPolice';
-    font-weight: 100;    
-    text-align: center;
-    font-size: 40px;
-    margin-bottom: 15px;
-    margin-top: 10px;
-}
-.content-login .form-login .sect2 form {
-    width: 80%;
-}
-.content-login .form-login .sect2 form input[type='text'], .content-login .form-login .sect2 form input[type='password']{
-    width: 100%;
-    margin-bottom: 5px;
-    height: 40px;
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.183);
-    border-radius: 10px;
-    color: white;
-    padding: 0;
-    text-align: center;
-}
-.content-login .form-login .sect2 form label {
-    display: flex;
-    margin: 0;
-    width: auto;
-    color: rgba(255, 255, 255, 0.659);
-    align-items: center;
-    margin-bottom: 20px;
-}
-.content-login .form-login .sect2 form input[type='checkbox']{
-    cursor: pointer;
-    padding: 20px;
-}
-.content-login .form-login .sect2 form input[type='checkbox']:hover{
-    cursor: pointer;
-}
-.content-login .form-login .sect2 form input[type='checkbox']:checked{
-    color: #E67E22;
-}
-.content-login .form-login .error-border form input[type='text'], .content-login .form-login .error-border form input[type='password']{
-    border: 1px solid rgb(255, 62, 62);
-}
-#error{
-    color: rgb(255, 62, 62);
-}
-.content-login .form-login .sect2 form button{
-    width: 100%;
-    height: 40px;
-    background-color: #E67E22;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    transition: 0.5s;
-    border: 1px solid #E67E22;
-}
-.content-login .form-login .sect2 form button:hover{
-    background-color: transparent;
-    color: #E67E22;
-    cursor: pointer;
-}
-.content-login .form-login .sect2 form button:disabled {
-    cursor: not-allowed;
-}
-.content-login .form-login .sect2 p{
-    color: rgba(255, 255, 255, 0.659);
-    text-align: center;
-}
-.content-login .form-login .sect2 .other{
-    display: flex;
-    width: 90%;
     justify-content: center;
 }
-#google-signin-button {
-    width: 90%; 
+
+/* Animation pour le formulaire */
+.form-login {
+    animation: fadeIn 0.5s ease-out;
 }
-#passwordForgot{
-    text-decoration: none;
-    color: #4388ff;
-    display: flex;
-    justify-content: right;
-    margin-bottom: 10px;
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-#foot{
-    margin-top: 20px;
+
+/* Styles pour les écrans très petits */
+@media (max-width: 340px) {
+    .content-login {
+        padding: 10px;
+    }
+    
+    .form-login .sect2 {
+        padding: 15px;
+    }
 }
 </style>

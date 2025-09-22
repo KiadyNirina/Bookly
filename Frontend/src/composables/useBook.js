@@ -65,22 +65,20 @@ export function useBook() {
   const deleteBook = async (id) => {
     try {
       const result = await Swal.fire({
-        title: 'Êtes-vous sûr ?',
-        text: 'Cette action supprimera définitivement le livre.',
+        title: 'Êtes-vous sûr?',
+        text: "Cette action est irréversible!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Oui, supprimer',
+        confirmButtonColor: '#E67E22',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, supprimer!',
         cancelButtonText: 'Annuler',
+        background: '#1a202c',
+        color: '#fff'
       })
 
       if (result.isConfirmed) {
         await request('delete', `/deleteBook/${id}`)
-        Swal.fire({
-          title: 'Supprimé !',
-          text: 'Le livre a été supprimé avec succès.',
-          icon: 'success',
-          confirmButtonText: 'OK',
-        })
         return true 
       }
     } catch (err) {
