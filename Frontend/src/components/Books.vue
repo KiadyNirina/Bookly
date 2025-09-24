@@ -61,6 +61,13 @@ onMounted(() => {
     }
   };
 });
+
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', options);
+}
 </script>
 
 <template>
@@ -145,6 +152,7 @@ onMounted(() => {
                 
                 <div class="text-xs text-gray-500 mb-4">
                   <p class="truncate">Publié par <span class="font-semibold text-gray-300">{{ book.posted_by.name }}</span></p>
+                  <p>Le <span class="font-semibold text-gray-300">{{ formatDate(book.created_at) }}</span></p>
                   <p>Lang : <span class="font-semibold text-gray-300">{{ book.lang }}</span></p>
                 </div>
                 
@@ -210,7 +218,7 @@ onMounted(() => {
                 
                 <div class="text-xs text-gray-500 mb-4">
                   <p class="truncate">Publié par <span class="font-semibold text-gray-300">{{ book.posted_by.name }}</span></p>
-                  <p>Le <span class="font-semibold text-gray-300">{{ book.created_at }}</span></p>
+                  <p>Le <span class="font-semibold text-gray-300">{{ formatDate(book.created_at) }}</span></p>
                   <p>Lang : <span class="font-semibold text-gray-300">{{ book.lang }}</span></p>
                 </div>
                 
@@ -226,8 +234,8 @@ onMounted(() => {
                       1,3k
                     </span>
                     <span class="flex items-center">
-                      <Icon icon="ic:round-download" class="mr-1" />
-                      900
+                      <Icon icon="iconamoon:comment-fill" class="mr-1" />
+                      112
                     </span>
                   </div>
                 </div>
