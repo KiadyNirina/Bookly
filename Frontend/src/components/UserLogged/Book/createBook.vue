@@ -1,391 +1,480 @@
-<script>
+<script setup>
+import { ref, watch } from 'vue';
+import { Icon } from '@iconify/vue';
 import ErrorPopup from './ErrorPopup.vue';
 import SuccessPopup from './SuccessPopup.vue';
 import { useUser } from '@/composables/useUser';
 import { useBook } from '@/composables/useBook';
 
-export default {
-  components: { 
-    ErrorPopup, 
-    SuccessPopup 
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false,
   },
+});
 
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-  },
+const emit = defineEmits(['close']);
 
-  setup() {
-    const { createBook, isLoading, error, success } = useBook()
-    const { user, isLoggedIn } = useUser()
+const { createBook, isLoading, error, success } = useBook();
+const { user, isLoggedIn } = useUser();
+
+// Données du formulaire
+const formData = ref({
+  title: '',
+  author: '',
+  description: '',
+  genre: '',
+  lang: '',
+  page: '',
+  picture: null,
+  file: null
+});
+
+const isClosing = ref(false);
+const popupErrorVisible = ref(false);
+const popupSuccessVisible = ref(false);
+const errorMessage = ref('');
+const successMessage = ref('');
+
+const genreOptions = ref([
+  { value: '', label: 'Sélectionnez le genre', disabled: true },
+  { value: 'action', label: 'Action' },
+  { value: 'romance', label: 'Romance' },
+  { value: 'comedie', label: 'Comédie' },
+  { value: 'fiction', label: 'Fiction' },
+  { value: 'fantastique', label: 'Fantastique' },
+  { value: 'science-fiction', label: 'Science-fiction' },
+  { value: 'historique', label: 'Historique' },
+  { value: 'biographie', label: 'Biographie' },
+  { value: 'autre', label: 'Autre' }
+]);
+
+const langOptions = ref([
+  { value: '', label: 'Sélectionnez la langue', disabled: true },
+  { value: 'fr', label: 'Français' },
+  { value: 'en', label: 'Anglais' },
+  { value: 'es', label: 'Espagnol' },
+  { value: 'de', label: 'Allemand' },
+  { value: 'it', label: 'Italien' },
+  { value: 'autre', label: 'Autre' }
+]);
+
+watch(() => props.visible, (newValue) => {
+  if (!newValue) {
+    isClosing.value = true;
+    setTimeout(() => {
+      isClosing.value = false;
+      emit('close');
+    }, 300);
+  }
+});
+
+watch(error, (newError) => {
+  if (newError) {
+    showError(newError);
+  }
+});
+
+watch(success, (newSuccess) => {
+  if (newSuccess) {
+    showSuccess(newSuccess);
+    resetForm();
+  }
+});
+
+const handleFileChange = (event, type) => {
+  const file = event.target.files[0];
+
+  if (!file) {
+    showError('Aucun fichier sélectionné.');
+    return;
+  }
+
+  if (type === 'picture') {
+    const allowedImageFormats = [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/svg+xml',
+      'image/gif'
+    ];
+
+    if (!allowedImageFormats.includes(file.type)) {
+      showError(
+        `Format d'image non supporté. Formats acceptés : JPEG, PNG, WebP, SVG, GIF`
+      );
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showError('L\'image ne doit pas dépasser 5MB.');
+      return;
+    }
+
+    formData.value.picture = file;
+  } else if (type === 'file') {
+    const allowedFormats = [
+      'application/pdf', 
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
     
-    return {
-      createBook,
-      isLoading,
-      error,
-      success,
-      user,
-      isLoggedIn
+    if (!allowedFormats.includes(file.type)) {
+      showError('Format de fichier non valide. Veuillez sélectionner un fichier PDF ou DOC/DOCX.');
+      return;
     }
-  },
 
-  watch: {
-    visible(newValue) {
-      if (!newValue) {
-        this.isClosing = true; 
-        setTimeout(() => {
-          this.isClosing = false; 
-          this.$emit('close'); 
-        }, 300);
-      }
-    },
-    error(newError) {
-      if (newError) {
-        this.showError(newError)
-      }
-    },
-    success(newSuccess) {
-      if (newSuccess) {
-        this.showSuccess(newSuccess)
-        this.resetForm()
-      }
+    if (file.size > 20 * 1024 * 1024) {
+      showError('Le fichier ne doit pas dépasser 20MB.');
+      return;
     }
-  },
 
-  data() {
-    return {
-      title: '',
-      author: '',
-      description: '',
-      genre: '',
-      lang: '',
-      page: '',
-      picture: null, // Pour stocker l'image
-      file: null, // Pour stocker le fichier numérique
-      errorMessage: '',
-      hasError: false,
-      successMessage: '',
-      isLoading: false,
-      popupErrorVisible: false,
-      popupSuccessVisible: false,
-      isClosing: false,
-    };
-  },
-
-  methods: {
-    handleFileChange(event, type) {
-      const file = event.target.files[0];
-
-      if (!file) {
-        this.showError('Aucun fichier sélectionné.');
-        return;
-      }
-
-      if (type === 'picture') {
-        const allowedImageFormats = [
-          'image/jpeg',
-          'image/png',
-          'image/webp',
-          'image/svg+xml'
-        ];
-
-        if (!allowedImageFormats.includes(file.type)) {
-          this.showError(
-            `Format de fichier non valide. Formats acceptés : ${allowedImageFormats
-              .map(type => type.split('/')[1].toUpperCase())
-              .join(', ')}`
-          );
-          return;
-        }
-        this.picture = file;
-        document.getElementById('file-name-picture').textContent = file.name;
-      } else if (type === 'file') {
-        const allowedFormats = ['application/pdf', 'application/msword'];
-        if (!allowedFormats.includes(file.type)) {
-          this.showError('Format de fichier non valide. Veuillez sélectionner un fichier PDF ou DOC.');
-          return;
-        }
-        this.file = file;
-        document.getElementById('file-name-file').textContent = file.name;
-      }
-    },
-
-    async create() {
-      if (!this.isLoggedIn) {
-        this.showError('Utilisateur non connecté. Veuillez réessayer.');
-        return;
-      }
-
-      if (!this.title || !this.author || !this.description || !this.genre || !this.lang || !this.page) {
-        this.showError('Veuillez remplir tous les champs obligatoires.');
-        return;
-      }
-
-      if (!this.file) {
-        this.showError('Veuillez importer le livre version numérique.');
-        return;
-      }
-
-      this.isLoading = true;
-
-      try {
-        await this.createBook({
-          title: this.title,
-          author: this.author,
-          description: this.description,
-          genre: this.genre,
-          lang: this.lang,
-          page: this.page,
-          picture: this.picture,
-          file: this.file
-        })
-        console.log('Ajout avec succès :', response);
-        this.resetForm();
-        this.showSuccess("Ajout du livre avec succès!");
-      } catch (error) {
-        this.showError("Une erreur est survenue lors de l'ajout du livre.");
-        console.error('Erreur lors de l’ajout :', error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    showError(message) {
-      this.errorMessage = message;
-      this.popupErrorVisible = true;
-    },
-
-    showSuccess(message) {
-      this.successMessage = message;
-      this.popupSuccessVisible = true;
-    },
-
-    resetForm() {
-      this.title = '';
-      this.author = '';
-      this.description = '';
-      this.genre = '';
-      this.lang = '';
-      this.page = '';
-      this.picture = null;
-      this.file = null;
-      this.errorMessage = '';
-      this.hasError = false;
-      this.popupErrorVisible = false;
-    },
-
-    closePopup() {
-      this.isClosing = true;
-      setTimeout(() => {
-        this.isClosing = false;
-        this.$emit('close');
-      }, 300);
-    },
-  },
+    formData.value.file = file;
+  }
 };
+
+const create = async () => {
+  if (!isLoggedIn) {
+    showError('Vous devez être connecté pour créer un livre.');
+    return;
+  }
+
+  const requiredFields = ['title', 'author', 'description', 'genre', 'lang', 'page'];
+  const missingFields = requiredFields.filter(field => !formData.value[field]);
+
+  if (missingFields.length > 0) {
+    showError('Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  if (!formData.value.file) {
+    showError('Veuillez importer le livre version numérique.');
+    return;
+  }
+
+  try {
+    await createBook(formData.value);
+  } catch (err) {
+    showError("Une erreur est survenue lors de l'ajout du livre.");
+    console.error('Erreur lors de l\'ajout :', err);
+  }
+};
+
+const showError = (message) => {
+  errorMessage.value = message;
+  popupErrorVisible.value = true;
+};
+
+const showSuccess = (message) => {
+  successMessage.value = message;
+  popupSuccessVisible.value = true;
+  setTimeout(() => {
+    closePopup();
+  }, 2000);
+};
+
+const resetForm = () => {
+  formData.value = {
+    title: '',
+    author: '',
+    description: '',
+    genre: '',
+    lang: '',
+    page: '',
+    picture: null,
+    file: null
+  };
+
+  const fileInputs = document.querySelectorAll('input[type="file"]');
+  fileInputs.forEach(input => input.value = '');
+};
+
+const closePopup = () => {
+  isClosing.value = true;
+  setTimeout(() => {
+    isClosing.value = false;
+    resetForm();
+    emit('close');
+  }, 300);
+};
+
+const handleKeydown = (event) => {
+  if (event.key === 'Escape' && props.visible) {
+    closePopup();
+  }
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('keydown', handleKeydown);
+}
 </script>
 
 <template>
-  <div v-if="visible || isClosing" :class="['popup-overlay', { closing: isClosing }]">
-    <div :class="['popup-content', { closing: isClosing }]">
-      <h1>Créer un livre</h1>
-      <form @submit.prevent="create">
-        <div class="form">
-          <div class="file">
-            <div class="file1">
-              <label for="file-upload-picture" class="custom-file-upload">Photo de couverture :</label>
-              <span class="file-name" id="file-name-picture">Aucun fichier choisi</span>
-              <input id="file-upload-picture" type="file" @change="handleFileChange($event, 'picture')" />
+  <div 
+    v-if="visible || isClosing" 
+    :class="[
+      'fixed inset-0 z-50 flex items-center justify-center p-4',
+      'transition-all duration-300 ease-in-out',
+      visible && !isClosing ? 'bg-black/60 backdrop-blur-sm' : 'bg-transparent'
+    ]"
+    @click.self="closePopup"
+  >
+    <div 
+      :class="[
+        'bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl',
+        'transform transition-all duration-300 ease-in-out max-h-[90vh] overflow-hidden',
+        'w-full max-w-4xl',
+        visible && !isClosing ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+      ]"
+    >
+      <!-- En-tête -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-700 bg-gradient-to-r from-gray-800 to-gray-900">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center">
+            <Icon icon="mdi:book-plus" class="mr-3 text-orange-500" />
+            Créer un nouveau livre
+          </h2>
+          <p class="text-gray-400 text-sm mt-1">Remplissez les informations de votre livre</p>
+        </div>
+        <button 
+          @click="closePopup"
+          class="p-2 hover:bg-gray-700 rounded-lg transition-colors duration-200"
+        >
+          <Icon icon="mdi:close" class="text-2xl text-gray-400 hover:text-white" />
+        </button>
+      </div>
+
+      <!-- Contenu du formulaire -->
+      <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+        <form @submit.prevent="create" class="space-y-6">
+          <!-- Upload de fichiers -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Photo de couverture -->
+            <div class="space-y-3">
+              <label class="block text-sm font-medium text-gray-300">
+                <Icon icon="mdi:image" class="inline mr-2" />
+                Photo de couverture *
+              </label>
+              <div 
+                @click="$refs.pictureInput.click()"
+                class="border-2 border-dashed border-gray-600 rounded-xl p-6 text-center cursor-pointer hover:border-orange-500 transition-colors duration-200"
+              >
+                <Icon icon="mdi:cloud-upload" class="text-4xl text-gray-500 mb-2 mx-auto" />
+                <p class="text-gray-400 text-sm mb-2">
+                  {{ formData.picture ? formData.picture.name : 'Cliquez pour télécharger' }}
+                </p>
+                <p class="text-gray-500 text-xs">PNG, JPG, WebP (max. 5MB)</p>
+                <input 
+                  ref="pictureInput"
+                  type="file" 
+                  @change="handleFileChange($event, 'picture')" 
+                  class="hidden" 
+                  accept="image/*"
+                />
+              </div>
             </div>
-            <div class="file1">
-              <label for="file-upload-file" class="custom-file-upload">Fichier numérique (pdf, doc) :</label>
-              <span class="file-name" id="file-name-file">Aucun fichier choisi</span>
-              <input id="file-upload-file" type="file" @change="handleFileChange($event, 'file')" />
+
+            <!-- Fichier numérique -->
+            <div class="space-y-3">
+              <label class="block text-sm font-medium text-gray-300">
+                <Icon icon="mdi:file-document" class="inline mr-2" />
+                Fichier numérique *
+              </label>
+              <div 
+                @click="$refs.fileInput.click()"
+                class="border-2 border-dashed border-gray-600 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 transition-colors duration-200"
+              >
+                <Icon icon="mdi:file-upload" class="text-4xl text-gray-500 mb-2 mx-auto" />
+                <p class="text-gray-400 text-sm mb-2">
+                  {{ formData.file ? formData.file.name : 'Cliquez pour télécharger' }}
+                </p>
+                <p class="text-gray-500 text-xs">PDF, DOC, DOCX (max. 20MB)</p>
+                <input 
+                  ref="fileInput"
+                  type="file" 
+                  @change="handleFileChange($event, 'file')" 
+                  class="hidden" 
+                  accept=".pdf,.doc,.docx"
+                />
+              </div>
             </div>
           </div>
-          <div class="input">
-            <label for="">Titre :</label>
-            <input type="text" v-model="title" placeholder="Titre" />
 
-            <label for="">Auteur :</label>
-            <input type="text" v-model="author" placeholder="Auteur" />
-
-            <label for="">Description :</label>
-            <textarea v-model="description" placeholder="Description"></textarea>
-
-            <label for="">Genre :</label>
-            <select v-model="genre">
-              <option value="" disabled>Selectionnez le genre</option>
-              <option value="action">Action</option>
-              <option value="romance">Romance</option>
-              <option value="comedie">Comédie</option>
-              <option value="fiction">Fiction</option>
-              <option value="autre">Autre</option>
-            </select>
-            <div class="nbr">
-              <div class="nbr1">
-                <label for="">Langue :</label>
-                <input type="text" v-model="lang" placeholder="Langue" />
+          <!-- Informations du livre -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Colonne gauche -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                  Titre *
+                </label>
+                <input 
+                  v-model="formData.title"
+                  type="text" 
+                  placeholder="Titre du livre"
+                  class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                />
               </div>
-              <div class="nbr1">
-                <label for="">Page :</label>
-                <input type="number" v-model="page" placeholder="Nombre de pages" />
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                  Auteur *
+                </label>
+                <input 
+                  v-model="formData.author"
+                  type="text" 
+                  placeholder="Nom de l'auteur"
+                  class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Langue *
+                  </label>
+                  <select 
+                    v-model="formData.lang"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                  >
+                    <option 
+                      v-for="option in langOptions" 
+                      :key="option.value"
+                      :value="option.value"
+                      :disabled="option.disabled"
+                    >
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Pages *
+                  </label>
+                  <input 
+                    v-model="formData.page"
+                    type="number" 
+                    placeholder="Nombre de pages"
+                    min="1"
+                    class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Colonne droite -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                  Genre *
+                </label>
+                <select 
+                  v-model="formData.genre"
+                  class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                >
+                  <option 
+                    v-for="option in genreOptions" 
+                    :key="option.value"
+                    :value="option.value"
+                    :disabled="option.disabled"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                  Description *
+                </label>
+                <textarea 
+                  v-model="formData.description"
+                  placeholder="Description du livre..."
+                  rows="4"
+                  class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200 resize-vertical"
+                ></textarea>
               </div>
             </div>
           </div>
-        </div>
-        <div class="button">
-          <button type="submit" :disabled="isLoading">{{ isLoading ? "Chargement..." : "Ajouter" }}</button>
-          <button type="button" @click="closePopup">Annuler</button>
-        </div>
-        <ErrorPopup
-          :message="errorMessage"
-          :visible="popupErrorVisible"
-          @close="popupErrorVisible = false"
-        />
-        <SuccessPopup
-          :message="successMessage"
-          :visible="popupSuccessVisible"
-          @close="popupSuccessVisible = false"
-        />
-      </form>
+
+          <!-- Actions -->
+          <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-700">
+            <button 
+              type="button"
+              @click="closePopup"
+              class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center"
+            >
+              <Icon icon="mdi:close" class="mr-2" />
+              Annuler
+            </button>
+            <button 
+              type="submit"
+              :disabled="isLoading"
+              :class="[
+                'px-6 py-3 font-medium rounded-lg transition-all duration-200 flex items-center justify-center',
+                isLoading 
+                  ? 'bg-gray-600 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transform hover:scale-105'
+              ]"
+            >
+              <Icon 
+                :icon="isLoading ? 'mdi:loading' : 'mdi:book-plus'" 
+                class="mr-2" 
+                :class="{'animate-spin': isLoading}" 
+              />
+              {{ isLoading ? 'Création en cours...' : 'Créer le livre' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+
+    <!-- Popups d'erreur et de succès -->
+    <ErrorPopup
+      :message="errorMessage"
+      :visible="popupErrorVisible"
+      @close="popupErrorVisible = false"
+    />
+    <SuccessPopup
+      :message="successMessage"
+      :visible="popupSuccessVisible"
+      @close="popupSuccessVisible = false"
+    />
   </div>
 </template>
 
 <style scoped>
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  animation: slideDown 0.3s forwards;
+/* Styles personnalisés pour la scrollbar */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #2d3748;
 }
 
-.popup-overlay.closing {
-  animation: fadeOut 0.3s forwards;
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
 }
 
-.popup-content {
-  background: #060818;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 0px 15px rgba(255, 255, 255, 0.087);
-  color: white;
-  opacity: 0;
-  animation: slideDown 0.3s forwards;
-  max-width: 70%;
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 3px;
 }
 
-.popup-content.closing {
-  animation: slideUp 0.3s forwards;
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 3px;
 }
 
-.form{
-  display: flex;
-  border: 1px solid rgba(255, 255, 255, 0.065);
-  padding: 10px;
-  border-radius: 10px;
-  align-items: center;
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #718096;
 }
 
-.form .file .file1 input{
-  display: none;
+.file-drop-zone {
+  transition: all 0.3s ease;
 }
 
-.custom-file-upload {
-    display: inline-block;
-    padding: 10px 20px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: 0.3s;
-}
-
-.custom-file-upload:hover {
-    background-color: #0056b3;
-}
-
-.file-name {
-    margin-left: 10px;
-    font-size: 14px;
-    color: #575757;
-}
-
-.form .file .file1 {
-  text-align: start;
-  padding: 10px;
-  font-family: 'Poppins';
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.696);
-}
-
-.form .input , .form .file{
-  width: 50%;
-}
-
-.form .input input, .form .input select, .form .input textarea {
-  width: calc(100% - 15px);
-  padding-left: 10px;
-  height: 40px;
-  margin: 3px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.048);
-  border-radius: 10px;
-  background-color: transparent;
-  color: white;
-  font-family: 'Poppins';
-}
-
-.form .input textarea{
-  height: 100px;
-  text-align: start;
-}
-
-.form .input label {
-  color: rgb(219, 219, 219);
-  margin-left: 3px;
-  font-family: "poppins";
-  font-size: 12px; 
-}
-
-.form .input .nbr{
-  display: flex;
-  width: 100%;
-}
-
-.form .input .nbr .nbr1 {
-  width: 50%;
-  margin-right: 5px;
-}
-
-.form .input option {
-  color: black;
-}
-
-button {
-  background: #4388ff67;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: 'Poppins';
-}
-
-button:hover {
-  background: #274e9167;
+.file-drop-zone.dragover {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
 }
 </style>
