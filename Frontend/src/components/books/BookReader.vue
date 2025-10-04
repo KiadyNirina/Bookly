@@ -11,10 +11,13 @@ const route = useRoute()
 const { book: currentBook, fetchBook } = useBook()
 const canvasRef = ref(null)
 const readerRef = ref(null)
+
 let pdfDoc = null
 const currentPage = ref(1)
 const totalPages = ref(1)
 const zoomLevel = ref(1.5)
+
+const bookmarks = ref([]) // Liste des marqueurs
 
 onMounted(async () => {
   await fetchBook(route.params.id)
@@ -91,6 +94,23 @@ const toggleFullscreen = () => {
     document.exitFullscreen()
   }
 }
+
+// Marqueurs
+const addBookmark = () => {
+  if (!bookmarks.value.includes(currentPage.value)) {
+    bookmarks.value.push(currentPage.value)
+    bookmarks.value.sort((a, b) => a - b)
+  }
+}
+
+const goToBookmark = (page) => {
+  currentPage.value = page
+  renderPage(currentPage.value)
+}
+
+const removeBookmark = (page) => {
+  bookmarks.value = bookmarks.value.filter(p => p !== page)
+}
 </script>
 
 <template class="pt-20">
@@ -110,10 +130,21 @@ const toggleFullscreen = () => {
       <button @click="zoomIn">➕ Zoom</button>
 
       <button @click="toggleFullscreen">⛶ Fullscreen</button>
+      <button @click="addBookmark">🔖 Ajouter un marqueur</button>
     </div>
 
     <div class="pdf-container">
       <canvas ref="canvasRef"></canvas>
+    </div>
+
+    <div class="text-white pdf-bookmarks">
+      <h3>📌 Marqueurs</h3>
+      <ul>
+        <li v-for="page in bookmarks" :key="page">
+          <button @click="goToBookmark(page)">Page {{ page }}</button>
+          <button @click="removeBookmark(page)">❌</button>
+        </li>
+      </ul>
     </div>
 
     <div class="pdf-footer">
@@ -152,6 +183,7 @@ const toggleFullscreen = () => {
 .pdf-controls {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -163,7 +195,6 @@ const toggleFullscreen = () => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 .pdf-controls button:hover {
@@ -187,6 +218,35 @@ const toggleFullscreen = () => {
 canvas {
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pdf-bookmarks {
+  margin-top: 20px;
+  color: white;
+}
+
+.pdf-bookmarks ul {
+  list-style: none;
+  padding: 0;
+}
+
+.pdf-bookmarks li {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.pdf-bookmarks button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pdf-bookmarks button:hover {
+  background: #666;
 }
 
 .pdf-footer {
