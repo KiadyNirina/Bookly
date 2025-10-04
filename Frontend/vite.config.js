@@ -15,6 +15,18 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       swiper: 'swiper/swiper-bundle.esm.js'
     }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      },
+      '/storage': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      }
+    }
   }
 })
 
