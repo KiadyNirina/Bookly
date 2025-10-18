@@ -1,132 +1,73 @@
-<template>
-  <div class="content-page">
-    <!-- Affichage des informations du livre -->
-    <div v-if="book">
-      <h1>{{ book.title }}</h1>
-      <p>{{ book.author }}</p>
-    </div>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useBook } from '@/composables/useBook'
 
-    <!-- Conteneur pour le lecteur EPUB -->
-    <div ref="epubContainer" class="epub-container"></div>
+const route = useRoute()
+const router = useRouter()
+const { book: currentBook, fetchBook } = useBook()
 
-    <!-- Contrôles de personnalisation -->
-    <div class="controls">
-      <button @click="increaseFontSize">Agrandir le texte</button>
-      <button @click="decreaseFontSize">Réduire le texte</button>
-      <button @click="toggleNightMode">Mode nuit</button>
-      <select v-model="selectedFont" @change="changeFont">
-        <option value="Arial">Arial</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Courier New">Courier New</option>
-      </select>
-    </div>
-  </div>
-</template>
+const pdfUrl = ref('')
 
-<script>
-import Epub from 'epubjs';
-
-export default {
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      book: null, // Détails du livre
-      rendition: null, // Instance du lecteur EPUB
-      selectedFont: 'Arial', // Police sélectionnée
-      nightMode: false, // Mode nuit activé/désactivé
-    };
-  },
-  async mounted() {
-    // Charger les détails du livre et le fichier EPUB
-    await this.fetchBookDetails();
-    this.loadEpub();
-  },
-  methods: {
-    // Récupérer les détails du livre depuis l'API Laravel
-    async fetchBookDetails() {
-      try {
-        const response = await fetch(`http://localhost:8000/api/books/${this.id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch book details');
-        }
-        const data = await response.json();
-        this.book = data.data;
-      } catch (error) {
-        console.error('Error fetching book details:', error);
-      }
-    },
-
-    // Charger le fichier EPUB dans le lecteur
-    async loadEpub() {
-      if (!this.book.file) {
-        console.error('No EPUB file found');
-        return;
-      }
-
-      // Détruire le lecteur existant s'il y en a un
-      if (this.rendition) {
-        this.rendition.destroy();
-      }
-
-      // Créer une nouvelle instance du lecteur EPUB
-      this.rendition = await Epub(`http://localhost:8000/storage/${this.book.file}`).renderTo(this.$refs.epubContainer, {
-        width: '100%',
-        height: '600px',
-      });
-
-      // Afficher la première page
-      await this.rendition.display();
-    },
-
-    // Augmenter la taille du texte
-    increaseFontSize() {
-      this.rendition.themes.fontSize('120%');
-    },
-
-    // Réduire la taille du texte
-    decreaseFontSize() {
-      this.rendition.themes.fontSize('80%');
-    },
-
-    // Activer/désactiver le mode nuit
-    toggleNightMode() {
-      this.nightMode = !this.nightMode;
-      this.rendition.themes[this.nightMode ? 'night' : 'default']();
-    },
-
-    // Changer la police
-    changeFont() {
-      this.rendition.themes.font(this.selectedFont);
-    },
-  },
-};
+onMounted(async () => {
+  await fetchBook(route.params.id)
+  if (currentBook.value?.file) {
+    pdfUrl.value = `${
+      import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/storage/'
+    }${currentBook.value.file}`
+  }
+})
 </script>
 
-<style>
-.epub-container {
-  margin: 20px auto;
-  border: 1px solid #ccc;
-  height: 600px; /* Hauteur fixe pour le conteneur */
-  width: 100%; /* Largeur maximale */
-}
+<template>
+  <main class="min-h-screen bg-gray-900 text-white pt-20 pb-8">
+    <div class="container mx-auto px-4">
+      <!-- En-tête -->
+      <div class="flex justify-between items-center mb-6 p-4 bg-gray-800 rounded-lg">
+        <div>
+          <h1 class="text-2xl font-bold text-orange-400">{{ currentBook?.title }}</h1>
+          <p class="text-gray-300">par {{ currentBook?.author }}</p>
+        </div>
+        
+        <button 
+          @click="router.back()"
+          class="flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+        >
+          <Icon icon="mdi:arrow-left" class="mr-2" />
+          Retour
+        </button>
+      </div>
 
-.controls {
-  margin-top: 10px;
-}
-
-button, select {
-  margin-right: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-button:hover, select:hover {
-  background-color: #f0f0f0;
-}
-</style>
+      <!-- PDF dans iframe -->
+      <div class="bg-gray-800 rounded-lg p-4">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold">Lecture du PDF</h2>
+          <a 
+            :href="pdfUrl" 
+            target="_blank"
+            class="flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors"
+            download
+          >
+            <Icon icon="mdi:download" class="mr-2" />
+            Télécharger
+          </a>
+        </div>
+        
+        <div class="bg-black rounded-lg overflow-hidden">
+          <iframe 
+            :src="pdfUrl" 
+            class="w-full h-[80vh]"
+            frameborder="0"
+          >
+            <p class="text-white p-4">
+              Votre navigateur ne supporte pas les iframes. 
+              <a :href="pdfUrl" target="_blank" class="text-orange-400 hover:text-orange-300">
+                Téléchargez le PDF
+              </a>
+            </p>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
@@ -183,14 +184,15 @@ class BookController extends Controller
         $book = Book::findOrFail($id);
 
         $filePath = storage_path('app/public/' . $book->file);
+        $fileName = Str::slug($book->title) . '.pdf';
 
         if (!file_exists($filePath)) {
             return response()->json(['error' => 'File not found'], 404);
         }
 
         return response()->file($filePath, [
-            'Content-Type' => 'application/epub+zip',
-            'Access-Control-Allow-Origin' => 'http://localhost:5173',
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
         ]);
     }
 
