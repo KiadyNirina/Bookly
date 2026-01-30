@@ -1,373 +1,146 @@
-<script>
-import { useRoute, useRouter } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
-import { Icon } from '@iconify/vue';
-import { useSearch } from '@/composables/useSearch';
+<script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAuth } from '@/composables/useAuth';
+import { useSearch } from '@/composables/useSearch';
+import { Icon } from '@iconify/vue';
 
-export default {
-  components: {
-    Icon
-  },
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const { isAuthenticated, logout } = useAuth();
-    const { searchQuery } = useSearch();
-    const isMobileMenuOpen = ref(false);
-    const isMobile = ref(window.innerWidth < 1024);
+const route = useRoute();
+const { isAuthenticated, logout } = useAuth();
+const { searchQuery } = useSearch();
 
-    const isActive = (path) => {
-      return route.path.startsWith(path);
-    };
+const isMobileMenuOpen = ref(false);
+const isScrolled = ref(false);
 
-    const toggleMobileMenu = () => {
-      isMobileMenuOpen.value = !isMobileMenuOpen.value;
-    };
+const isActive = (path) => route.path === path || route.path.startsWith(path + '/');
 
-    const closeMobileMenu = () => {
-      isMobileMenuOpen.value = false;
-    };
+const toggleMobileMenu = () => (isMobileMenuOpen.value = !isMobileMenuOpen.value);
+const closeMobileMenu = () => (isMobileMenuOpen.value = false);
 
-    const handleResize = () => {
-      isMobile.value = window.innerWidth < 1024;
-      if (!isMobile.value) {
-        closeMobileMenu();
-      }
-    };
-
-    onMounted(() => {
-      window.addEventListener('resize', handleResize);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', handleResize);
-    });
-
-    return { 
-      isAuthenticated, 
-      logout, 
-      isActive, 
-      searchQuery, 
-      isMobileMenuOpen, 
-      toggleMobileMenu, 
-      closeMobileMenu,
-      isMobile
-    };
-  }
+// Effet de changement de style au scroll
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 20;
 };
+
+onMounted(() => window.addEventListener('scroll', handleScroll));
+onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 </script>
 
 <template>
-  <main>
-    <!-- Navbar si l'utilisateur n'est pas authentifié -->
-    <div v-if="!isAuthenticated" class="nav fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[1400px] z-50">
-      <div class="nav-left">
-        <img src="/logo.jpg" alt="Logo">
-      </div>
-      <div class="search relative w-3/5">
+  <nav 
+    :class="[
+      'fixed top-0 inset-x-0 z-50 transition-all duration-300 px-4 py-3',
+      isScrolled ? 'bg-[#191c2f]/90 backdrop-blur-lg shadow-xl' : 'bg-transparent'
+    ]"
+  >
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <router-link to="/" class="flex-shrink-0 flex items-center gap-2 group">
+        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 transition-transform group-hover:scale-110">
+          <img src="/logo.jpg" alt="Logo" class="w-full h-full object-cover">
+        </div>
+        <span class="hidden md:block font-bold text-white tracking-tight text-xl">LIVR<span class="text-orange-500">O</span></span>
+      </router-link>
+
+      <div class="hidden md:flex flex-grow max-w-xl relative group">
+        <Icon icon="lucide:search" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
         <input
-          type="search"
           v-model="searchQuery"
-          placeholder="Rechercher un livre, un auteur, un utilisateur"
-          class="w-full p-2 border rounded"
+          type="search"
+          placeholder="Rechercher un trésor..."
+          class="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-orange-500/50 focus:bg-white/10 transition-all"
         />
       </div>
-      <div class="nav-right">
-        <router-link to="/" :class="{ 'active-link': isActive('/') }">Accueil</router-link>
-        <router-link to="/books" :class="{ 'active-link': isActive('/books') || isActive('/books/popular') || isActive('/books/recent') || isActive('/books/posted') }">Livres</router-link>
-        <router-link to="/about" :class="{ 'active-link': isActive('/about') }">À propos</router-link>
-        <router-link to="/contact" :class="{ 'active-link': isActive('/contact') }">Contact</router-link>
-        <router-link to="/login" id="button">Connexion</router-link>
+
+      <div class="hidden lg:flex items-center gap-6">
+        <template v-if="!isAuthenticated">
+          <router-link v-for="link in [['Accueil', '/'], ['Livres', '/books'], ['À propos', '/about']]" 
+            :key="link[1]" :to="link[1]"
+            :class="['relative py-1 text-sm font-medium transition-colors hover:text-orange-500', isActive(link[1]) ? 'text-orange-500' : 'text-gray-300']"
+          >
+            {{ link[0] }}
+            <span v-if="isActive(link[1])" class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 rounded-full"></span>
+          </router-link>
+          
+          <router-link to="/login" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-semibold transition-all hover:shadow-[0_0_20px_rgba(230,126,34,0.4)] active:scale-95">
+            Connexion
+          </router-link>
+        </template>
+
+        <template v-else>
+          <div class="flex items-center bg-white/5 p-1 rounded-full border border-white/10">
+            <router-link v-for="item in [
+              { path: '/dashboard', icon: 'lets-icons:home', iconActive: 'lets-icons:home-fill' },
+              { path: '/biblio', icon: 'ic:outline-library-add', iconActive: 'ic:baseline-library-add' },
+              { path: '/notif', icon: 'ri:notification-line', iconActive: 'ri:notification-fill' },
+              { path: '/profil/create', icon: 'iconamoon:profile-light', iconActive: 'iconamoon:profile-fill' }
+            ]" :key="item.path" :to="item.path"
+              class="p-2 rounded-full transition-all"
+              :class="isActive(item.path) ? 'bg-orange-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
+            >
+              <Icon :icon="isActive(item.path) ? item.iconActive : item.icon" height="24" />
+            </router-link>
+          </div>
+          
+          <button @click="logout" class="text-gray-400 hover:text-red-400 transition-colors p-2">
+            <Icon icon="lucide:log-out" height="24" />
+          </button>
+        </template>
       </div>
-      
-      <!-- Bouton menu burger pour mobile -->
-      <button class="mobile-menu-toggle lg:hidden" @click="toggleMobileMenu">
-        <Icon :icon="isMobileMenuOpen ? 'ep:close' : 'ci:hamburger-md'" height="30" />
+
+      <button class="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors" @click="toggleMobileMenu">
+        <Icon :icon="isMobileMenuOpen ? 'heroicons:x-mark-20-solid' : 'heroicons:bars-3-bottom-right-20-solid'" height="32" />
       </button>
-      
-      <!-- Menu mobile -->
-      <div v-if="isMobile" class="mobile-menu-container" :class="{ 'open': isMobileMenuOpen }">
-        <div class="mobile-menu-backdrop" @click="closeMobileMenu"></div>
-        <div class="mobile-menu">
-          <router-link to="/" :class="{ 'active-link': isActive('/') }" @click="closeMobileMenu">Accueil</router-link>
-          <router-link to="/books" :class="{ 'active-link': isActive('/books') || isActive('/books/popular') || isActive('/books/recent') || isActive('/books/posted') }" @click="closeMobileMenu">Livres</router-link>
-          <router-link to="/about" :class="{ 'active-link': isActive('/about') }" @click="closeMobileMenu">À propos</router-link>
-          <router-link to="/contact" :class="{ 'active-link': isActive('/contact') }" @click="closeMobileMenu">Contact</router-link>
-          <router-link to="/login" id="button-mobile" @click="closeMobileMenu">Connexion</router-link>
-        </div>
-      </div>
     </div>
 
-    <!-- Navbar si l'utilisateur est authentifié -->
-    <div v-else class="nav fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[1400px] z-50">
-      <div class="nav-left">
-        <img src="/logo.jpg" alt="Logo">
-      </div>
-      <div class="nav-img">
-        <router-link to="/dashboard" :class="{ 'active-link': isActive('/dashboard') }">
-          <Icon :icon="isActive('/dashboard') ? 'lets-icons:home-fill' : 'lets-icons:home'" :class="isActive('/dashboard') ? 'text-[#E67E22]' : ''" height="30"/>
-        </router-link>
-        <router-link to="/biblio" :class="{ 'active-link': isActive('/biblio') }">
-          <Icon :icon="isActive('/biblio') ? 'ic:baseline-library-add' : 'ic:outline-library-add'" :class="isActive('/biblio') ? 'text-[#E67E22]' : ''" height="30"/>
-        </router-link>
-        <router-link to="/notif" :id="isActive('/notif') ? 'active-link' : ''">
-          <Icon :icon="isActive('/notif') ? 'ri:notification-fill' : 'ri:notification-line'" :class="isActive('/notif') ? 'text-[#E67E22]' : ''" height="30"/>
-        </router-link>
-      </div>
-      <div class="search w-2/3">
-        <input
-          type="search"
-          v-model="searchQuery"
-          placeholder="Rechercher un livre, un auteur, un utilisateur"
-        />
-      </div>
-      <div class="nav-right">
-        <router-link to="/profil/create" :class="{ 'active-link': isActive('/profil/saved') || isActive('/profil/create') }">
-          <Icon :icon="isActive('/profil/saved') || isActive('/profil/create') ? 'iconamoon:profile-fill' : 'iconamoon:profile-light'" :class="isActive('/profil/saved') || isActive('/profil/create') ? 'text-[#E67E22]' : ''" height="30"/>
-        </router-link>
-        <router-link to="/settings" :class="{ 'active-link': isActive('/settings') }">
-          <Icon :icon="isActive('/settings') ? 'typcn:th-menu' : 'typcn:th-menu-outline'" :class="isActive('/settings') ? 'text-[#E67E22]' : ''" height="30"/>
-        </router-link>
-        <button id="button" @click="logout">Déconnexion</button>
-      </div>
-      
-      <!-- Bouton menu burger pour mobile -->
-      <button class="mobile-menu-toggle lg:hidden" @click="toggleMobileMenu">
-        <Icon :icon="isMobileMenuOpen ? 'ep:close' : 'ci:hamburger-md'" height="30" />
-      </button>
-      
-      <!-- Menu mobile -->
-      <div v-if="isMobile" class="mobile-menu-container" :class="{ 'open': isMobileMenuOpen }">
-        <div class="mobile-menu-backdrop" @click="closeMobileMenu"></div>
-        <div class="mobile-menu">
-          <router-link to="/dashboard" :class="{ 'active-link': isActive('/dashboard') }" @click="closeMobileMenu">
-            <Icon :icon="isActive('/dashboard') ? 'lets-icons:home-fill' : 'lets-icons:home'" :class="isActive('/dashboard') ? 'text-[#E67E22]' : ''" height="30"/>
-            <span>Dashboard</span>
-          </router-link>
-          <router-link to="/biblio" :class="{ 'active-link': isActive('/biblio') }" @click="closeMobileMenu">
-            <Icon :icon="isActive('/biblio') ? 'ic:baseline-library-add' : 'ic:outline-library-add'" :class="isActive('/biblio') ? 'text-[#E67E22]' : ''" height="30"/>
-            <span>Bibliothèque</span>
-          </router-link>
-          <router-link to="/notif" :id="isActive('/notif') ? 'active-link' : ''" @click="closeMobileMenu">
-            <Icon :icon="isActive('/notif') ? 'ri:notification-fill' : 'ri:notification-line'" :class="isActive('/notif') ? 'text-[#E67E22]' : ''" height="30"/>
-            <span>Notifications</span>
-          </router-link>
-          <router-link to="/profil/create" :class="{ 'active-link': isActive('/profil/saved') || isActive('/profil/create') }" @click="closeMobileMenu">
-            <Icon :icon="isActive('/profil/saved') || isActive('/profil/create') ? 'iconamoon:profile-fill' : 'iconamoon:profile-light'" :class="isActive('/profil/saved') || isActive('/profil/create') ? 'text-[#E67E22]' : ''" height="30"/>
-            <span>Profil</span>
-          </router-link>
-          <router-link to="/settings" :class="{ 'active-link': isActive('/settings') }" @click="closeMobileMenu">
-            <Icon :icon="isActive('/settings') ? 'typcn:th-menu' : 'typcn:th-menu-outline'" :class="isActive('/settings') ? 'text-[#E67E22]' : ''" height="30"/>
-            <span>Paramètres</span>
-          </router-link>
-          <button id="button-mobile" @click="logout">Déconnexion</button>
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0 translate-x-full"
+      enter-to-class="opacity-100 translate-x-0"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100 translate-x-0"
+      leave-to-class="opacity-0 translate-x-full"
+    >
+      <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[60] lg:hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="closeMobileMenu"></div>
+        
+        <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-[#191c2f] p-8 shadow-2xl border-l border-white/10">
+          <div class="flex flex-col h-full">
+            <div class="flex justify-between items-center mb-10">
+              <span class="text-xl font-bold text-white">Menu</span>
+              <button @click="closeMobileMenu" class="text-gray-400 hover:text-white"><Icon icon="lucide:x" height="28" /></button>
+            </div>
+
+            <div class="relative mb-8">
+              <input v-model="searchQuery" type="text" placeholder="Rechercher..." class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white outline-none focus:border-orange-500">
+            </div>
+
+            <nav class="flex flex-col gap-4">
+              <router-link 
+                v-for="link in (isAuthenticated ? 
+                  [['Dashboard', '/dashboard', 'home'], ['Ma Biblio', '/biblio', 'book'], ['Notifications', '/notif', 'bell'], ['Profil', '/profil/create', 'user']] : 
+                  [['Accueil', '/', 'home'], ['Livres', '/books', 'book-open'], ['À propos', '/about', 'info']])" 
+                :key="link[1]" :to="link[1]"
+                class="flex items-center gap-4 p-4 rounded-xl transition-all"
+                :class="isActive(link[1]) ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
+                @click="closeMobileMenu"
+              >
+                <Icon :icon="`lucide:${link[2]}`" height="20" />
+                <span class="font-medium">{{ link[0] }}</span>
+              </router-link>
+            </nav>
+
+            <div class="mt-auto pt-6 border-t border-white/10">
+              <button v-if="isAuthenticated" @click="logout" class="w-full flex items-center justify-center gap-2 p-4 text-red-400 font-semibold hover:bg-red-400/10 rounded-xl transition-all">
+                <Icon icon="lucide:log-out" /> Déconnexion
+              </button>
+              <router-link v-else to="/login" @click="closeMobileMenu" class="block w-full text-center bg-orange-500 text-white p-4 rounded-xl font-bold shadow-lg shadow-orange-500/20">
+                Connexion
+              </router-link>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
+    </Transition>
+  </nav>
 </template>
-
-<style scoped>
-.nav{
-    display: flex;
-    align-items: center;
-    background-color: #191c2fff;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-}
-.nav img{
-    height: 30px;
-}
-.nav a, .nav button{
-    text-decoration: none;
-    color: #F5F5DC;
-    transition: 0.5s;
-}
-.nav a:hover, .nav button:hover{
-    color: #E67E22;
-}
-.nav-left{
-    width: auto;
-}
-.nav-left img{
-    height: 50px;
-    border-radius: 100%;
-}
-.nav-img{
-    width: auto;
-    display: flex;
-    align-items: center;
-}
-.nav-img a{
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.search{
-    margin-left: auto;
-    margin-right: auto;
-}
-.search input{
-    width: 100%;
-    height: auto;
-    border: none;
-    border-radius: 20px;
-    background-color: rgba(255, 255, 255, 0.053);
-    padding: 15px;
-    color: white;
-    transition: 0.3s;
-}
-.search input:hover{
-    background-color: rgba(255, 255, 255, 0.089);
-}
-.nav-right{
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
-.nav-right a, .nav-right button{
-    margin-left: 10px;
-    margin-right: 10px;
-}
-#button{
-    cursor: pointer;
-    background-color: #E67E22;
-    padding: 10px;
-    border-radius: 20px;
-    border: 2px solid #E67E22;
-    transition: 0.5s;
-}
-#button:hover{
-    background-color: transparent;
-    color: #E67E22;
-}
-#active-link {
-  color: #E67E22;
-}
-
-/* Styles responsives */
-@media (max-width: 1023px) {
-  .nav-right, .nav-img {
-    display: none;
-  }
-  
-  .search {
-    width: 100%;
-    margin-left: 15px;
-    margin-right: 15px;
-  }
-  
-  .mobile-menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    color: #F5F5DC;
-    cursor: pointer;
-    margin-left: auto;
-    z-index: 1001;
-  }
-}
-
-@media (min-width: 1024px) {
-  .mobile-menu-toggle {
-    display: none;
-  }
-}
-
-/* Menu mobile */
-.mobile-menu-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.mobile-menu-container.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-.mobile-menu-backdrop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
-}
-
-.mobile-menu {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 75%;
-  max-width: 300px;
-  height: 100%;
-  background-color: #010310;
-  padding: 80px 20px 20px;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
-}
-
-.mobile-menu-container.open .mobile-menu {
-  transform: translateX(0);
-}
-
-.mobile-menu a, .mobile-menu button {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-}
-
-.mobile-menu a:hover, .mobile-menu button:hover {
-  background-color: rgba(230, 126, 34, 0.1);
-}
-
-.mobile-menu a span, .mobile-menu button {
-  margin-left: 12px;
-  font-size: 14px;
-}
-
-#button-mobile {
-  cursor: pointer;
-  background-color: #E67E22;
-  padding: 12px;
-  border-radius: 20px;
-  border: 2px solid #E67E22;
-  transition: 0.5s;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-#button-mobile:hover {
-  background-color: transparent;
-  color: #E67E22;
-}
-
-@media (max-width: 640px) {
-  .nav-left img {
-    height: 40px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mobile-menu {
-    width: 85%;
-  }
-}
-</style>
