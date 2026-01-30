@@ -193,243 +193,126 @@ const categories = ref([
 </script>
 
 <template>
-  <main class="min-h-screen text-white pt-20 pb-12">
-    <div class="container mx-auto px-4">
-      <!-- Filtres par catégorie (mobile) -->
-      <div class="lg:hidden mb-6 overflow-x-auto hide-scrollbar">
-        <div class="flex space-x-3 w-max py-2">
-          <span 
-            v-for="category in categories" 
-            :key="category"
-            class="px-4 py-2 bg-gray-800 bg-opacity-50 text-gray-300 text-sm rounded-full whitespace-nowrap"
-          >
-            {{ category }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Livre principal -->
-      <div v-if="currentBook" class="bg-gray-800/30 backdrop-blur-lg rounded-2xl p-6 mb-12 border border-gray-900 shadow-xl">
-        <div class="flex flex-col lg:flex-row gap-8">
-          <!-- Image du livre -->
-          <div class="lg:w-2/5">
-            <div class="relative">
+  <main class="min-h-screen text-white pt-24 pb-20">
+    <div class="container mx-auto px-4 max-w-7xl">
+      
+      <div v-if="currentBook" class="relative grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24">
+        
+        <div class="lg:col-span-5 xl:col-span-4">
+          <div class="sticky top-28 group">
+            <div class="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]">
               <img 
                 :src="getImageUrl(currentBook.picture)" 
-                :alt="currentBook.title" 
-                class="w-full h-96 lg:h-[500px] object-cover rounded-xl shadow-lg"
+                class="w-full h-auto aspect-[2/3] object-cover"
               />
-              <div class="absolute top-4 left-4">
-                <span class="bg-orange-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+              <div class="absolute top-6 left-6">
+                <span class="bg-orange-500 text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full shadow-lg">
                   Romance
                 </span>
               </div>
             </div>
           </div>
-
-          <!-- Informations du livre -->
-          <div class="lg:w-3/5">
-            <h1 class="text-3xl lg:text-4xl font-bold text-white mb-4">{{ currentBook.title }}</h1>
-            <p class="text-xl text-gray-300 mb-6">Écrit par <span class="font-semibold text-orange-400">{{ currentBook.author }}</span></p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg">
-                <h3 class="text-sm font-semibold text-gray-400 mb-2">Informations</h3>
-                <p class="text-white">
-                  Publié par 
-                  <router-link 
-                    v-if="isLoggedIn && currentBook.posted_by.name == user.name" 
-                    to="/profil/create"
-                    class="font-semibold text-blue-400 hover:text-blue-300"
-                  >
-                    {{ currentBook.posted_by.name }}
-                  </router-link>
-                  <router-link 
-                    v-else 
-                    :to="`/user/${currentBook.posted_by.id}/create`"
-                    class="font-semibold text-blue-400 hover:text-blue-300"
-                  >
-                    {{ currentBook.posted_by.name }}
-                  </router-link>
-                </p>
-                <p class="text-white mt-1">Le <span class="font-semibold">{{ formatDate(currentBook.created_at) }}</span></p>
-                <p class="text-white mt-1">Langue : <span class="font-semibold">{{ currentBook.lang }}</span></p>
-                <p class="text-white mt-1">Pages : <span class="font-semibold">{{ currentBook.page }}</span></p>
-              </div>
-
-              <div class="bg-gray-900 bg-opacity-50 p-4 rounded-lg">
-                <h3 class="text-sm font-semibold text-gray-400 mb-2">Statistiques</h3>
-                <div class="flex items-center mb-2">
-                  <div class="flex mr-3">
-                    <Icon icon="flowbite:star-solid" class="text-orange-500 mr-1" v-for="i in 4" :key="i" />
-                    <Icon icon="flowbite:star-outline" class="text-orange-500" />
-                  </div>
-                  <span class="text-gray-400 text-sm"><i>(100 notes)</i></span>
-                </div>
-                <div class="flex space-x-4 text-sm text-gray-400">
-                  <span class="flex items-center">
-                    <Icon icon="entypo:eye" class="mr-1" />
-                    1,3k
-                  </span>
-                  <span class="flex items-center">
-                    <Icon icon="iconamoon:comment-fill" class="mr-1" />
-                    112
-                  </span>
-                  <span class="flex items-center">
-                    <Icon icon="ic:round-download" class="mr-1" />  
-                    900
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex flex-wrap gap-3 mb-8">
-              <router-link 
-                :to="`/book/${currentBook.id}/file`"
-                class="flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
-              >
-                <Icon icon="ant-design:read-filled" class="mr-2" />Lire
-              </router-link>
-              <button class="flex items-center px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg transition-colors">
-                <Icon icon="stash:save-ribbon" class="mr-2" />Enregistrer
-              </button>
-              <button class="flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors">
-                <Icon icon="ic:round-download" class="mr-2" />Télécharger
-              </button>
-              <button class="flex items-center px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors">
-                <Icon icon="mage:share-fill" class="mr-2" />Partager
-              </button>
-              <button 
-                    v-if="isLoggedIn && currentBook.posted_by.name === user.name"
-                    @click="handleDeleteBook(currentBook.id)"
-                    class="flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
-                >
-                    <Icon icon="mdi:delete" class="mr-2" /> Supprimer
-                </button>
-            </div>
-
-            <!-- Évaluation -->
-            <div class="mb-8">
-              <h3 class="text-lg font-semibold mb-3">Donnez votre avis</h3>
-              <div class="flex space-x-1 mb-4">
-                <Icon 
-                  v-for="star in 5" 
-                  :key="star"
-                  :icon="star <= hoveredStar || star <= selectedRating ? starIcons.filled : starIcons.empty"
-                  @mouseover="handleStarHover(star)"
-                  @mouseleave="handleStarHover(0)"
-                  @click="handleRatingSelection(star)" 
-                  class="text-3xl text-orange-500 cursor-pointer transition-transform hover:scale-110" 
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Description -->
-        <div class="mt-8">
-          <h2 class="text-2xl font-bold mb-4">Description</h2>
-          <div class="bg-gray-900 bg-opacity-30 rounded-xl p-6 max-h-96 overflow-y-auto custom-scrollbar">
-            <p class="text-gray-300 leading-relaxed" v-html="displayedDescription.replace(/\n/g, '<br>')"></p>
-            <button 
-                v-if="currentBook.description.length > 400"
-                @click="showFullDescription = !showFullDescription"
-                class="text-blue-400 hover:text-blue-300 ml-2 text-sm"
-            >
-                {{ showFullDescription ? 'Lire moins' : 'Lire la suite' }}
-            </button>
-          </div>
-        </div>
+        <div class="lg:col-span-7 xl:col-span-8 flex flex-col justify-center">
+          <p class="text-orange-500 font-bold tracking-[0.3em] uppercase text-xs mb-4">Chef-d'œuvre de {{ currentBook.author }}</p>
+          <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight italic tracking-tighter">
+            {{ currentBook.title }}
+          </h1>
 
-        <!-- Commentaires -->
-        <div class="mt-12">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Commentaires ({{ comments.length }})</h2>
-            <button 
-              v-if="comments.length > 3"
-              @click="showAllComments = !showAllComments"
-              class="text-blue-400 hover:text-blue-300 text-sm font-medium"
-            >
-              {{ showAllComments ? 'Voir moins' : 'Voir tous' }}
-            </button>
-          </div>
-
-          <!-- Formulaire de commentaire -->
-          <div v-if="isAuthenticated" class="mb-8">
-            <div class="flex items-start space-x-4">
-              <img 
-                src="../../../../public/cover 2.jpg" 
-                alt="Profil" 
-                class="w-12 h-12 rounded-full object-cover border-2 border-gray-600"
-              />
-              <div class="flex-1">
-                <textarea
-                  v-model="commentText"
-                  placeholder="Donnez votre avis..."
-                  class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                  rows="3"
-                ></textarea>
-                <div class="flex justify-end mt-2">
-                  <button
-                    @click="isCommenting = false"
-                    class="px-4 py-2 text-gray-400 hover:text-gray-300 mr-2"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    @click="handleCommentSubmit"
-                    :disabled="!commentText.trim()"
-                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-                  >
-                    Publier
-                  </button>
-                </div>
+          <div class="flex flex-wrap items-center gap-8 mb-10 pb-8 border-b border-white/5">
+            <div class="flex items-center gap-2">
+              <div class="flex text-orange-500">
+                <Icon v-for="i in 5" :key="i" icon="lucide:star" class="w-4 h-4" :class="i > 4 ? 'opacity-20' : 'fill-current'"/>
               </div>
+              <span class="text-sm font-bold">(4.8/5)</span>
+            </div>
+            <div v-for="stat in [{i:'lucide:eye', v:'1.3k'}, {i:'lucide:message-square', v:'112'}, {i:'lucide:download', v:'900'}]" :key="stat.v" class="flex items-center gap-2 text-white/40">
+              <Icon :icon="stat.i" class="w-4 h-4" />
+              <span class="text-xs font-bold">{{ stat.v }}</span>
             </div>
           </div>
-          <div v-else class="mb-8 text-center py-6 bg-gray-900 bg-opacity-30 rounded-xl">
-            <p class="text-gray-400">
-              <router-link to="/login" class="text-blue-400 hover:text-blue-300">Connectez-vous</router-link>
-              pour laisser un commentaire
+
+          <div class="mb-10">
+            <h3 class="text-white/30 uppercase tracking-widest text-[10px] font-black mb-4">Synopsis</h3>
+            <p class="text-lg text-white/70 leading-relaxed max-w-2xl font-light">
+              {{ displayedDescription }}
+              <button @click="showFullDescription = !showFullDescription" class="text-orange-500 font-bold ml-2 hover:underline">
+                {{ showFullDescription ? 'Réduire' : 'Lire la suite' }}
+              </button>
             </p>
           </div>
 
-          <!-- Liste des commentaires -->
+          <div class="flex flex-wrap gap-4 items-center">
+            <router-link :to="`/book/${currentBook.id}/file`" 
+              class="px-10 py-4 bg-white text-black font-black uppercase tracking-widest text-xs rounded-full hover:bg-orange-500 hover:text-white transition-all transform hover:-translate-y-1">
+              Commencer la lecture
+            </router-link>
+            <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
+              <Icon icon="lucide:bookmark" class="text-xl" />
+            </button>
+            <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
+              <Icon icon="lucide:download" class="text-xl" />
+            </button>
+            <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
+              <Icon icon="lucide:share-2" class="text-xl" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+        
+        <div class="space-y-8">
+          <h2 class="text-xl font-bold border-l-4 border-orange-500 pl-4 uppercase tracking-tighter">Fiche Technique</h2>
+          <div class="space-y-4">
+            <div v-for="info in [['Pages', currentBook?.page], ['Langue', currentBook?.lang], ['Date', formatDate(currentBook?.created_at)]]" 
+              :key="info[0]" class="flex justify-between py-3 border-b border-white/5">
+              <span class="text-white/40 text-sm">{{ info[0] }}</span>
+              <span class="font-bold text-sm">{{ info[1] }}</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-white/5">
+              <span class="text-white/40 text-sm">Publié par</span>
+              <router-link to="#" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</router-link>
+            </div>
+          </div>
+
+          <div class="bg-white/5 rounded-3xl p-8 text-center border border-white/10">
+            <h4 class="font-bold mb-4 uppercase tracking-widest text-[10px]">Notez cet ouvrage</h4>
+            <div class="flex justify-center gap-2">
+              <Icon 
+                v-for="star in 5" :key="star"
+                :icon="star <= (hoveredStar || selectedRating) ? 'lucide:star' : 'lucide:star'"
+                :class="['text-2xl cursor-pointer transition-all', star <= (hoveredStar || selectedRating) ? 'text-orange-500 fill-current' : 'text-white/10']"
+                @mouseover="hoveredStar = star"
+                @mouseleave="hoveredStar = 0"
+                @click="handleRatingSelection(star)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-10">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-black italic tracking-tighter italic">Réactions <span class="text-orange-500 text-sm not-italic ml-2">/ {{ comments.length }}</span></h2>
+            <button v-if="isAuthenticated" @click="isCommenting = true" class="text-xs font-black uppercase tracking-widest text-orange-500 hover:text-white transition-colors">Écrire un avis</button>
+          </div>
+
           <div class="space-y-6">
-            <div 
-              v-for="comment in visibleComments" 
-              :key="comment.id"
-              class="bg-gray-900 bg-opacity-30 rounded-xl p-6"
-            >
-              <div class="flex items-start space-x-4">
-                <img 
-                  :src="comment.avatar" 
-                  :alt="comment.user" 
-                  class="w-12 h-12 rounded-full object-cover border-2 border-gray-600"
-                />
+            <div v-for="comment in visibleComments" :key="comment.id" 
+              class="group relative bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-3xl p-6 transition-all">
+              <div class="flex gap-4">
+                <img :src="comment.avatar" class="w-12 h-12 rounded-full border border-orange-500 p-0.5" />
                 <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-semibold text-white">{{ comment.user }}</h4>
-                    <span class="text-sm text-gray-500">Le {{ comment.date }}</span>
+                  <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-sm">{{ comment.user }}</h4>
+                    <span class="text-[10px] text-white/30 uppercase font-black">{{ comment.date }}</span>
                   </div>
-                  <p class="text-gray-300 mb-4">
-                    {{ comment.showFull ? comment.content : truncateText(comment.content, 200) }}
-                    <button 
-                        v-if="comment.content.length > 200" 
-                        @click="comment.showFull = !comment.showFull"
-                        class="text-blue-400 hover:text-blue-300 ml-2 text-sm"
-                    >
-                        {{ comment.showFull ? 'Lire moins' : 'Lire plus' }}
+                  <p class="text-white/60 text-sm leading-relaxed mb-4 italic">{{ comment.content }}</p>
+                  <div class="flex gap-4">
+                    <button class="flex items-center gap-1 text-[10px] font-black uppercase tracking-tighter text-white/20 hover:text-orange-500 transition-colors">
+                      <Icon icon="lucide:thumbs-up" /> Soutenir ({{ comment.likes }})
                     </button>
-                  </p>
-                  <div class="flex items-center text-sm text-gray-500">
-                    <span class="mr-6">Il y a 2 mois</span>
-                    <button class="flex items-center mr-6 hover:text-gray-300">
-                      <Icon icon="solar:like-broken" class="mr-1" />
-                      <span>{{ comment.likes }}</span>
-                    </button>
-                    <button class="hover:text-gray-300">Répondre</button>
                   </div>
                 </div>
               </div>
@@ -438,133 +321,30 @@ const categories = ref([
         </div>
       </div>
 
-      <!-- Livres similaires -->
-      <section class="mb-12">
-        <div class="flex justify-between items-center mb-8">
-          <h2 class="text-3xl font-bold">Livres Similaires</h2>
-          <router-link 
-            to="/books" 
-            class="text-orange-400 hover:text-orange-300 flex items-center transition-colors"
-          >
-            Voir plus
-            <Icon icon="ic:round-arrow-forward" class="ml-2" />
-          </router-link>
+      <section>
+        <div class="flex items-end justify-between mb-12">
+          <div>
+            <p class="text-orange-500 font-bold text-[10px] uppercase tracking-[0.3em] mb-2">Découvrir aussi</p>
+            <h2 class="text-4xl font-black italic tracking-tighter italic">Dans le même <span class="text-orange-500">style</span></h2>
+          </div>
+          <router-link to="/books" class="text-xs font-black uppercase tracking-widest border-b border-orange-500 pb-1 hover:text-orange-500 transition-colors">Tout explorer</router-link>
         </div>
 
-        <div v-if="similarBooks.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <div 
-            v-for="(bk, index) in similarBooks" 
-            :key="index"
-            v-show="bk.id !== currentBook?.id"
-            class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 transition-all duration-300 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/20"
-          >
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div v-for="bk in similarBooks.slice(0, 4)" :key="bk.id" 
+            class="group relative aspect-[2/3] bg-white/5 rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500">
             <a :href="`/books/${bk.id}`" class="block h-full">
-              <img 
-                :src="getImageUrl(bk.picture)" 
-                :alt="bk.title" 
-                class="w-full h-60 object-cover"
-              />
-              
-              <div class="p-4">
-                <span class="inline-block bg-blue-900 bg-opacity-50 text-blue-200 text-xs font-semibold px-2 py-1 rounded mb-3">Fiction</span>
-                
-                <h3 class="text-lg font-bold text-white mb-1 truncate">{{ bk.title }}</h3>
-                <p class="text-sm text-gray-400 mb-3 truncate">{{ bk.author }}</p>
-                
-                <div class="text-xs text-gray-500 mb-4">
-                  <p class="truncate">Publié par <span class="font-semibold text-gray-300">{{ bk.posted_by.name }}</span></p>
-                  <p>Le <span class="font-semibold text-gray-300">{{ bk.created_at }}</span></p>
-                  <p>Lang : <span class="font-semibold text-gray-300">{{ bk.lang }}</span></p>
-                </div>
-                
-                <div class="flex justify-between items-center text-sm text-gray-400">
-                  <div class="flex items-center">
-                    <Icon icon="flowbite:star-solid" class="text-orange-500 mr-1" v-for="i in 4" :key="i" />
-                    <Icon icon="flowbite:star-outline" class="text-orange-500" />
-                  </div>
-                  
-                  <div class="flex space-x-3">
-                    <span class="flex items-center">
-                      <Icon icon="entypo:eye" class="mr-1" />
-                      1,3k
-                    </span>
-                    <span class="flex items-center">
-                      <Icon icon="ic:round-download" class="mr-1" />
-                      900
-                    </span>
-                  </div>
-                </div>
+              <img :src="getImageUrl(bk.picture)" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-110" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0f111a] via-transparent"></div>
+              <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                <p class="text-orange-500 text-[10px] font-bold uppercase tracking-widest mb-1">{{ bk.author }}</p>
+                <h3 class="text-lg font-black text-white italic truncate">{{ bk.title }}</h3>
               </div>
             </a>
           </div>
         </div>
-
-        <div v-else class="text-center py-12">
-          <Icon icon="mdi:book-off" class="text-6xl text-gray-500 mx-auto mb-4" />
-          <p class="text-gray-400">Aucun livre similaire trouvé</p>
-        </div>
-
-        <div v-if="hasMoreBooks" class="text-center mt-8">
-          <button 
-            @click="loadMoreBooks" 
-            :disabled="areBooksLoading"
-            class="px-8 py-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
-          >
-            {{ !areBooksLoading ? 'Charger plus' : 'Chargement...' }}
-          </button>
-        </div>
       </section>
+
     </div>
   </main>
 </template>
-
-<style>
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #4a5568 #2d3748;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #2d3748;
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4a5568;
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #718096;
-}
-
-/* Animations */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-</style>
