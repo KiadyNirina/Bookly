@@ -1,132 +1,262 @@
-<template>
-  <div class="content-page">
-    <!-- Affichage des informations du livre -->
-    <div v-if="book">
-      <h1>{{ book.title }}</h1>
-      <p>{{ book.author }}</p>
-    </div>
+<script setup>
+import { ref, onMounted, watch, onUnmounted } from "vue"
+import { useRoute } from "vue-router"
+import { useBook } from "@/composables/useBook"
+import * as pdfjsLib from "pdfjs-dist"
+import pdfWorker from "/pdf.worker.min.mjs?url"
 
-    <!-- Conteneur pour le lecteur EPUB -->
-    <div ref="epubContainer" class="epub-container"></div>
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
 
-    <!-- Contrôles de personnalisation -->
-    <div class="controls">
-      <button @click="increaseFontSize">Agrandir le texte</button>
-      <button @click="decreaseFontSize">Réduire le texte</button>
-      <button @click="toggleNightMode">Mode nuit</button>
-      <select v-model="selectedFont" @change="changeFont">
-        <option value="Arial">Arial</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Courier New">Courier New</option>
-      </select>
-    </div>
-  </div>
-</template>
+const route = useRoute()
+const { book: currentBook, fetchBook } = useBook()
+const canvasRef = ref(null)
+const readerRef = ref(null)
 
-<script>
-import Epub from 'epubjs';
+let pdfDoc = null
+const currentPage = ref(1)
+const totalPages = ref(1)
+const zoomLevel = ref(1.5)
+const bookmarks = ref([])
 
-export default {
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      book: null, // Détails du livre
-      rendition: null, // Instance du lecteur EPUB
-      selectedFont: 'Arial', // Police sélectionnée
-      nightMode: false, // Mode nuit activé/désactivé
-    };
-  },
-  async mounted() {
-    // Charger les détails du livre et le fichier EPUB
-    await this.fetchBookDetails();
-    this.loadEpub();
-  },
-  methods: {
-    // Récupérer les détails du livre depuis l'API Laravel
-    async fetchBookDetails() {
-      try {
-        const response = await fetch(`http://localhost:8000/api/books/${this.id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch book details');
-        }
-        const data = await response.json();
-        this.book = data.data;
-      } catch (error) {
-        console.error('Error fetching book details:', error);
-      }
-    },
+// Panning
+let isPanning = false
+let startX = 0
+let startY = 0
+let scrollLeft = 0
+let scrollTop = 0
 
-    // Charger le fichier EPUB dans le lecteur
-    async loadEpub() {
-      if (!this.book.file) {
-        console.error('No EPUB file found');
-        return;
-      }
+onMounted(async () => {
+  await fetchBook(route.params.id)
+})
 
-      // Détruire le lecteur existant s'il y en a un
-      if (this.rendition) {
-        this.rendition.destroy();
-      }
+watch(currentBook, async (newBook) => {
+  if (newBook && newBook.file) {
+    await loadPdf(getPdfUrl(newBook.file))
+  }
+})
 
-      // Créer une nouvelle instance du lecteur EPUB
-      this.rendition = await Epub(`http://localhost:8000/storage/${this.book.file}`).renderTo(this.$refs.epubContainer, {
-        width: '100%',
-        height: '600px',
-      });
+const getPdfUrl = (filePath) =>
+  filePath.startsWith("http")
+    ? filePath
+    : `${import.meta.env.VITE_API_BASE_URL || "http://localhost:5173/storage/"}${filePath}`
 
-      // Afficher la première page
-      await this.rendition.display();
-    },
+const loadPdf = async (url) => {
+  try {
+    const loadingTask = pdfjsLib.getDocument(url)
+    pdfDoc = await loadingTask.promise
+    totalPages.value = pdfDoc.numPages
+    renderPage(currentPage.value)
+  } catch (error) {
+    console.error("Erreur chargement PDF :", error)
+  }
+}
 
-    // Augmenter la taille du texte
-    increaseFontSize() {
-      this.rendition.themes.fontSize('120%');
-    },
+const renderPage = async (pageNumber) => {
+  const page = await pdfDoc.getPage(pageNumber)
+  const viewport = page.getViewport({ scale: zoomLevel.value })
+  const canvas = canvasRef.value
+  const context = canvas.getContext("2d")
 
-    // Réduire la taille du texte
-    decreaseFontSize() {
-      this.rendition.themes.fontSize('80%');
-    },
+  canvas.height = viewport.height
+  canvas.width = viewport.width
 
-    // Activer/désactiver le mode nuit
-    toggleNightMode() {
-      this.nightMode = !this.nightMode;
-      this.rendition.themes[this.nightMode ? 'night' : 'default']();
-    },
+  const renderContext = {
+    canvasContext: context,
+    viewport: viewport,
+  }
+  page.render(renderContext)
+}
 
-    // Changer la police
-    changeFont() {
-      this.rendition.themes.font(this.selectedFont);
-    },
-  },
-};
+const prevPage = () => {
+  if (currentPage.value <= 1) return
+  currentPage.value--
+  renderPage(currentPage.value)
+}
+
+const nextPage = () => {
+  if (currentPage.value >= totalPages.value) return
+  currentPage.value++
+  renderPage(currentPage.value)
+}
+
+const zoomIn = () => {
+  zoomLevel.value += 0.2
+  renderPage(currentPage.value)
+}
+
+const zoomOut = () => {
+  if (zoomLevel.value <= 0.2) return
+  zoomLevel.value -= 0.2
+  renderPage(currentPage.value)
+}
+
+const toggleFullscreen = () => {
+  if (!document.fullscreenElement) {
+    readerRef.value.requestFullscreen().catch((err) => {
+      console.error("Erreur fullscreen :", err)
+    })
+  } else {
+    document.exitFullscreen()
+  }
+}
+
+// Marqueurs
+const addBookmark = () => {
+  if (!bookmarks.value.includes(currentPage.value)) {
+    bookmarks.value.push(currentPage.value)
+    bookmarks.value.sort((a, b) => a - b)
+  }
+}
+
+const goToBookmark = (page) => {
+  currentPage.value = page
+  renderPage(currentPage.value)
+}
+
+const removeBookmark = (page) => {
+  bookmarks.value = bookmarks.value.filter(p => p !== page)
+}
+
+// Zoom avec molette
+const handleWheelZoom = (event) => {
+  event.preventDefault()
+  if (event.deltaY < 0) zoomLevel.value += 0.1
+  else if (zoomLevel.value > 0.2) zoomLevel.value -= 0.1
+  renderPage(currentPage.value)
+}
+
+// Panning avec clic gauche
+const handleMouseDown = (event) => {
+  if (event.button !== 0) return
+  isPanning = true
+  startX = event.pageX - canvasRef.value.parentElement.offsetLeft
+  startY = event.pageY - canvasRef.value.parentElement.offsetTop
+  scrollLeft = canvasRef.value.parentElement.scrollLeft
+  scrollTop = canvasRef.value.parentElement.scrollTop
+  canvasRef.value.parentElement.style.cursor = "grabbing"
+}
+
+const handleMouseMove = (event) => {
+  if (!isPanning) return
+  event.preventDefault()
+  const x = event.pageX - canvasRef.value.parentElement.offsetLeft
+  const y = event.pageY - canvasRef.value.parentElement.offsetTop
+  const walkX = (x - startX)
+  const walkY = (y - startY)
+  canvasRef.value.parentElement.scrollLeft = scrollLeft - walkX
+  canvasRef.value.parentElement.scrollTop = scrollTop - walkY
+}
+
+const handleMouseUp = () => {
+  isPanning = false
+  canvasRef.value.parentElement.style.cursor = "grab"
+}
+
+onMounted(() => {
+  canvasRef.value?.addEventListener("wheel", handleWheelZoom, { passive: false })
+  canvasRef.value?.addEventListener("mousedown", handleMouseDown)
+  canvasRef.value?.addEventListener("mousemove", handleMouseMove)
+  canvasRef.value?.addEventListener("mouseup", handleMouseUp)
+  canvasRef.value?.addEventListener("mouseleave", handleMouseUp)
+})
+
+onUnmounted(() => {
+  canvasRef.value?.removeEventListener("wheel", handleWheelZoom)
+  canvasRef.value?.removeEventListener("mousedown", handleMouseDown)
+  canvasRef.value?.removeEventListener("mousemove", handleMouseMove)
+  canvasRef.value?.removeEventListener("mouseup", handleMouseUp)
+  canvasRef.value?.removeEventListener("mouseleave", handleMouseUp)
+})
 </script>
 
-<style>
-.epub-container {
-  margin: 20px auto;
-  border: 1px solid #ccc;
-  height: 600px; /* Hauteur fixe pour le conteneur */
-  width: 100%; /* Largeur maximale */
-}
+<template>
+  <section ref="readerRef" class="min-h-screen py-8 px-4 mt-20">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2 px-4">{{ currentBook?.title || "Chargement du livre..." }}</h1>
+        <p class="text-slate-300 text-base md:text-lg px-4">Par {{ currentBook?.author || "..." }}</p>
+      </div>
 
-.controls {
-  margin-top: 10px;
-}
+      <!-- Controls -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 bg-black/20 rounded-xl">
+        <div class="flex items-center gap-2">
+          <button @click="prevPage" :disabled="currentPage === 1" class="btn">⬅ Précédent</button>
+          <span class="text-white">Page {{ currentPage }} / {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages" class="btn">Suivant ➡</button>
+        </div>
 
-button, select {
-  margin-right: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
+        <div class="flex items-center gap-2">
+          <button @click="zoomOut" class="btn">➖ Zoom</button>
+          <span class="text-white">{{ Math.round(zoomLevel * 100) }}%</span>
+          <button @click="zoomIn" class="btn">➕ Zoom</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button @click="toggleFullscreen" class="btn">Fullscreen</button>
+          <button @click="addBookmark" class="btn">Marque-page</button>
+        </div>
+      </div>
+
+      <!-- PDF Container -->
+      <div class="pdf-container" style="overflow: auto; cursor: grab;">
+        <canvas ref="canvasRef"></canvas>
+      </div>
+
+      <!-- Bookmarks -->
+      <div class="bookmarks mt-4">
+        <h3 class="text-white mb-2">Marqueurs :</h3>
+        <div v-if="bookmarks.length > 0" class="flex flex-wrap gap-2">
+          <button v-for="page in bookmarks" :key="page" @click="goToBookmark(page)" class="btn-sm">
+            Page {{ page }} ✨
+            <span @click.stop="removeBookmark(page)" class="ml-1 text-red-500 cursor-pointer">❌</span>
+          </button>
+        </div>
+        <p v-else class="text-white">Aucun marqueur ajouté.</p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.pdf-container {
+  display: flex;
+  justify-content: center;
+  background: #2a2a3d;
+  padding: 20px;
+  border-radius: 8px;
+  overflow: auto;
+  max-width: 100%;
+}
+canvas {
+  display: block;
+  border-radius: 8px;
+}
+.btn {
+  padding: 6px 12px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
-
-button:hover, select:hover {
-  background-color: #f0f0f0;
+.btn:hover {
+  background: #555;
+}
+.btn-sm {
+  padding: 4px 8px;
+  background: #444;
+  color: white;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
+.btn-sm:hover {
+  background: #666;
+}
+.pdf-container {
+  cursor: grab;
+}
+.pdf-container:active {
+  cursor: grabbing;
 }
 </style>

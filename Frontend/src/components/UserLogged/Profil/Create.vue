@@ -1,338 +1,200 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useUser } from '@/composables/useUser';
 import { useFollowers } from '@/composables/useFollowers';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
 import CreateBook from '../Book/createBook.vue';
 
-const { user, isLoggedIn, isUserLoading } = useUser();
+const { user, isLoggedIn } = useUser();
 const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount } = useFollowers();
-const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4);
+const { books, isLoading, hasMore, loadMoreUserBook } = useLoadMoreBooks(4);
 
 const popupVisible = ref(false);
 const activeTab = ref('created');
 const isMobile = ref(false);
+const isComponentMounted = ref(true);
 
-const getImageUrl = (imgPath) => {
-  return `http://localhost:8000/${imgPath}`;
-};
-
+const getImageUrl = (imgPath) => `http://localhost:8000/${imgPath}`;
 const formatDate = (dateString) => {
   if (!dateString) return '';
-  const options = { day: '2-digit', month: 'long', year: 'numeric' };
-  const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', options);
+  return new Date(dateString).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 };
 
-const create = () => {
-  popupVisible.value = true;
-};
+const create = () => { popupVisible.value = true; };
+const checkScreenSize = () => { isMobile.value = window.innerWidth < 768; };
 
-const checkScreenSize = () => {
-  isMobile.value = window.innerWidth < 768;
-};
-
-watch(
-  () => user.value,
-  (newUser) => {
-    if (newUser?.id) {
+watch(() => user.value, (newUser) => {
+    if (newUser?.id && isComponentMounted.value) {
       fetchFollowersCount(newUser.id);
       fetchFollowingCount(newUser.id);
     }
-  },
-  { immediate: true }
-);
+}, { immediate: true });
 
-onMounted(() => {
+onMounted(async () => {
   checkScreenSize();
   window.addEventListener('resize', checkScreenSize);
-  loadMoreUserBook();
+  await nextTick();
+  if (isComponentMounted.value) loadMoreUserBook();
+});
+
+onUnmounted(() => {
+  isComponentMounted.value = false;
+  window.removeEventListener('resize', checkScreenSize);
 });
 </script>
 
 <template>
-  <main class="min-h-screen text-white pt-20 pb-12">
-    <div class="container mx-auto px-4 lg:px-8">
-      <!-- En-tête du profil -->
-      <div class="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-6 lg:p-8 mb-8 border border-gray-700 shadow-xl">
-        <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
-          <!-- Avatar -->
+  <main class="min-h-screen text-white pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-6xl">
+      
+      <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 mb-10 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/10 blur-[100px] rounded-full"></div>
+
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
           <div class="flex-shrink-0">
-            <div class="w-32 h-32 lg:w-40 lg:h-40 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20">
-              <span class="text-4xl lg:text-5xl font-bold text-white">
-                {{ isLoggedIn && user.name ? user.name.charAt(0).toUpperCase() : 'U' }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Informations du profil -->
-          <div class="flex-1 text-center lg:text-left">
-            <h1 class="text-3xl lg:text-4xl font-bold mb-2">
-              {{ isLoggedIn ? user.name : 'Chargement...' }}
-            </h1>
-            <p class="text-gray-400 mb-6">Membre depuis {{ formatDate(user?.created_at) }}</p>
-
-            <!-- Statistiques -->
-            <div class="flex justify-center lg:justify-start space-x-8 mb-6">
-              <div class="text-center">
-                <p class="text-2xl font-bold text-orange-400">{{ followersCount ?? 0 }}</p>
-                <p class="text-gray-400 text-sm">Abonnés</p>
-              </div>
-              <div class="text-center">
-                <p class="text-2xl font-bold text-green-400">{{ followingCount ?? 0 }}</p>
-                <p class="text-gray-400 text-sm">Abonnements</p>
-              </div>
-              <div class="text-center">
-                <p class="text-2xl font-bold text-blue-400">{{ books.length }}</p>
-                <p class="text-gray-400 text-sm">Livres</p>
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <button class="px-6 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center">
-                <Icon icon="mdi:share-variant" class="mr-2" />
-                Partager le profil
-              </button>
-              <router-link 
-                to="/settings" 
-                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center"
-              >
-                <Icon icon="mdi:account-edit" class="mr-2" />
-                Modifier le profil
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Navigation par onglets -->
-      <div class="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-xl p-1 mb-8 border border-gray-700">
-        <div class="flex space-x-1">
-          <button
-            @click="activeTab = 'created'"
-            :class="[
-              'flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300',
-              activeTab === 'created'
-                ? 'bg-orange-500 text-white shadow-lg'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
-            ]"
-          >
-            <Icon icon="mdi:creation" class="mr-2 inline" />
-            Créées
-          </button>
-          <button
-            @click="activeTab = 'saved'"
-            :class="[
-              'flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300',
-              activeTab === 'saved'
-                ? 'bg-green-500 text-white shadow-lg'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
-            ]"
-          >
-            <Icon icon="mdi:bookmark" class="mr-2 inline" />
-            Enregistrées
-          </button>
-        </div>
-      </div>
-
-      <!-- Bouton de création -->
-      <div class="text-center mb-8">
-        <button
-          @click="create"
-          class="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center mx-auto"
-        >
-          <Icon icon="mdi:plus-circle" class="mr-2 text-xl" />
-          Créer un nouveau livre
-        </button>
-      </div>
-
-      <!-- Contenu des livres -->
-      <section>
-        <div v-if="books.length === 0 && !isLoading" class="text-center py-16">
-          <div class="max-w-md mx-auto">
-            <Icon icon="mdi:book-open-variant" class="text-6xl text-gray-500 mb-4 mx-auto" />
-            <h3 class="text-xl font-semibold text-gray-300 mb-2">Aucun livre pour le moment</h3>
-            <p class="text-gray-500 mb-6">Les livres que vous créez apparaîtront ici. Commencez par partager votre premier livre !</p>
-            <button
-              @click="create"
-              class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
-            >
-              Créer mon premier livre
-            </button>
-          </div>
-        </div>
-
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <div
-            v-for="(book, index) in books"
-            :key="index"
-            class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 transition-all duration-300 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/20 transform hover:-translate-y-1"
-          >
-            <router-link :to="`/books/${book.id}`" class="block h-full">
-              <div class="relative">
-                <!-- Badges -->
-                <div v-if="book.isPopular" class="absolute top-3 left-3 z-10">
-                  <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center">
-                    <Icon icon="mdi:fire" class="mr-1" />
-                    Populaire
-                  </span>
-                </div>
-                <div v-else-if="book.isRecommended" class="absolute top-3 left-3 z-10">
-                  <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center">
-                    <Icon icon="mdi:thumb-up" class="mr-1" />
-                    Recommandé
-                  </span>
-                </div>
-
-                <!-- Image du livre -->
-                <img
-                  :src="book.picture ? getImageUrl(book.picture) : '/default-book-cover.jpg'"
-                  :alt="book.title"
-                  class="w-full h-60 object-cover"
-                />
-
-                <!-- Genre -->
-                <span class="absolute top-3 right-3 bg-blue-900 bg-opacity-70 text-blue-200 text-xs font-semibold px-2 py-1 rounded">
-                  {{ book.genre || 'Fiction' }}
+            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-orange-500 p-1.5 transition-transform hover:rotate-3 duration-500">
+              <div class="w-full h-full bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
+                <span class="text-5xl font-light text-white">
+                  {{ isLoggedIn && user?.name ? user.name.charAt(0).toUpperCase() : 'U' }}
                 </span>
               </div>
+            </div>
+          </div>
 
-              <!-- Informations du livre -->
-              <div class="p-4">
-                <h3 class="text-lg font-bold text-white mb-2 line-clamp-1">{{ book.title }}</h3>
-                <p class="text-sm text-gray-400 mb-3 line-clamp-1">{{ book.author }}</p>
+          <div class="flex-1 text-center md:text-left">
+            <div class="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+              <h1 class="text-4xl font-bold tracking-tight text-white">
+                {{ isLoggedIn ? user?.name : 'Utilisateur' }}
+              </h1>
+              <span class="inline-block px-3 py-1 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest rounded-full self-center">
+                Auteur
+              </span>
+            </div>
+            <p class="text-white/50 text-sm mb-8">Membre depuis {{ formatDate(user?.created_at) }}</p>
 
-                <div class="text-xs text-gray-500 mb-4">
-                  <p class="line-clamp-1">Publié par <span class="font-semibold text-gray-300">{{ user.name }}</span></p>
-                  <p>Le <span class="font-semibold text-gray-300">{{ formatDate(book.created_at) }}</span></p>
-                  <p>Langue : <span class="font-semibold text-gray-300">{{ book.lang || 'FR' }}</span></p>
+            <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto md:mx-0 mb-8">
+              <div v-for="(val, label) in { 'Abonnés': followersCount, 'Abonnements': followingCount, 'Livres': books.length }" :key="label" 
+                class="border-l border-white/10 pl-4">
+                <p class="text-2xl font-bold text-orange-500 leading-none">{{ val ?? 0 }}</p>
+                <p class="text-white/40 text-[10px] uppercase tracking-wider mt-1">{{ label }}</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+              <router-link to="/settings" class="px-8 py-3 bg-white text-black hover:bg-orange-500 hover:text-white font-bold rounded-full transition-all duration-300 flex items-center">
+                <Icon icon="lucide:edit-3" class="mr-2" /> Modifier
+              </router-link>
+              <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white rounded-full transition-all flex items-center group">
+                <Icon icon="lucide:share-2" class="mr-2 group-hover:text-orange-500" /> Partager
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-center mb-12">
+        <div class="inline-flex bg-white/5 p-1.5 rounded-full border border-white/10">
+          <button 
+            v-for="tab in [{id:'created', label:'Mes Créations', icon:'lucide:pen-tool'}, {id:'saved', label:'Enregistrés', icon:'lucide:bookmark'}]" 
+            :key="tab.id"
+            @click="activeTab = tab.id"
+            :class="[
+              'px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2',
+              activeTab === tab.id ? 'bg-orange-500 text-white' : 'text-white/60 hover:text-white'
+            ]"
+          >
+            <Icon :icon="tab.icon" />
+            {{ tab.label }}
+          </button>
+        </div>
+      </div>
+
+      <section>
+        <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+          <h2 class="text-xl font-medium text-white/90 uppercase tracking-widest px-4 border-l-4 border-orange-500">Bibliothèque</h2>
+          <button @click="create" class="group flex items-center gap-2 text-sm text-orange-500 font-bold hover:text-white transition-colors">
+            NOUVEAU LIVRE <Icon icon="lucide:plus-circle" class="text-xl transition-transform group-hover:rotate-90" />
+          </button>
+        </div>
+
+        <div v-if="books.length === 0 && !isLoading" class="text-center py-20 border-2 border-dashed border-white/10 rounded-3xl">
+          <Icon icon="lucide:book-dashed" class="text-5xl text-white/20 mx-auto mb-4" />
+          <p class="text-white/40 italic">Votre plume n'attend que vous...</p>
+        </div>
+
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div v-for="(book, index) in books" :key="index" 
+            class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
+          >
+            <router-link :to="`/books/${book.id}`" class="h-full w-full">
+              <img 
+                :src="book.picture ? getImageUrl(book.picture) : '/default.jpg'" 
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+              />
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+
+              <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                
+                <div class="absolute top-4 right-4">
+                  <span class="text-[10px] tracking-[0.2em] font-black text-white border-b border-orange-500 pb-1">
+                    {{ (book.genre || 'FICTION').toUpperCase() }}
+                  </span>
                 </div>
 
-                <!-- Statistiques -->
-                <div class="flex justify-between items-center text-sm text-gray-400">
-                  <div class="flex items-center">
-                    <Icon icon="flowbite:star-solid" class="text-orange-500 mr-0.5" v-for="i in 4" :key="i" />
-                    <Icon icon="flowbite:star-outline" class="text-orange-500" />
-                  </div>
+                <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
+                  <p class="text-orange-500 text-[10px] font-bold tracking-widest uppercase mb-1">
+                    {{ book.author || 'Auteur Inconnu' }}
+                  </p>
+                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 italic">
+                    {{ book.title }}
+                  </h3>
+                  
+                  <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
-                  <div class="flex space-x-3">
-                    <span class="flex items-center">
-                      <Icon icon="entypo:eye" class="mr-1 text-blue-400" />
-                      1,3k
-                    </span>
-                    <span class="flex items-center">
-                      <Icon icon="iconamoon:comment-fill" class="mr-1 text-green-400" />
-                      112
-                    </span>
-                    <span class="flex items-center">
-                      <Icon icon="ic:round-download" class="mr-1 text-purple-400" />
-                      900
-                    </span>
+                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                    <div class="flex items-center gap-1.5">
+                      <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
+                      <span class="text-xs font-medium text-white">1.2k</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
+                      <span class="text-xs font-medium text-white">48</span>
+                    </div>
+                    <div class="ml-auto flex gap-0.5">
+                      <Icon v-for="i in 5" :key="i" icon="lucide:star" class="w-3 h-3 text-orange-500 fill-current" />
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <div v-if="book.isPopular" class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"></div>
             </router-link>
           </div>
         </div>
 
-        <!-- Chargement et voir plus -->
-        <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-          <div v-for="i in 4" :key="i" class="bg-gray-800 bg-opacity-50 rounded-xl overflow-hidden animate-pulse">
-            <div class="h-60 bg-gray-700"></div>
-            <div class="p-4 space-y-3">
-              <div class="h-4 bg-gray-700 rounded"></div>
-              <div class="h-3 bg-gray-700 rounded"></div>
-              <div class="h-3 bg-gray-700 rounded w-2/3"></div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="books.length > 0 && hasMore" class="text-center mt-8">
-          <button
-            @click="loadMoreUserBook"
-            :disabled="isLoading"
-            class="px-8 py-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
-          >
-            {{ isLoading ? 'Chargement...' : 'Charger plus de livres' }}
+        <div v-if="hasMore" class="mt-16 text-center">
+          <button @click="loadMoreUserBook" class="relative overflow-hidden px-12 py-4 group border border-orange-500 text-orange-500 font-black uppercase tracking-[0.2em] text-xs hover:text-white transition-colors duration-300">
+            <span class="relative z-10">{{ isLoading ? 'Chargement...' : 'Afficher Plus' }}</span>
+            <div class="absolute inset-0 bg-orange-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
           </button>
-        </div>
-
-        <div v-else-if="books.length > 0" class="text-center mt-8">
-          <p class="text-gray-500">Vous avez atteint la fin de votre bibliothèque</p>
         </div>
       </section>
 
-      <!-- Popup de création de livre -->
-      <CreateBook
-        :visible="popupVisible"
-        @close="popupVisible = false"
-      />
+      <CreateBook v-if="popupVisible" @close="popupVisible = false" />
     </div>
   </main>
 </template>
 
-<style>
-.line-clamp-1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+<style scoped>
+/* Suppression des styles complexes pour laisser Tailwind respirer */
+.container {
+  animation: fadeIn 0.8s ease-out;
 }
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Animations */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-
-/* Scrollbar personnalisée */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #4a5568 #2d3748;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #2d3748;
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4a5568;
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #718096;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .profil-stats {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
