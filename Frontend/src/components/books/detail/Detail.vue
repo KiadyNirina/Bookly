@@ -477,4 +477,8 @@ const categories = ref([
 .animate-fade-in-up {
   animation: fadeInUp 0.3s ease-out forwards;
 }
+
+.container {
+  animation: fadeIn 0.8s ease-out;
+}
 </style>
