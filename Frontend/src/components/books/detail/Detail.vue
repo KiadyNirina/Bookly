@@ -394,7 +394,7 @@ const categories = ref([
           <div 
             v-for="bk in similarBooks.slice(0, 4)" 
             :key="bk.id" 
-            class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/2 hover:border-orange-500 transition-all duration-500 cursor-pointer"
+            class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
             <a :href="`/books/${bk.id}`" class="h-full w-full block">
               <!-- Image avec effets hover -->
