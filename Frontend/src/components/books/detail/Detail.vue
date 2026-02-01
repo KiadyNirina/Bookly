@@ -361,6 +361,23 @@ const categories = ref([
               </div>
             </div>
           </div>
+
+          <!-- BOUTON AFFICHER PLUS/MOINS -->
+          <div v-if="comments.length > 3" class="text-center pt-4">
+            <button
+              @click="showAllComments = !showAllComments"
+              class="group inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-full text-sm font-bold text-orange-500 hover:text-white hover:bg-orange-500 transition-all duration-300"
+            >
+              <template v-if="!showAllComments">
+                <span>Afficher plus</span>
+                <Icon icon="lucide:chevron-down" class="w-4 h-4 transition-transform group-hover:rotate-180" />
+              </template>
+              <template v-else>
+                <span>Afficher moins</span>
+                <Icon icon="lucide:chevron-up" class="w-4 h-4 transition-transform group-hover:rotate-180" />
+              </template>
+            </button>
+          </div>
         </div>
       </div>
 
