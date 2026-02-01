@@ -182,7 +182,7 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <CreateBook v-if="popupVisible" @close="popupVisible = false" />
+      <CreateBook :visible="popupVisible" @close="popupVisible = false" />
     </div>
   </main>
 </template>
