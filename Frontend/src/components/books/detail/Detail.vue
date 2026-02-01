@@ -298,6 +298,49 @@ const categories = ref([
             <button v-if="isAuthenticated" @click="isCommenting = true" class="text-xs font-black uppercase tracking-widest text-orange-500 hover:text-white transition-colors">Écrire un avis</button>
           </div>
 
+           <!-- FORMULAIRE D'AVIS -->
+          <div v-if="isCommenting" class="bg-white/[0.02] border border-orange-500 rounded-3xl p-6 transition-all duration-300 animate-fade-in-up">
+            <div class="flex gap-4 mb-4">
+              <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+                <span class="text-orange-400 font-bold text-lg">
+                  {{ user?.name?.charAt(0).toUpperCase() || 'U' }}
+                </span>
+              </div>
+              <div class="flex-1">
+                <textarea
+                  v-model="commentText"
+                  placeholder="Partagez votre avis sur ce livre..."
+                  class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder-white/30 focus:outline-none transition-all min-h-[100px] resize-y"
+                  @keydown.ctrl.enter.prevent="handleCommentSubmit"
+                  @keydown.meta.enter.prevent="handleCommentSubmit"
+                ></textarea>
+                
+                <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/5">
+                  <div class="flex gap-2">
+                    <button 
+                      @click="isCommenting = false"
+                      class="px-4 py-2 text-xs font-bold text-white/60 hover:text-white transition-colors"
+                    >
+                      Annuler
+                    </button>
+                    <div class="flex items-center gap-1 text-[10px] text-white/40">
+                      <Icon icon="lucide:info" class="w-3 h-3" />
+                      <span>Appuyez sur Ctrl + Entrée pour publier</span>
+                    </div>
+                  </div>
+                  <button
+                    @click="handleCommentSubmit"
+                    :disabled="!commentText.trim()"
+                    class="px-6 py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-black text-xs uppercase tracking-widest rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    <Icon icon="lucide:send" class="w-3 h-3" />
+                    Publier
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="space-y-6">
             <div v-for="comment in visibleComments" :key="comment.id" 
               class="group relative bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-3xl p-6 transition-all">
@@ -402,3 +445,19 @@ const categories = ref([
     </div>
   </main>
 </template>
+
+<style>
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+</style>
