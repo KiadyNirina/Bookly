@@ -46,7 +46,7 @@ onUnmounted(() => {
 
 <template>
   <main class="min-h-screen text-white pt-24 pb-12">
-    <div class="container mx-auto px-4 max-w-6xl">
+    <div class="container mx-auto px-4 max-w-7xl">
       
       <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 mb-10 overflow-hidden">
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/10 blur-[100px] rounded-full"></div>
@@ -127,13 +127,13 @@ onUnmounted(() => {
           <div v-for="(book, index) in books" :key="index" 
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
-            <router-link :to="`/books/${book.id}`" class="h-full w-full">
+            <a :href="`/books/${book.id}`" class="h-full w-full">
               <img 
                 :src="book.picture ? getImageUrl(book.picture) : '/default.jpg'" 
                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
               />
 
-              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-black/20 to-transparent"></div>
 
               <div class="absolute inset-0 p-6 flex flex-col justify-end">
                 
@@ -170,7 +170,7 @@ onUnmounted(() => {
               </div>
 
               <div v-if="book.isPopular" class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"></div>
-            </router-link>
+            </a>
           </div>
         </div>
 
