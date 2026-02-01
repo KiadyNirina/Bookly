@@ -244,10 +244,10 @@ const categories = ref([
           </div>
 
           <div class="flex flex-wrap gap-4 items-center">
-            <router-link :to="`/book/${currentBook.id}/file`" 
+            <a :to="`/book/${currentBook.id}/file`" 
               class="px-10 py-4 bg-white text-black font-black uppercase tracking-widest text-xs rounded-full hover:bg-orange-500 hover:text-white transition-all transform hover:-translate-y-1">
               Commencer la lecture
-            </router-link>
+            </a>
             <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
               <Icon icon="lucide:bookmark" class="text-xl" />
             </button>
@@ -273,7 +273,7 @@ const categories = ref([
             </div>
             <div class="flex justify-between py-3 border-b border-white/5">
               <span class="text-white/40 text-sm">Publié par</span>
-              <router-link to="#" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</router-link>
+              <a to="#" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</a>
             </div>
           </div>
 
@@ -282,7 +282,7 @@ const categories = ref([
             <div class="flex justify-center gap-2">
               <Icon 
                 v-for="star in 5" :key="star"
-                :icon="star <= (hoveredStar || selectedRating) ? 'lucide:star' : 'lucide:star'"
+                :icon="star <= (hoveredStar || selectedRating) ? 'flowbite:star-solid' : 'lucide:star'"
                 :class="['text-2xl cursor-pointer transition-all', star <= (hoveredStar || selectedRating) ? 'text-orange-500 fill-current' : 'text-white/10']"
                 @mouseover="hoveredStar = star"
                 @mouseleave="hoveredStar = 0"
@@ -325,21 +325,75 @@ const categories = ref([
         <div class="flex items-end justify-between mb-12">
           <div>
             <p class="text-orange-500 font-bold text-[10px] uppercase tracking-[0.3em] mb-2">Découvrir aussi</p>
-            <h2 class="text-4xl font-black italic tracking-tighter italic">Dans le même <span class="text-orange-500">style</span></h2>
+            <h2 class="text-4xl font-black italic tracking-tighter">Dans le même <span class="text-orange-500">style</span></h2>
           </div>
-          <router-link to="/books" class="text-xs font-black uppercase tracking-widest border-b border-orange-500 pb-1 hover:text-orange-500 transition-colors">Tout explorer</router-link>
+          <a to="/books" class="text-xs font-black uppercase tracking-widest border-b border-orange-500 pb-1 hover:text-orange-500 transition-colors">Tout explorer</a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div v-for="bk in similarBooks.slice(0, 4)" :key="bk.id" 
-            class="group relative aspect-[2/3] bg-white/5 rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500">
-            <a :href="`/books/${bk.id}`" class="block h-full">
-              <img :src="getImageUrl(bk.picture)" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-110" />
-              <div class="absolute inset-0 bg-gradient-to-t from-[#0f111a] via-transparent"></div>
-              <div class="absolute inset-0 p-6 flex flex-col justify-end">
-                <p class="text-orange-500 text-[10px] font-bold uppercase tracking-widest mb-1">{{ bk.author }}</p>
-                <h3 class="text-lg font-black text-white italic truncate">{{ bk.title }}</h3>
+          <div 
+            v-for="bk in similarBooks.slice(0, 4)" 
+            :key="bk.id" 
+            class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/2 hover:border-orange-500 transition-all duration-500 cursor-pointer"
+          >
+            <a :href="`/books/${bk.id}`" class="h-full w-full block">
+              <!-- Image avec effets hover -->
+              <img 
+                :src="getImageUrl(bk.picture)" 
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                :alt="bk.title"
+              />
+              
+              <!-- Overlay dégradé -->
+              <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-black/20 to-transparent"></div>
+              
+              <!-- Badge genre en haut à droite -->
+              <div class="absolute top-4 right-4">
+                <span class="text-[10px] tracking-[0.2em] font-black text-white border-b border-orange-500 pb-1">
+                  {{ (bk.genre || 'FICTION').toUpperCase() }}
+                </span>
               </div>
+
+              <!-- Contenu principal -->
+              <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
+                  <p class="text-orange-500 text-[10px] font-bold tracking-widest uppercase mb-1">
+                    {{ bk.author || 'Auteur Inconnu' }}
+                  </p>
+                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 italic truncate">
+                    {{ bk.title }}
+                  </h3>
+                  
+                  <!-- Ligne orange animée -->
+                  <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
+
+                  <!-- Statistiques (apparaissent au hover) -->
+                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                    <div class="flex items-center gap-1.5">
+                      <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
+                      <span class="text-xs font-medium text-white">1.2k</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
+                      <span class="text-xs font-medium text-white">48</span>
+                    </div>
+                    <div class="ml-auto flex gap-0.5">
+                      <Icon 
+                        v-for="i in 5" 
+                        :key="i" 
+                        icon="lucide:star" 
+                        class="w-3 h-3 text-orange-500 fill-current" 
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Badge "Populaire" (si applicable) -->
+              <div 
+                v-if="bk.isPopular" 
+                class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"
+              ></div>
             </a>
           </div>
         </div>
