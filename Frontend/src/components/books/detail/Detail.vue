@@ -223,7 +223,7 @@ const categories = ref([
           <div class="flex flex-wrap items-center gap-8 mb-10 pb-8 border-b border-white/5">
             <div class="flex items-center gap-2">
               <div class="flex text-orange-500">
-                <Icon v-for="i in 5" :key="i" icon="lucide:star" class="w-4 h-4" :class="i > 4 ? 'opacity-20' : 'fill-current'"/>
+                <Icon v-for="i in 5" :key="i" :icon="i > 4 ? 'flowbite:star-outline' : 'flowbite:star-solid'" class="w-4 h-4"/>
               </div>
               <span class="text-sm font-bold">(4.8/5)</span>
             </div>
@@ -441,7 +441,7 @@ const categories = ref([
                       <Icon 
                         v-for="i in 5" 
                         :key="i" 
-                        icon="lucide:star" 
+                        icon="flowbite:star-solid" 
                         class="w-3 h-3 text-orange-500 fill-current" 
                       />
                     </div>
