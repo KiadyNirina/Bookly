@@ -163,7 +163,7 @@ onUnmounted(() => {
                       <span class="text-xs font-medium text-white">48</span>
                     </div>
                     <div class="ml-auto flex gap-0.5">
-                      <Icon v-for="i in 5" :key="i" icon="lucide:star" class="w-3 h-3 text-orange-500 fill-current" />
+                      <Icon v-for="i in 5" :key="i" icon="flowbite:star-solid"  class="w-3 h-3 text-orange-500 fill-current" />
                     </div>
                   </div>
                 </div>
