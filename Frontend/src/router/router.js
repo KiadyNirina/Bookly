@@ -30,7 +30,7 @@ const routes = [
     { path: '/biblio', component: Biblio },
     { path: '/user/:id/create', component: User },
     { path: '/user/:id/saved', component: UserSaved },
-    { path: '/profil/create', component: Create },
+    { path: '/profil', component: Create },
     { path: '/profil/saved', component: Saved },
     { path: '/search', component: SearchBook },
 ];

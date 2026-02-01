@@ -73,7 +73,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
               { path: '/dashboard', icon: 'lets-icons:home', iconActive: 'lets-icons:home-fill' },
               { path: '/biblio', icon: 'ic:outline-library-add', iconActive: 'ic:baseline-library-add' },
               { path: '/notif', icon: 'ri:notification-line', iconActive: 'ri:notification-fill' },
-              { path: '/profil/create', icon: 'iconamoon:profile-light', iconActive: 'iconamoon:profile-fill' }
+              { path: '/profil', icon: 'iconamoon:profile-light', iconActive: 'iconamoon:profile-fill' }
             ]" :key="item.path" :to="item.path"
               class="p-2 rounded-full transition-all"
               :class="isActive(item.path) ? 'bg-orange-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
