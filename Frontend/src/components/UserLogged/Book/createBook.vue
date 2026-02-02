@@ -170,6 +170,7 @@ const showSuccess = (message) => {
   popupSuccessVisible.value = true;
   setTimeout(() => {
     closePopup();
+    window.location.reload();
   }, 2000);
 };
 
