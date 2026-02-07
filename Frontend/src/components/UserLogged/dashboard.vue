@@ -116,7 +116,7 @@ function getImageUrl(imgPath) {
               <img 
                 :src="getImageUrl(book.picture)" 
                 :alt="book.title"
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40"
               />
               
               <!-- Overlay dégradé -->
@@ -143,7 +143,7 @@ function getImageUrl(imgPath) {
                   <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
                   <!-- Statistiques (apparaissent au hover) -->
-                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                  <div class="flex items-center gap-4 translate-y-0 transition-all duration-500 delay-100">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
                       <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
@@ -204,7 +204,7 @@ function getImageUrl(imgPath) {
               <img 
                 :src="getImageUrl(book.picture)" 
                 :alt="book.title"
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40"
               />
               
               <!-- Overlay dégradé -->
@@ -231,7 +231,7 @@ function getImageUrl(imgPath) {
                   <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
                   <!-- Statistiques (apparaissent au hover) -->
-                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                  <div class="flex items-center gap-4 translate-y-0 transition-all duration-500 delay-100">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
                       <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
