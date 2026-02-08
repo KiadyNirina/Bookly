@@ -216,7 +216,7 @@ const categories = ref([
 
         <div class="lg:col-span-7 xl:col-span-8 flex flex-col justify-center">
           <p class="text-orange-500 font-bold tracking-[0.3em] uppercase text-xs mb-4">Chef-d'œuvre de {{ currentBook.author }}</p>
-          <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight italic tracking-tighter">
+          <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight tracking-tighter">
             {{ currentBook.title }}
           </h1>
 
@@ -294,7 +294,7 @@ const categories = ref([
 
         <div class="lg:col-span-2 space-y-10">
           <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-black italic tracking-tighter italic">Réactions <span class="text-orange-500 text-sm not-italic ml-2">/ {{ comments.length }}</span></h2>
+            <h2 class="text-2xl font-black tracking-tighter">Réactions <span class="text-orange-500 text-sm not-italic ml-2">/ {{ comments.length }}</span></h2>
             <button v-if="isAuthenticated" @click="isCommenting = true" class="text-xs font-black uppercase tracking-widest text-orange-500 hover:text-white transition-colors">Écrire un avis</button>
           </div>
 
@@ -351,7 +351,7 @@ const categories = ref([
                     <h4 class="font-bold text-sm">{{ comment.user }}</h4>
                     <span class="text-[10px] text-white/30 uppercase font-black">{{ comment.date }}</span>
                   </div>
-                  <p class="text-white/60 text-sm leading-relaxed mb-4 italic">{{ comment.content }}</p>
+                  <p class="text-white/60 text-sm leading-relaxed mb-4">{{ comment.content }}</p>
                   <div class="flex gap-4">
                     <button class="flex items-center gap-1 text-[10px] font-black uppercase tracking-tighter text-white/20 hover:text-orange-500 transition-colors">
                       <Icon icon="lucide:thumbs-up" /> Soutenir ({{ comment.likes }})
@@ -385,7 +385,7 @@ const categories = ref([
         <div class="flex items-end justify-between mb-12">
           <div>
             <p class="text-orange-500 font-bold text-[10px] uppercase tracking-[0.3em] mb-2">Découvrir aussi</p>
-            <h2 class="text-4xl font-black italic tracking-tighter">Dans le même <span class="text-orange-500">style</span></h2>
+            <h2 class="text-4xl font-black tracking-tighter">Dans le même <span class="text-orange-500">style</span></h2>
           </div>
           <a to="/books" class="text-xs font-black uppercase tracking-widest border-b border-orange-500 pb-1 hover:text-orange-500 transition-colors">Tout explorer</a>
         </div>
@@ -420,7 +420,7 @@ const categories = ref([
                   <p class="text-orange-500 text-[10px] font-bold tracking-widest uppercase mb-1">
                     {{ bk.author || 'Auteur Inconnu' }}
                   </p>
-                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 italic truncate">
+                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 truncate">
                     {{ bk.title }}
                   </h3>
                   
