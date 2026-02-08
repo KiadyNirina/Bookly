@@ -118,58 +118,68 @@ onUnmounted(() => {
           </button>
         </div>
 
-        <div v-if="books.length === 0 && !isLoading" class="text-center py-20 border-2 border-dashed border-white/10 rounded-3xl">
-          <Icon icon="lucide:book-dashed" class="text-5xl text-white/20 mx-auto mb-4" />
-          <p class="text-white/40 italic">Votre plume n'attend que vous...</p>
+        <div v-if="books.length === 0 && !isLoading" class="text-center py-24 border-2 border-dashed border-white/5 rounded-3xl bg-[#1a1c26]/20">
+          <Icon icon="lucide:book-x" class="text-5xl text-orange-500/20 mx-auto mb-6" />
+          <p class="text-xl font-black italic text-white/60 mb-2">Votre plume n'attend que vous...</p>
+          <p class="text-[11px] uppercase tracking-widest text-white/30">Commencez à publier votre premier livre</p>
         </div>
 
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div v-for="(book, index) in books" :key="index" 
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
-            <a :href="`/books/${book.id}`" class="h-full w-full">
+            <a :href="`/books/${book.id}`" class="h-full w-full block">
               <img 
                 :src="book.picture ? getImageUrl(book.picture) : '/default.jpg'" 
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                :alt="book.title"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40"
+                loading="lazy"
               />
 
               <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-black/20 to-transparent"></div>
 
-              <div class="absolute inset-0 p-6 flex flex-col justify-end">
-                
-                <div class="absolute top-4 right-4">
-                  <span class="text-[10px] tracking-[0.2em] font-black text-white border-b border-orange-500 pb-1">
-                    {{ (book.genre || 'FICTION').toUpperCase() }}
-                  </span>
-                </div>
+              <div class="absolute top-4 right-4 z-10">
+                <span class="text-[10px] tracking-[0.2em] font-black text-white border-b border-orange-500 pb-1">
+                  {{ (book.genre || 'FICTION').toUpperCase() }}
+                </span>
+              </div>
 
+              <div class="absolute inset-0 p-6 flex flex-col justify-end z-10">
                 <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
                   <p class="text-orange-500 text-[10px] font-bold tracking-widest uppercase mb-1">
                     {{ book.author || 'Auteur Inconnu' }}
                   </p>
-                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 italic">
+                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 italic truncate">
                     {{ book.title }}
                   </h3>
                   
                   <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
-                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                  <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">1.2k</span>
+                      <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">48</span>
+                      <span class="text-xs font-medium text-white">{{ book.comments_count || '48' }}</span>
                     </div>
                     <div class="ml-auto flex gap-0.5">
-                      <Icon v-for="i in 5" :key="i" icon="flowbite:star-solid"  class="w-3 h-3 text-orange-500 fill-current" />
+                      <Icon 
+                        v-for="i in 5" 
+                        :key="i" 
+                        icon="flowbite:star-solid" 
+                        class="w-3 h-3 text-orange-500 fill-current" 
+                      />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div v-if="book.isPopular" class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"></div>
+              <div 
+                v-if="book.is_popular" 
+                class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22] z-10"
+              ></div>
             </a>
           </div>
         </div>
