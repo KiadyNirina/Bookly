@@ -188,9 +188,9 @@ function getImageUrl(imgPath) {
               <span class="text-orange-500 mr-3 text-4xl">/</span> Nouveautés
             </h2>
           </div>
-          <router-link to="/books/recent" class="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-orange-500 transition-colors">
+          <a href="/books/recent" class="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-orange-500 transition-colors">
             Voir plus
-          </router-link>
+          </a>
         </div>
 
         <div v-if="books.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -199,7 +199,7 @@ function getImageUrl(imgPath) {
             :key="index" 
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
-            <router-link :to="`/books/${book.id}`" class="h-full w-full block">
+            <a :href="`/books/${book.id}`" class="h-full w-full block">
               <!-- Image avec effets hover -->
               <img 
                 :src="getImageUrl(book.picture)" 
@@ -257,7 +257,7 @@ function getImageUrl(imgPath) {
                 v-if="book.isPopular" 
                 class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"
               ></div>
-            </router-link>
+            </a>
           </div>
         </div>
 
