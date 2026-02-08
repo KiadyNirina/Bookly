@@ -105,7 +105,7 @@ onMounted(() => {
             :key="book.id"
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
-            <router-link :to="`/books/${book.id}`" class="h-full w-full block">
+            <a :href="`/books/${book.id}`" class="h-full w-full block">
               <img 
                 :src="getImageUrl(book.picture)" 
                 :alt="book.title"
@@ -157,7 +157,7 @@ onMounted(() => {
                 v-if="book.is_popular" 
                 class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22] z-10"
               ></div>
-            </router-link>
+            </a>
           </div>
         </div>
 
