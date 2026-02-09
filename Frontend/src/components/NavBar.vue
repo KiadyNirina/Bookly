@@ -96,7 +96,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
           </div>
 
           <div class="relative group">
-            <router-link
+            <button
               to="/profil"
               class="w-15 h-10 flex items-center justify-center gap-1
                     rounded-full transition-all"
@@ -118,7 +118,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                 class="transition-transform duration-200
                       group-hover:rotate-180"
               />
-            </router-link>
+          </button>
 
             <!-- Dropdown -->
             <div
@@ -127,6 +127,24 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                     opacity-0 invisible group-hover:opacity-100 group-hover:visible
                     transition-all duration-200"
             >
+              <router-link
+                to="/profil"
+                class="flex items-center gap-3 px-4 py-3 text-sm
+                      text-gray-300
+                      rounded-t-xl"
+                :class="isActive('/profil')
+                  ? 'bg-orange-500 text-white shadow-md'
+                  : 'hover:bg-white/10 hover:text-white'"
+              >
+                <Icon 
+                  :icon="isActive('/profil')
+                    ? 'iconamoon:profile-fill'
+                    : 'iconamoon:profile-light'" 
+                  height="18"
+                />
+                Mon profil
+              </router-link>
+
               <router-link
                 to="/parametres"
                 class="flex items-center gap-3 px-4 py-3 text-sm
