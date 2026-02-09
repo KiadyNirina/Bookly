@@ -72,8 +72,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
             <router-link v-for="item in [
               { path: '/dashboard', icon: 'lets-icons:home', iconActive: 'lets-icons:home-fill' },
               { path: '/biblio', icon: 'ic:outline-library-add', iconActive: 'ic:baseline-library-add' },
-              { path: '/notif', icon: 'ri:notification-line', iconActive: 'ri:notification-fill' },
-              { path: '/profil', icon: 'iconamoon:profile-light', iconActive: 'iconamoon:profile-fill' }
+              { path: '/notif', icon: 'ri:notification-line', iconActive: 'ri:notification-fill' }
             ]" :key="item.path" :to="item.path"
               class="p-2 rounded-full transition-all"
               :class="isActive(item.path) ? 'bg-orange-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
@@ -81,10 +80,61 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
               <Icon :icon="isActive(item.path) ? item.iconActive : item.icon" height="24" />
             </router-link>
           </div>
-          
-          <button @click="logout" class="text-gray-400 hover:text-red-400 transition-colors p-2">
-            <Icon icon="lucide:log-out" height="24" />
-          </button>
+
+          <div class="relative group">
+            <router-link
+              to="/profil"
+              class="w-15 h-10 flex items-center justify-center gap-1
+                    rounded-full transition-all"
+              :class="isActive('/profil')
+                ? 'bg-orange-500 text-white shadow-md'
+                : 'text-gray-400 hover:text-white hover:bg-white/10'"
+            >
+              <Icon
+                :icon="isActive('/profil')
+                  ? 'iconamoon:profile-fill'
+                  : 'iconamoon:profile-light'"
+                height="20"
+              />
+
+              <!-- Flèche -->
+              <Icon
+                icon="lucide:chevron-down"
+                height="15"
+                class="transition-transform duration-200
+                      group-hover:rotate-180"
+              />
+            </router-link>
+
+            <!-- Dropdown -->
+            <div
+              class="absolute right-0 top-full mt-2 w-44 bg-[#1f2340]
+                    border border-white/10 rounded-xl shadow-xl
+                    opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                    transition-all duration-200"
+            >
+              <router-link
+                to="/parametres"
+                class="flex items-center gap-3 px-4 py-3 text-sm
+                      text-gray-300 hover:bg-white/10 hover:text-white
+                      rounded-t-xl"
+              >
+                <Icon icon="lucide:settings" height="18" />
+                Paramètres
+              </router-link>
+
+              <button
+                @click="logout"
+                class="w-full flex items-center gap-3 px-4 py-3 text-sm
+                      text-red-400 hover:bg-red-400/10 rounded-b-xl"
+              >
+                <Icon icon="lucide:log-out" height="18" />
+                Déconnexion
+              </button>
+            </div>
+          </div>
+
+
         </template>
       </div>
 
