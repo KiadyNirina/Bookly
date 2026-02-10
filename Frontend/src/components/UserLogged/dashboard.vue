@@ -116,7 +116,7 @@ function getImageUrl(imgPath) {
               <img 
                 :src="getImageUrl(book.picture)" 
                 :alt="book.title"
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40"
               />
               
               <!-- Overlay dégradé -->
@@ -143,7 +143,7 @@ function getImageUrl(imgPath) {
                   <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
                   <!-- Statistiques (apparaissent au hover) -->
-                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                  <div class="flex items-center gap-4 translate-y-0 transition-all duration-500 delay-100">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
                       <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
@@ -188,9 +188,9 @@ function getImageUrl(imgPath) {
               <span class="text-orange-500 mr-3 text-4xl">/</span> Nouveautés
             </h2>
           </div>
-          <router-link to="/books/recent" class="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-orange-500 transition-colors">
+          <a href="/books/recent" class="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-orange-500 transition-colors">
             Voir plus
-          </router-link>
+          </a>
         </div>
 
         <div v-if="books.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -199,12 +199,12 @@ function getImageUrl(imgPath) {
             :key="index" 
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
-            <router-link :to="`/books/${book.id}`" class="h-full w-full block">
+            <a :href="`/books/${book.id}`" class="h-full w-full block">
               <!-- Image avec effets hover -->
               <img 
                 :src="getImageUrl(book.picture)" 
                 :alt="book.title"
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40"
               />
               
               <!-- Overlay dégradé -->
@@ -231,7 +231,7 @@ function getImageUrl(imgPath) {
                   <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
                   <!-- Statistiques (apparaissent au hover) -->
-                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                  <div class="flex items-center gap-4 translate-y-0 transition-all duration-500 delay-100">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
                       <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
@@ -257,7 +257,7 @@ function getImageUrl(imgPath) {
                 v-if="book.isPopular" 
                 class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"
               ></div>
-            </router-link>
+            </a>
           </div>
         </div>
 

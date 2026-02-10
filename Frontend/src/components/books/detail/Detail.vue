@@ -216,7 +216,7 @@ const categories = ref([
 
         <div class="lg:col-span-7 xl:col-span-8 flex flex-col justify-center">
           <p class="text-orange-500 font-bold tracking-[0.3em] uppercase text-xs mb-4">Chef-d'œuvre de {{ currentBook.author }}</p>
-          <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight italic tracking-tighter">
+          <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight tracking-tighter">
             {{ currentBook.title }}
           </h1>
 
@@ -294,7 +294,7 @@ const categories = ref([
 
         <div class="lg:col-span-2 space-y-10">
           <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-black italic tracking-tighter italic">Réactions <span class="text-orange-500 text-sm not-italic ml-2">/ {{ comments.length }}</span></h2>
+            <h2 class="text-2xl font-black tracking-tighter">Réactions <span class="text-orange-500 text-sm not-italic ml-2">/ {{ comments.length }}</span></h2>
             <button v-if="isAuthenticated" @click="isCommenting = true" class="text-xs font-black uppercase tracking-widest text-orange-500 hover:text-white transition-colors">Écrire un avis</button>
           </div>
 
@@ -351,7 +351,7 @@ const categories = ref([
                     <h4 class="font-bold text-sm">{{ comment.user }}</h4>
                     <span class="text-[10px] text-white/30 uppercase font-black">{{ comment.date }}</span>
                   </div>
-                  <p class="text-white/60 text-sm leading-relaxed mb-4 italic">{{ comment.content }}</p>
+                  <p class="text-white/60 text-sm leading-relaxed mb-4">{{ comment.content }}</p>
                   <div class="flex gap-4">
                     <button class="flex items-center gap-1 text-[10px] font-black uppercase tracking-tighter text-white/20 hover:text-orange-500 transition-colors">
                       <Icon icon="lucide:thumbs-up" /> Soutenir ({{ comment.likes }})
@@ -385,9 +385,9 @@ const categories = ref([
         <div class="flex items-end justify-between mb-12">
           <div>
             <p class="text-orange-500 font-bold text-[10px] uppercase tracking-[0.3em] mb-2">Découvrir aussi</p>
-            <h2 class="text-4xl font-black italic tracking-tighter">Dans le même <span class="text-orange-500">style</span></h2>
+            <h2 class="text-4xl font-black tracking-tighter">Dans le même <span class="text-orange-500">style</span></h2>
           </div>
-          <a to="/books" class="text-xs font-black uppercase tracking-widest border-b border-orange-500 pb-1 hover:text-orange-500 transition-colors">Tout explorer</a>
+          <a href="/books/recent" class="text-xs font-black uppercase tracking-widest border-b border-orange-500 pb-1 hover:text-orange-500 transition-colors">Tout explorer</a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -397,25 +397,23 @@ const categories = ref([
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
             <a :href="`/books/${bk.id}`" class="h-full w-full block">
-              <!-- Image avec effets hover -->
+
               <img 
                 :src="getImageUrl(bk.picture)" 
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40"
                 :alt="bk.title"
+                loading="lazy"
               />
               
-              <!-- Overlay dégradé -->
               <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-black/20 to-transparent"></div>
               
-              <!-- Badge genre en haut à droite -->
-              <div class="absolute top-4 right-4">
+              <div class="absolute top-4 right-4 z-10">
                 <span class="text-[10px] tracking-[0.2em] font-black text-white border-b border-orange-500 pb-1">
                   {{ (bk.genre || 'FICTION').toUpperCase() }}
                 </span>
               </div>
 
-              <!-- Contenu principal -->
-              <div class="absolute inset-0 p-6 flex flex-col justify-end">
+              <div class="absolute inset-0 p-6 flex flex-col justify-end z-10">
                 <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
                   <p class="text-orange-500 text-[10px] font-bold tracking-widest uppercase mb-1">
                     {{ bk.author || 'Auteur Inconnu' }}
@@ -423,25 +421,23 @@ const categories = ref([
                   <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-2 italic truncate">
                     {{ bk.title }}
                   </h3>
-                  
-                  <!-- Ligne orange animée -->
+
                   <div class="w-8 h-1 bg-orange-500 mb-4 transition-all duration-500 group-hover:w-full"></div>
 
-                  <!-- Statistiques (apparaissent au hover) -->
-                  <div class="flex items-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                  <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">1.2k</span>
+                      <span class="text-xs font-medium text-white">{{ bk.views || '1.2k' }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">48</span>
+                      <span class="text-xs font-medium text-white">{{ bk.comments_count || '48' }}</span>
                     </div>
                     <div class="ml-auto flex gap-0.5">
                       <Icon 
                         v-for="i in 5" 
                         :key="i" 
-                        icon="flowbite:star-solid" 
+                        icon="lucide:star" 
                         class="w-3 h-3 text-orange-500 fill-current" 
                       />
                     </div>
@@ -449,10 +445,9 @@ const categories = ref([
                 </div>
               </div>
 
-              <!-- Badge "Populaire" (si applicable) -->
               <div 
-                v-if="bk.isPopular" 
-                class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22]"
+                v-if="bk.is_popular" 
+                class="absolute top-4 left-4 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_8px_#E67E22] z-10"
               ></div>
             </a>
           </div>

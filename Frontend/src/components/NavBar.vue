@@ -11,11 +11,25 @@ const { searchQuery } = useSearch();
 
 const isMobileMenuOpen = ref(false);
 const isScrolled = ref(false);
+const isLogoutModalOpen = ref(false);
 
 const isActive = (path) => route.path === path || route.path.startsWith(path + '/');
 
 const toggleMobileMenu = () => (isMobileMenuOpen.value = !isMobileMenuOpen.value);
 const closeMobileMenu = () => (isMobileMenuOpen.value = false);
+
+const openLogoutModal = () => {
+  isLogoutModalOpen.value = true;
+};
+
+const closeLogoutModal = () => {
+  isLogoutModalOpen.value = false;
+};
+
+const confirmLogout = () => {
+  closeLogoutModal();
+  logout();
+};
 
 // Effet de changement de style au scroll
 const handleScroll = () => {
@@ -72,8 +86,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
             <router-link v-for="item in [
               { path: '/dashboard', icon: 'lets-icons:home', iconActive: 'lets-icons:home-fill' },
               { path: '/biblio', icon: 'ic:outline-library-add', iconActive: 'ic:baseline-library-add' },
-              { path: '/notif', icon: 'ri:notification-line', iconActive: 'ri:notification-fill' },
-              { path: '/profil', icon: 'iconamoon:profile-light', iconActive: 'iconamoon:profile-fill' }
+              { path: '/notif', icon: 'ri:notification-line', iconActive: 'ri:notification-fill' }
             ]" :key="item.path" :to="item.path"
               class="p-2 rounded-full transition-all"
               :class="isActive(item.path) ? 'bg-orange-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
@@ -81,10 +94,79 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
               <Icon :icon="isActive(item.path) ? item.iconActive : item.icon" height="24" />
             </router-link>
           </div>
-          
-          <button @click="logout" class="text-gray-400 hover:text-red-400 transition-colors p-2">
-            <Icon icon="lucide:log-out" height="24" />
+
+          <div class="relative group">
+            <button
+              to="/profil"
+              class="w-15 h-10 flex items-center justify-center gap-1
+                    rounded-full transition-all"
+              :class="isActive('/profil')
+                ? 'bg-orange-500 text-white shadow-md'
+                : 'text-gray-400 hover:text-white hover:bg-white/10'"
+            >
+              <Icon
+                :icon="isActive('/profil')
+                  ? 'iconamoon:profile-fill'
+                  : 'iconamoon:profile-light'"
+                height="20"
+              />
+
+              <!-- Flèche -->
+              <Icon
+                icon="lucide:chevron-down"
+                height="15"
+                class="transition-transform duration-200
+                      group-hover:rotate-180"
+              />
           </button>
+
+            <!-- Dropdown -->
+            <div
+              class="absolute right-0 top-full mt-2 w-44 bg-[#1f2340]
+                    border border-white/10 rounded-xl shadow-xl
+                    opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                    transition-all duration-200"
+            >
+              <router-link
+                to="/profil"
+                class="flex items-center gap-3 px-4 py-3 text-sm
+                      text-gray-300
+                      rounded-t-xl"
+                :class="isActive('/profil')
+                  ? 'bg-orange-500 text-white shadow-md'
+                  : 'hover:bg-white/10 hover:text-white'"
+              >
+                <Icon 
+                  :icon="isActive('/profil')
+                    ? 'iconamoon:profile-fill'
+                    : 'iconamoon:profile-light'" 
+                  height="18"
+                />
+                Mon profil
+              </router-link>
+
+              <router-link
+                to="/parametres"
+                class="flex items-center gap-3 px-4 py-3 text-sm
+                      text-gray-300 hover:bg-white/10 hover:text-white
+                      rounded-t-xl"
+              >
+                <Icon icon="lucide:settings" height="18" />
+                Paramètres
+              </router-link>
+
+              <button
+                @click="openLogoutModal"
+                class="w-full flex items-center gap-3 px-4 py-3 text-sm
+                      text-red-400 hover:bg-red-400/10 rounded-b-xl"
+              >
+                <Icon icon="lucide:log-out" height="18" />
+                Déconnexion
+              </button>
+            </div>
+          </div>
+
+
         </template>
       </div>
 
@@ -131,13 +213,69 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
             </nav>
 
             <div class="mt-auto pt-6 border-t border-white/10">
-              <button v-if="isAuthenticated" @click="logout" class="w-full flex items-center justify-center gap-2 p-4 text-red-400 font-semibold hover:bg-red-400/10 rounded-xl transition-all">
+              <button v-if="isAuthenticated" @click="openLogoutModal" class="w-full flex items-center justify-center gap-2 p-4 text-red-400 font-semibold hover:bg-red-400/10 rounded-xl transition-all">
                 <Icon icon="lucide:log-out" /> Déconnexion
               </button>
               <router-link v-else to="/login" @click="closeMobileMenu" class="block w-full text-center bg-orange-500 text-white p-4 rounded-xl font-bold shadow-lg shadow-orange-500/20">
                 Connexion
               </router-link>
             </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Modal de confirmation de déconnexion -->
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div v-if="isLogoutModalOpen" class="fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="closeLogoutModal"></div>
+        
+        <div class="relative bg-[#191c2f] border border-white/10 rounded-2xl shadow-2xl max-w-md w-full mx-4">
+          <!-- Header -->
+          <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <Icon icon="lucide:log-out" class="w-6 h-6 text-red-400" />
+              </div>
+              <h3 class="text-xl font-bold text-white">Déconnexion</h3>
+            </div>
+            <button @click="closeLogoutModal" class="text-gray-400 hover:text-white transition-colors p-2">
+              <Icon icon="lucide:x" class="w-5 h-5" />
+            </button>
+          </div>
+
+          <!-- Content -->
+          <div class="px-6 py-6">
+            <p class="text-gray-300 text-base leading-relaxed">
+              Êtes-vous sûr de vouloir vous déconnecter ?<br>
+              <span class="text-gray-400 text-sm mt-2 block">
+                Votre session sera terminée et vous devrez vous reconnecter pour accéder à nouveau à votre compte.
+              </span>
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div class="px-6 py-5 border-t border-white/10 flex gap-3 justify-end">
+            <button
+              @click="closeLogoutModal"
+              class="px-6 py-3 rounded-lg font-medium text-gray-300 hover:bg-white/10 transition-all"
+            >
+              Annuler
+            </button>
+            <button
+              @click="confirmLogout"
+              class="px-6 py-3 rounded-lg font-semibold bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] active:scale-95"
+            >
+              <Icon icon="lucide:log-out" class="w-4 h-4" />
+              Se déconnecter
+            </button>
           </div>
         </div>
       </div>
