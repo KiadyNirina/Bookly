@@ -4,11 +4,13 @@ import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useUser } from '@/composables/useUser';
 import { useFollowers } from '@/composables/useFollowers';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
+import { useBook } from '@/composables/useBook';
 import CreateBook from '../Book/createBook.vue';
 
 const { user, isLoggedIn } = useUser();
 const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount } = useFollowers();
 const { books, isLoading, hasMore, loadMoreUserBook } = useLoadMoreBooks(4);
+const { countBook, fetchBookCount } = useBook();
 
 const popupVisible = ref(false);
 const activeTab = ref('created');
@@ -34,6 +36,7 @@ watch(() => user.value, (newUser) => {
 onMounted(async () => {
   checkScreenSize();
   window.addEventListener('resize', checkScreenSize);
+  fetchBookCount();
   await nextTick();
   if (isComponentMounted.value) loadMoreUserBook();
 });
@@ -74,7 +77,7 @@ onUnmounted(() => {
             <p class="text-white/50 text-sm mb-8">Membre depuis {{ formatDate(user?.created_at) }}</p>
 
             <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto md:mx-0 mb-8">
-              <div v-for="(val, label) in { 'Abonnés': followersCount, 'Abonnements': followingCount, 'Livres': books.length }" :key="label" 
+              <div v-for="(val, label) in { 'Abonnés': followersCount, 'Abonnements': followingCount, 'Livres': countBook }" :key="label" 
                 class="border-l border-white/10 pl-4">
                 <p class="text-2xl font-bold text-orange-500 leading-none">{{ val ?? 0 }}</p>
                 <p class="text-white/40 text-[10px] uppercase tracking-wider mt-1">{{ label }}</p>

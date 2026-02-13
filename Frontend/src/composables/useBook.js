@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 
 export function useBook() {
   const book = ref(null)
+  const countBook = ref(null)
   const isLoading = ref(false)
   const error = ref(null)
   const success = ref(null)
@@ -24,6 +25,17 @@ export function useBook() {
       console.error(err)
     } finally {
       isLoading.value = false
+    }
+  }
+
+  const fetchBookCount = async () => {
+    try {
+      const response = await request('get', `/user/book/count`)
+      countBook.value = response.bookCount
+      console.log(countBook.value)
+    } catch (err) {
+      error.value = "Erreur lors de la récupération de nombre de livre."
+      console.error(err)
     }
   }
 
@@ -96,10 +108,12 @@ export function useBook() {
 
   return {
     book,
+    countBook,
     isLoading,
     error,
     success,
     fetchBook,
+    fetchBookCount,
     createBook,
     deleteBook
   }
