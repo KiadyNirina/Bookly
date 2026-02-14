@@ -226,4 +226,14 @@ class BookController extends Controller
             'users' => $users,
         ]);
     }
+
+    public function bookCountUser(Request $request) {
+        $user = $request->user();
+        $countBook = Book::where('posted_by', $user->id)
+                    ->count();
+
+        return response()->json([
+            'bookCount' => $countBook
+        ]);
+    }
 }
