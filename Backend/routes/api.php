@@ -21,6 +21,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\SaveController;
 
 /* Authentication */
 Route::post('/register', [AuthController::class, 'register']);
@@ -46,6 +47,8 @@ Route::get('/user/book/count', [BookController::class, 'bookCountUser'])->middle
 Route::get('/user/{id}/books', [BookController::class, 'getBooksByUserSelected']);
 Route::get('/books/{id}/file', [BookController::class, 'getFile']);
 Route::get('/search', [BookController::class, 'search']);
+
+Route::post('/saveBook', [SaveController::class, 'saveBook'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/{user}/follow', [FollowerController::class, 'follow']);

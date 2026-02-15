@@ -6,12 +6,62 @@ import { useBook } from '@/composables/useBook'
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import { useUser } from '@/composables/useUser'
 import { useAuth } from '@/composables/useAuth'
+import { useSave } from '@/composables/useSave'
 import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
 const { user, isLoggedIn } = useUser()
 const { isAuthenticated } = useAuth()
+
+const { saveBook, isLoading: isSaving, error: saveError } = useSave()
+
+const handleSaveBook = async (bookId) => {
+  if (!isAuthenticated.value) {
+    await Swal.fire({
+      title: 'Non connecté',
+      text: 'Vous devez être connecté pour sauvegarder un livre.',
+      icon: 'warning',
+      confirmButtonColor: '#E67E22',
+      background: '#1a202c',
+      color: '#fff',
+      showCancelButton: true,
+      confirmButtonText: 'Se connecter',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push('/login')
+      }
+    })
+    return
+  }
+
+  try {
+    const savedBook = await saveBook(bookId)
+    
+    if (savedBook) {
+      await Swal.fire({
+        title: 'Succès !',
+        text: 'Le livre a été ajouté à votre bibliothèque.',
+        icon: 'success',
+        confirmButtonColor: '#E67E22',
+        background: '#1a202c',
+        color: '#fff',
+        timer: 2000,
+        timerProgressBar: true
+      })
+    }
+  } catch (error) {
+    await Swal.fire({
+      title: 'Erreur',
+      text: saveError.value || 'Impossible d\'ajouter le livre à votre bibliothèque.',
+      icon: 'error',
+      confirmButtonColor: '#E67E22',
+      background: '#1a202c',
+      color: '#fff'
+    })
+  }
+}
 
 // États du livre courant
 const { 
@@ -248,8 +298,13 @@ const categories = ref([
               class="px-10 py-4 bg-white text-black font-black uppercase tracking-widest text-xs rounded-full hover:bg-orange-500 hover:text-white transition-all transform hover:-translate-y-1">
               Commencer la lecture
             </a>
-            <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
-              <Icon icon="lucide:bookmark" class="text-xl" />
+            <button 
+              @click="handleSaveBook(currentBook.id)"
+              class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all"
+            >
+              <Icon 
+                icon="lucide:bookmark" class="text-xl" 
+              />
             </button>
             <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
               <Icon icon="lucide:download" class="text-xl" />
