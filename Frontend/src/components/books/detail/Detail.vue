@@ -14,9 +14,24 @@ const router = useRouter()
 const { user, isLoggedIn } = useUser()
 const { isAuthenticated } = useAuth()
 
-const { saveBook, isLoading: isSaving, error: saveError, success: saveSuccess } = useSave()
+const { saveBook, checkIfSaved, isLoading: isSaving, error: saveError, success: saveSuccess } = useSave()
 
 const isBookSaved = ref(false)
+const savedBookId = ref(null)
+
+const checkSavedStatus = async (bookId) => {
+  if (!user.value?.id) return
+  
+  try {
+    const result = await checkIfSaved(bookId, user.value.id)
+    isBookSaved.value = result.saved
+    if (result.saved) {
+      savedBookId.value = result.save_id
+    }
+  } catch (error) {
+    console.error('Erreur lors de la vérification:', error)
+  }
+}
 
 const handleSaveBook = async (bookId) => {
   if (!isAuthenticated.value) {
@@ -38,10 +53,27 @@ const handleSaveBook = async (bookId) => {
     return
   }
 
+  if (isBookSaved.value) {
+    const result = await Swal.fire({
+      title: 'Déjà dans votre bibliothèque',
+      text: 'Ce livre est déjà dans votre bibliothèque. Voulez-vous le retirer ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#E67E22',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Oui, retirer',
+      cancelButtonText: 'Annuler',
+      background: '#1a202c',
+      color: '#fff'
+    })
+
+    return
+  }
+
   try {
     const savedBook = await saveBook(bookId)
     
-    if (savedBook) {
+    if (savedBook && savedBook.success) {
       isBookSaved.value = true
       
       await Swal.fire({
@@ -54,6 +86,16 @@ const handleSaveBook = async (bookId) => {
         timer: 2000,
         timerProgressBar: true,
         showConfirmButton: false
+      })
+    } else if (result && result.already_saved) {
+      isBookSaved.value = true
+      await Swal.fire({
+        title: 'Déjà sauvegardé',
+        text: 'Ce livre est déjà dans votre bibliothèque.',
+        icon: 'info',
+        confirmButtonColor: '#E67E22',
+        background: '#1a202c',
+        color: '#fff'
       })
     }
   } catch (err) {
@@ -120,6 +162,7 @@ const displayedDescription = computed(() => {
 // Chargement initial
 onMounted(async () => {
   await fetchBook(route.params.id)
+  await checkSavedStatus(route.params.id)
   await loadMoreBooks()
 })
 
