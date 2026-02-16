@@ -60,6 +60,27 @@ export function useSave() {
     }
   }
 
+  // Retirer un livre des sauvegardes
+  const unsaveBook = async (bookId) => {
+    if (!bookId || !user.value?.id) {
+      throw new Error('bookId ou userId manquant')
+    }
+    
+    isLoading.value = true
+    try {
+      const response = await request('delete', `/unsave/${bookId}`, {
+        data: { user: user.value.id }
+      })
+      return response.data
+    } catch (err) {
+      error.value = "Erreur lors du retrait"
+      console.error('Erreur unsaveBook:', err)
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     book,
     isLoading,
@@ -68,6 +89,7 @@ export function useSave() {
     savedBooks,
     saveBook,
     checkIfSaved,
-    fetchSavedBooks
+    fetchSavedBooks,
+    unsaveBook
   }
 }

@@ -63,4 +63,25 @@ class SaveController extends Controller
             'saves' => $saves
         ]);
     }
+
+    // Supprimer un livre de la bibliothèque de l'utilisateur
+    public function unsaveBook($bookId)
+    {
+        $save = Save::where('book', $bookId)
+                    ->where('user', auth()->id())
+                    ->first();
+        
+        if (!$save) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce livre n\'est pas dans votre bibliothèque'
+            ], 404);
+        } else {
+            $save->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Livre retiré de votre bibliothèque'
+            ], 200);
+        }
+    }
 }

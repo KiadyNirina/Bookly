@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBook } from '@/composables/useBook'
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
@@ -14,7 +14,7 @@ const router = useRouter()
 const { user, isLoggedIn } = useUser()
 const { isAuthenticated } = useAuth()
 
-const { saveBook, checkIfSaved, isLoading: isSaving, error: saveError, success: saveSuccess } = useSave()
+const { saveBook, checkIfSaved, unsaveBook, isLoading: isSaving, error: saveError, success: saveSuccess } = useSave()
 
 const isBookSaved = ref(false)
 const savedBookId = ref(null)
@@ -25,9 +25,6 @@ const checkSavedStatus = async (bookId) => {
   try {
     const result = await checkIfSaved(bookId, user.value.id)
     isBookSaved.value = result.saved
-    if (result.saved) {
-      savedBookId.value = result.save_id
-    }
   } catch (error) {
     console.error('Erreur lors de la vérification:', error)
   }
@@ -53,50 +50,55 @@ const handleSaveBook = async (bookId) => {
     return
   }
 
-  if (isBookSaved.value) {
-    const result = await Swal.fire({
-      title: 'Déjà dans votre bibliothèque',
-      text: 'Ce livre est déjà dans votre bibliothèque. Voulez-vous le retirer ?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#E67E22',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Oui, retirer',
-      cancelButtonText: 'Annuler',
-      background: '#1a202c',
-      color: '#fff'
-    })
-
-    return
-  }
-
   try {
-    const savedBook = await saveBook(bookId)
-    
-    if (savedBook && savedBook.success) {
-      isBookSaved.value = true
-      
-      await Swal.fire({
-        title: 'Succès !',
-        text: 'Le livre a été ajouté à votre bibliothèque.',
-        icon: 'success',
+    if (isBookSaved.value) {
+      const result = await Swal.fire({
+        title: 'Déjà dans votre bibliothèque',
+        text: 'Ce livre est déjà dans votre bibliothèque. Voulez-vous le retirer ?',
+        icon: 'question',
+        showCancelButton: true,
         confirmButtonColor: '#E67E22',
-        background: '#1a202c',
-        color: '#fff',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false
-      })
-    } else if (result && result.already_saved) {
-      isBookSaved.value = true
-      await Swal.fire({
-        title: 'Déjà sauvegardé',
-        text: 'Ce livre est déjà dans votre bibliothèque.',
-        icon: 'info',
-        confirmButtonColor: '#E67E22',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Oui, retirer',
+        cancelButtonText: 'Annuler',
         background: '#1a202c',
         color: '#fff'
       })
+
+      if (result.isConfirmed) {
+        await unsaveBook(bookId)
+        isBookSaved.value = false
+        
+        await Swal.fire({
+          title: 'Retiré !',
+          text: 'Le livre a été retiré de votre bibliothèque.',
+          icon: 'success',
+          confirmButtonColor: '#E67E22',
+          background: '#1a202c',
+          color: '#fff',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
+
+      return
+    } else {
+      const savedBook = await saveBook(bookId)
+        
+      if (savedBook) {
+        isBookSaved.value = true
+        
+        await Swal.fire({
+          title: 'Succès !',
+          text: 'Le livre a été ajouté à votre bibliothèque.',
+          icon: 'success',
+          confirmButtonColor: '#E67E22',
+          background: '#1a202c',
+          color: '#fff',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
     }
   } catch (err) {
     // Gestion détaillée de l'erreur
@@ -161,9 +163,22 @@ const displayedDescription = computed(() => {
 
 // Chargement initial
 onMounted(async () => {
-  await fetchBook(route.params.id)
-  await checkSavedStatus(route.params.id)
-  await loadMoreBooks()
+  try {
+    await fetchBook(route.params.id)
+    if (currentBook.value?.id) {
+      await checkSavedStatus(currentBook.value.id)
+    }
+    await loadMoreBooks()
+  } catch (error) {
+    console.error('Erreur chargement:', error)
+  }
+})
+
+// Surveiller les changements de livre
+watch(() => currentBook.value?.id, async (newId) => {
+  if (newId) {
+    await checkSavedStatus(newId)
+  }
 })
 
 // Gestion de la suppression
@@ -364,7 +379,6 @@ const categories = ref([
             </a>
             <button 
               @click="handleSaveBook(currentBook.id)"
-              :disabled="isSaving || isBookSaved"
               class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               :title="isBookSaved ? 'Déjà dans votre bibliothèque' : 'Ajouter à ma bibliothèque'"
             >

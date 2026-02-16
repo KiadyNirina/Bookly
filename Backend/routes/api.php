@@ -51,6 +51,7 @@ Route::get('/search', [BookController::class, 'search']);
 Route::post('/saveBook', [SaveController::class, 'saveBook'])->middleware('auth:sanctum');
 Route::get('/check-saved/{bookId}/{userId}', [SaveController::class, 'checkIfSaved'])->middleware('auth:sanctum');
 Route::get('/user-saves/{userId}', [SaveController::class, 'getUserSaves'])->middleware('auth:sanctum');
+Route::delete('/unsave/{bookId}', [SaveController::class, 'unsaveBook'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/{user}/follow', [FollowerController::class, 'follow']);
