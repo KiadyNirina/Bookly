@@ -16,14 +16,11 @@ export function useSave() {
     isLoading.value = true
     error.value = null
     try {
-      const formData = new FormData();
-        formData.append('book', id)
-        formData.append('user', user.value.id)  
-      const response = await request('post', '/saveBook', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const response = await request('post', '/saveBook', {
+        book: id,
+        user: user.value.id
       })
+
       book.value = response.data
       console.log('Livre enregistré :', book.value)
 

@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 
 class SaveController extends Controller 
 {
-    public function saveBook($idBook, Request $request) {
-        $user = $request->user();
-        
+    public function saveBook(Request $request) {
+        $bookId = $request->input('book');
+        $userId = $request->input('user');
+
         $query = Save::create([
-            'book' => $idBook,
-            'user' => $user->id
+            'book' => $bookId,
+            'user' => $userId
         ]);
 
         return response()->json([
