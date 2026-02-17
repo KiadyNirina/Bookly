@@ -47,18 +47,29 @@ export function useSave() {
 
   // Récupérer tous les livres sauvegardés par l'utilisateur
   const fetchSavedBooks = async (userId) => {
-    isLoading.value = true
+    if (!userId) return;
+
+    isLoading.value = true;
+    error.value = null;
+
     try {
-      const response = await request('get', `/user-saves/${userId}`)
-      savedBooks.value = response.data.saves || []
-      return savedBooks.value
+      const response = await request('get', `/user-saves/${userId}`);
+      const saves = response.saves || [];
+      
+      // On extrait uniquement les books
+      savedBooks.value = saves
+        .filter(save => save.book != null)
+        .map(save => save.book);
+
+      return savedBooks.value;
     } catch (err) {
-      error.value = "Erreur lors du chargement des sauvegardes"
-      return []
+      console.error('Erreur saved books:', err);
+      error.value = 'Impossible de charger les livres enregistrés';
+      savedBooks.value = [];
     } finally {
-      isLoading.value = false
+      isLoading.value = false;
     }
-  }
+  };
 
   // Retirer un livre des sauvegardes
   const unsaveBook = async (bookId) => {

@@ -5,6 +5,7 @@ import { useUser } from '@/composables/useUser';
 import { useFollowers } from '@/composables/useFollowers';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
 import { useBook } from '@/composables/useBook';
+import { useSave } from '@/composables/useSave';
 import CreateBook from '../Book/createBook.vue';
 
 const { user, isLoggedIn } = useUser();
@@ -12,11 +13,24 @@ const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount
 const { books, isLoading, hasMore, loadMoreUserBook } = useLoadMoreBooks(4);
 const { countBook, fetchBookCount } = useBook();
 
+// Saved books
+const { 
+  savedBooks, 
+  isLoading: savedIsLoading, 
+  error: savedError, 
+  fetchSavedBooks 
+} = useSave();
+
 const popupVisible = ref(false);
 const activeTab = ref('created');
 const isMobile = ref(false);
 const isComponentMounted = ref(true);
 
+// Affichage dynamique (seulement pour les livres)
+const displayedBooks = ref([]);
+const displayedIsLoading = ref(false);
+
+// Utilitaires
 const getImageUrl = (imgPath) => `http://localhost:8000/${imgPath}`;
 const formatDate = (dateString) => {
   if (!dateString) return '';
@@ -30,13 +44,50 @@ watch(() => user.value, (newUser) => {
     if (newUser?.id && isComponentMounted.value) {
       fetchFollowersCount(newUser.id);
       fetchFollowingCount(newUser.id);
+      fetchBookCount();
     }
 }, { immediate: true });
+
+// Switch onglet → met à jour l'affichage
+watch([user, activeTab], async ([newUser, newTab]) => {
+  if (!newUser?.id) {
+    displayedBooks.value = [];
+    displayedIsLoading.value = false;
+    return;
+  }
+
+  if (newTab === 'created') {
+    displayedBooks.value = books.value;
+    displayedIsLoading.value = isLoading.value;
+  } 
+  else if (newTab === 'saved') {
+    displayedIsLoading.value = savedIsLoading.value;
+
+    if (savedBooks.value.length === 0) {
+      await fetchSavedBooks(newUser.id);
+    }
+
+    displayedBooks.value = savedBooks.value;
+    displayedIsLoading.value = savedIsLoading.value;
+  }
+}, { immediate: true });
+
+// Sync en temps réel quand les sources changent
+watch(books, (newBooks) => {
+  if (activeTab.value === 'created') {
+    displayedBooks.value = newBooks;
+  }
+});
+
+watch(savedBooks, (newSaved) => {
+  if (activeTab.value === 'saved') {
+    displayedBooks.value = newSaved;
+  }
+});
 
 onMounted(async () => {
   checkScreenSize();
   window.addEventListener('resize', checkScreenSize);
-  fetchBookCount();
   await nextTick();
   if (isComponentMounted.value) loadMoreUserBook();
 });
@@ -51,6 +102,7 @@ onUnmounted(() => {
   <main class="min-h-screen text-white pt-24 pb-12">
     <div class="container mx-auto px-4 max-w-7xl">
       
+      <!-- Profil header -->
       <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 mb-10 overflow-hidden">
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/10 blur-[100px] rounded-full"></div>
 
@@ -96,6 +148,7 @@ onUnmounted(() => {
         </div>
       </div>
 
+      <!-- Onglets -->
       <div class="flex justify-center mb-12">
         <div class="inline-flex bg-white/5 p-1.5 rounded-full border border-white/10">
           <button 
@@ -109,26 +162,72 @@ onUnmounted(() => {
           >
             <Icon :icon="tab.icon" />
             {{ tab.label }}
+            <span 
+              v-if="tab.id === 'saved' && savedBooks.length > 0" 
+              class="ml-1 px-1.5 py-0.5 text-[10px] bg-orange-600/70 rounded-full"
+            >
+              {{ savedBooks.length }}
+            </span>
           </button>
         </div>
       </div>
 
+      <!-- Section Bibliothèque -->
       <section>
         <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-          <h2 class="text-xl font-medium text-white/90 uppercase tracking-widest px-4 border-l-4 border-orange-500">Bibliothèque</h2>
-          <button @click="create" class="group flex items-center gap-2 text-sm text-orange-500 font-bold hover:text-white transition-colors">
+          <h2 class="text-xl font-medium text-white/90 uppercase tracking-widest px-4 border-l-4 border-orange-500">
+            {{ activeTab === 'created' ? 'Mes Créations' : 'Enregistrés' }}
+          </h2>
+          
+          <button 
+            v-if="activeTab === 'created'" 
+            @click="create" 
+            class="group flex items-center gap-2 text-sm text-orange-500 font-bold hover:text-white transition-colors"
+          >
             NOUVEAU LIVRE <Icon icon="lucide:plus-circle" class="text-xl transition-transform group-hover:rotate-90" />
           </button>
         </div>
 
-        <div v-if="books.length === 0 && !isLoading" class="text-center py-24 border-2 border-dashed border-white/5 rounded-3xl bg-[#1a1c26]/20">
+        <!-- Vide -->
+        <div 
+          v-if="displayedBooks.length === 0 && !displayedIsLoading" 
+          class="text-center py-24 border-2 border-dashed border-white/5 rounded-3xl bg-[#1a1c26]/20"
+        >
           <Icon icon="lucide:book-x" class="text-5xl text-orange-500/20 mx-auto mb-6" />
-          <p class="text-xl font-black italic text-white/60 mb-2">Votre plume n'attend que vous...</p>
-          <p class="text-[11px] uppercase tracking-widest text-white/30">Commencez à publier votre premier livre</p>
+          
+          <p v-if="activeTab === 'created'" class="text-xl font-black italic text-white/60 mb-2">
+            Votre plume n'attend que vous...
+          </p>
+          <p v-else class="text-xl font-black italic text-white/60 mb-2">
+            Aucun livre enregistré pour le moment...
+          </p>
+          
+          <p class="text-[11px] uppercase tracking-widest text-white/30">
+            {{ activeTab === 'created' 
+              ? 'Commencez à publier votre premier livre' 
+              : 'Les livres que vous enregistrez apparaîtront ici' }}
+          </p>
         </div>
 
+        <!-- Erreur sur saved -->
+        <div 
+          v-else-if="activeTab === 'saved' && savedError" 
+          class="text-center py-12 text-red-400 text-lg"
+        >
+          {{ savedError }}
+          <button 
+            @click="fetchSavedBooks(user?.id)" 
+            class="mt-4 px-6 py-2 bg-orange-600 hover:bg-orange-700 rounded-full text-white text-sm"
+          >
+            Réessayer
+          </button>
+        </div>
+
+        <!-- Grille livres -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div v-for="(book, index) in books" :key="index" 
+          <div 
+            v-for="book in displayedBooks" 
+            :key="book.id" 
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
             <a :href="`/books/${book.id}`" class="h-full w-full block">
@@ -187,8 +286,13 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div v-if="hasMore" class="mt-16 text-center">
-          <button @click="loadMoreUserBook" class="relative overflow-hidden px-12 py-4 group border border-orange-500 text-orange-500 font-black uppercase tracking-[0.2em] text-xs hover:text-white transition-colors duration-300">
+        <!-- Charger plus (seulement pour créations) -->
+        <div v-if="activeTab === 'created' && hasMore" class="mt-16 text-center">
+          <button 
+            @click="loadMoreUserBook()" 
+            :disabled="isLoading"
+            class="relative overflow-hidden px-12 py-4 group border border-orange-500 text-orange-500 font-black uppercase tracking-[0.2em] text-xs hover:text-white transition-colors duration-300"
+          >
             <span class="relative z-10">{{ isLoading ? 'Chargement...' : 'Afficher Plus' }}</span>
             <div class="absolute inset-0 bg-orange-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
           </button>
@@ -201,7 +305,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* Suppression des styles complexes pour laisser Tailwind respirer */
 .container {
   animation: fadeIn 0.8s ease-out;
 }
