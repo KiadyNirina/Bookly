@@ -198,6 +198,16 @@ const handleDeleteBook = async (bookId) => {
     }
 }
 
+const getPosterProfileLink = (poster) => {
+  if (!poster) return '#'
+  
+  if (poster.id === user.value?.id) {
+    return '/profil'  
+  }
+  
+  return `/user/${poster.id}` 
+}
+
 // Gestion de l'évaluation
 const handleStarHover = (star) => hoveredStar.value = star
 const handleRatingSelection = (star) => {
@@ -417,7 +427,7 @@ const categories = ref([
             </div>
             <div class="flex justify-between py-3 border-b border-white/5">
               <span class="text-white/40 text-sm">Publié par</span>
-              <a href="#" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</a>
+              <a :href="getPosterProfileLink(currentBook?.posted_by)" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</a>
             </div>
           </div>
 
