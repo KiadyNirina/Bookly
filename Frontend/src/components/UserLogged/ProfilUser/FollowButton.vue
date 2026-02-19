@@ -11,12 +11,22 @@ const props = defineProps({
 })
 
 const isFollowing = ref(false)
+const isFollowedBy = ref(false)
 const isLoading = ref(false)
 const errorMessage = ref(null)
 
 const buttonText = computed(() => {
   if (isLoading.value) return 'Chargement...'
-  return isFollowing.value ? 'Abonné' : 'Suivre'
+
+  if (isFollowing.value) {
+    return 'Abonné'
+  }
+
+  if (isFollowedBy.value) {
+    return 'Suivre en retour'
+  }
+
+  return 'Suivre'
 })
 
 const buttonClasses = computed(() => {
@@ -53,8 +63,6 @@ async function toggleFollow() {
 
     if (err.response?.status === 401) {
       errorMessage.value = "Veuillez vous connecter pour suivre cet auteur"
-      // Option : rediriger vers login si tu veux
-      // router.push('/login')
     } else if (err.response?.status === 404) {
       errorMessage.value = "Utilisateur introuvable"
     } else {
@@ -73,16 +81,21 @@ onMounted(async () => {
 
   isLoading.value = true
   try {
-    const res = await apiClient.get(`/users/${props.userId}/is-following`)
-    isFollowing.value = res.data.isFollowing === true
-    console.log('Statut initial follow :', isFollowing.value)
-  } catch (err) {
-    console.error('Erreur vérification follow :', err)
+    const res = await apiClient.get(`/users/${props.userId}/follow-status`)
+    
+    isFollowing.value  = res.data.isFollowing  === true
+    isFollowedBy.value = res.data.isFollowedBy === true
 
+    console.log('Relation:', { 
+      je_le_suis: isFollowing.value, 
+      il_me_suit: isFollowedBy.value 
+    })
+  } catch (err) {
+    console.error('Erreur follow-status:', err)
     if (err.response?.status === 401) {
-      errorMessage.value = "Connectez-vous pour voir cet état"
+      errorMessage.value = "Connectez-vous pour voir l'état"
     } else {
-      errorMessage.value = "Impossible de vérifier si vous suivez cet auteur"
+      errorMessage.value = "Impossible de vérifier la relation"
     }
   } finally {
     isLoading.value = false

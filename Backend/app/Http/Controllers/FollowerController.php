@@ -53,4 +53,22 @@ class FollowerController extends Controller
     public function followingCount(User $user) {
         return response()->json($user->following()->get()->count());
     }
+
+    /**
+     * Retourne l'état de la relation follow dans les deux sens
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function followStatus(User $user)
+    {
+        $currentUser = Auth::user();
+
+        $isFollowing  = $currentUser->following()->where('following_id', $user->id)->exists();
+        $isFollowedBy = $user->following()->where('following_id', $currentUser->id)->exists();
+
+        return response()->json([
+            'isFollowing'  => $isFollowing,
+            'isFollowedBy' => $isFollowedBy,
+        ]);
+    }
 }
