@@ -236,4 +236,17 @@ class BookController extends Controller
             'bookCount' => $countBook
         ]);
     }
+
+    public function getGenres()
+    {
+        $genres = Book::select('genre')
+            ->whereNotNull('genre')
+            ->where('genre', '!=', '')
+            ->distinct()
+            ->orderBy('genre')
+            ->pluck('genre')
+            ->toArray();
+
+        return response()->json($genres);
+    }
 }

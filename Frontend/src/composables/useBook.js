@@ -5,6 +5,9 @@ import Swal from 'sweetalert2'
 
 export function useBook() {
   const book = ref(null)
+  const genres = ref([])
+  const genresLoading = ref(false)
+  const genresError = ref(null)
   const countBook = ref(null)
   const isLoading = ref(false)
   const error = ref(null)
@@ -25,6 +28,22 @@ export function useBook() {
       console.error(err)
     } finally {
       isLoading.value = false
+    }
+  }
+
+  const fetchBookGenres = async () => {
+    genresLoading.value = true
+    genresError.value = null
+
+    try {
+      const res = await request('get', `/genres`)
+      genres.value = Array.isArray(res) ? res : []
+    } catch (err) {
+      console.error(err)
+      genresError.value = "Impossible de charger les genres"
+      genres.value = []
+    } finally {
+      genresLoading.value = false
     }
   }
 
@@ -108,11 +127,15 @@ export function useBook() {
 
   return {
     book,
+    genres,
+    genresLoading, 
+    genresError,
     countBook,
     isLoading,
     error,
     success,
     fetchBook,
+    fetchBookGenres,
     fetchBookCount,
     createBook,
     deleteBook

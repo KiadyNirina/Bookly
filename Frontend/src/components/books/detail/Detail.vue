@@ -1,17 +1,127 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBook } from '@/composables/useBook'
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import { useUser } from '@/composables/useUser'
 import { useAuth } from '@/composables/useAuth'
+import { useSave } from '@/composables/useSave'
 import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
 const { user, isLoggedIn } = useUser()
 const { isAuthenticated } = useAuth()
+
+const { saveBook, checkIfSaved, unsaveBook, isLoading: isSaving, error: saveError, success: saveSuccess } = useSave()
+
+const isBookSaved = ref(false)
+const savedBookId = ref(null)
+
+const checkSavedStatus = async (bookId) => {
+  if (!user.value?.id) return
+  
+  try {
+    const result = await checkIfSaved(bookId, user.value.id)
+    isBookSaved.value = result.saved
+  } catch (error) {
+    console.error('Erreur lors de la vérification:', error)
+  }
+}
+
+const handleSaveBook = async (bookId) => {
+  if (!isAuthenticated.value) {
+    const result = await Swal.fire({
+      title: 'Non connecté',
+      text: 'Vous devez être connecté pour sauvegarder un livre.',
+      icon: 'warning',
+      confirmButtonColor: '#E67E22',
+      background: '#1a202c',
+      color: '#fff',
+      showCancelButton: true,
+      confirmButtonText: 'Se connecter',
+      cancelButtonText: 'Annuler'
+    })
+    
+    if (result.isConfirmed) {
+      router.push('/login')
+    }
+    return
+  }
+
+  try {
+    if (isBookSaved.value) {
+      const result = await Swal.fire({
+        title: 'Déjà dans votre bibliothèque',
+        text: 'Ce livre est déjà dans votre bibliothèque. Voulez-vous le retirer ?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#E67E22',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Oui, retirer',
+        cancelButtonText: 'Annuler',
+        background: '#1a202c',
+        color: '#fff'
+      })
+
+      if (result.isConfirmed) {
+        await unsaveBook(bookId)
+        isBookSaved.value = false
+        
+        await Swal.fire({
+          title: 'Retiré !',
+          text: 'Le livre a été retiré de votre bibliothèque.',
+          icon: 'success',
+          confirmButtonColor: '#E67E22',
+          background: '#1a202c',
+          color: '#fff',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
+
+      return
+    } else {
+      const savedBook = await saveBook(bookId)
+        
+      if (savedBook) {
+        isBookSaved.value = true
+        
+        await Swal.fire({
+          title: 'Succès !',
+          text: 'Le livre a été ajouté à votre bibliothèque.',
+          icon: 'success',
+          confirmButtonColor: '#E67E22',
+          background: '#1a202c',
+          color: '#fff',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
+    }
+  } catch (err) {
+    // Gestion détaillée de l'erreur
+    let errorMessage = 'Impossible d\'ajouter le livre à votre bibliothèque.'
+    
+    if (saveError.value) {
+      errorMessage = saveError.value
+    } else if (err.response?.data?.message) {
+      errorMessage = err.response.data.message
+    } else if (err.message) {
+      errorMessage = err.message
+    }
+    
+    await Swal.fire({
+      title: 'Erreur',
+      text: errorMessage,
+      icon: 'error',
+      confirmButtonColor: '#E67E22',
+      background: '#1a202c',
+      color: '#fff'
+    })
+  }
+}
 
 // États du livre courant
 const { 
@@ -53,8 +163,22 @@ const displayedDescription = computed(() => {
 
 // Chargement initial
 onMounted(async () => {
-  await fetchBook(route.params.id)
-  await loadMoreBooks()
+  try {
+    await fetchBook(route.params.id)
+    if (currentBook.value?.id) {
+      await checkSavedStatus(currentBook.value.id)
+    }
+    await loadMoreBooks()
+  } catch (error) {
+    console.error('Erreur chargement:', error)
+  }
+})
+
+// Surveiller les changements de livre
+watch(() => currentBook.value?.id, async (newId) => {
+  if (newId) {
+    await checkSavedStatus(newId)
+  }
 })
 
 // Gestion de la suppression
@@ -72,6 +196,16 @@ const handleDeleteBook = async (bookId) => {
 
       router.push('/books')
     }
+}
+
+const getPosterProfileLink = (poster) => {
+  if (!poster) return '#'
+  
+  if (poster.id === user.value?.id) {
+    return '/profil'  
+  }
+  
+  return `/user/${poster.id}` 
 }
 
 // Gestion de l'évaluation
@@ -93,7 +227,6 @@ const handleRatingSelection = (star) => {
 const handleCommentSubmit = () => {
   if (!commentText.value.trim()) return
   
-  // Ici vous ajouteriez la logique pour envoyer le commentaire
   Swal.fire({
     title: 'Commentaire ajouté!',
     text: 'Votre avis a été publié.',
@@ -196,6 +329,11 @@ const categories = ref([
   <main class="min-h-screen text-white pt-24 pb-20">
     <div class="container mx-auto px-4 max-w-7xl">
       
+      <div v-if="isSaving" class="fixed top-4 right-4 z-50 bg-orange-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+        <Icon icon="lucide:loader-2" class="animate-spin text-xl" />
+        <span class="text-sm font-bold">Sauvegarde en cours...</span>
+      </div>
+      
       <div v-if="currentBook" class="relative grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24">
         
         <div class="lg:col-span-5 xl:col-span-4">
@@ -204,6 +342,7 @@ const categories = ref([
               <img 
                 :src="getImageUrl(currentBook.picture)" 
                 class="w-full h-auto aspect-[2/3] object-cover"
+                :alt="currentBook.title"
               />
               <div class="absolute top-6 left-6">
                 <span class="bg-orange-500 text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full shadow-lg">
@@ -244,12 +383,19 @@ const categories = ref([
           </div>
 
           <div class="flex flex-wrap gap-4 items-center">
-            <a :to="`/book/${currentBook.id}/file`" 
+            <a :href="`/book/${currentBook.id}/file`" 
               class="px-10 py-4 bg-white text-black font-black uppercase tracking-widest text-xs rounded-full hover:bg-orange-500 hover:text-white transition-all transform hover:-translate-y-1">
               Commencer la lecture
             </a>
-            <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
-              <Icon icon="lucide:bookmark" class="text-xl" />
+            <button 
+              @click="handleSaveBook(currentBook.id)"
+              class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              :title="isBookSaved ? 'Déjà dans votre bibliothèque' : 'Ajouter à ma bibliothèque'"
+            >
+              <Icon 
+                :icon="isSaving ? 'lucide:loader-2' : (isBookSaved ? 'lucide:check' : 'lucide:bookmark')" 
+                :class="['text-xl', { 'animate-spin': isSaving }]" 
+              />
             </button>
             <button class="p-4 border border-white/10 rounded-full hover:border-orange-500 hover:text-orange-500 transition-all">
               <Icon icon="lucide:download" class="text-xl" />
@@ -259,6 +405,14 @@ const categories = ref([
             </button>
           </div>
         </div>
+      </div>
+
+      <div v-if="saveError" class="mb-8 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-500">
+        {{ saveError }}
+      </div>
+
+      <div v-if="saveSuccess" class="mb-8 p-4 bg-green-500/20 border border-green-500 rounded-lg text-green-500">
+        {{ saveSuccess }}
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
@@ -273,7 +427,7 @@ const categories = ref([
             </div>
             <div class="flex justify-between py-3 border-b border-white/5">
               <span class="text-white/40 text-sm">Publié par</span>
-              <a to="#" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</a>
+              <a :href="getPosterProfileLink(currentBook?.posted_by)" class="text-orange-500 font-bold text-sm hover:underline">{{ currentBook?.posted_by?.name }}</a>
             </div>
           </div>
 

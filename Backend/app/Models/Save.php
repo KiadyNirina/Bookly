@@ -9,6 +9,8 @@ class Save extends Model
 {
     use HasFactory;
 
+    protected $table = 'save';
+
     protected $fillable = [
         'book',
         'user',
