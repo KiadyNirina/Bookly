@@ -47,6 +47,7 @@ Route::get('/user/book/count', [BookController::class, 'bookCountUser'])->middle
 Route::get('/user/{id}/books', [BookController::class, 'getBooksByUserSelected']);
 Route::get('/books/{id}/file', [BookController::class, 'getFile']);
 Route::get('/search', [BookController::class, 'search']);
+Route::get('/genres', [BookController::class, 'getGenres']);
 
 Route::post('/saveBook', [SaveController::class, 'saveBook'])->middleware('auth:sanctum');
 Route::get('/check-saved/{bookId}/{userId}', [SaveController::class, 'checkIfSaved'])->middleware('auth:sanctum');

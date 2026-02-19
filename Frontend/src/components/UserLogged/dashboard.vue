@@ -1,7 +1,8 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useBook } from '@/composables/useBook';
 
 const {
   books,
@@ -11,15 +12,28 @@ const {
   loadMore
 } = useLoadMoreBooks(4);
 
-loadMore();
-
-const categories = ref([
-  'Romance', 'Fantaisie', 'Histoire', 'Fiction', 
-  'Non fiction', 'Comédie', 'Action', 'Science-fiction',
-  'Horreur', 'Biographie', 'Aventure', 'Mystère'
-]);
+const { genres, fetchBookGenres, genresLoading, genresError } = useBook()
 
 const activeCategory = ref('Tous');
+
+onMounted(() => {
+  loadMore()        
+  fetchBookGenres()  
+})
+
+const displayCategories = computed(() => {
+  const base = ['Tous']
+  
+  if (Array.isArray(genres.value) && genres.value.length > 0) {
+    const validGenres = genres.value
+      .filter(g => typeof g === 'string' && g.trim() !== '')
+      .map(g => g.trim())
+    
+    return [...base, ...validGenres]
+  }
+  
+  return base
+})
 
 const filterByCategory = (category) => {
   activeCategory.value = category;
@@ -73,20 +87,33 @@ function getImageUrl(imgPath) {
         </h1>
         
         <div class="relative">
-          <div class="flex flex-wrap gap-x-8 gap-y-4 border-b border-white/5 pb-6">
+          <div v-if="genresLoading" class="flex justify-center py-6">
+            <Icon icon="eos-icons:loading" class="animate-spin text-3xl text-orange-500" />
+          </div>
+
+          <div v-else-if="genresError" class="text-center py-6 text-red-400">
+            {{ genresError }}
             <button 
-              v-for="category in categories" 
+              @click="fetchBookGenres" 
+              class="ml-3 text-orange-500 hover:underline"
+            >
+              Réessayer
+            </button>
+          </div>
+
+          <div v-else class="flex flex-wrap gap-x-8 gap-y-4 border-b border-white/5 pb-6">
+            <button 
+              v-for="category in displayCategories" 
               :key="category"
               @click="filterByCategory(category)"
               :class="[
-                'text-xs font-black uppercase tracking-widest transition-all duration-300 relative py-2',
+                'text-xs font-black uppercase tracking-widest transition-all duration-300 relative py-2 px-1',
                 activeCategory === category 
-                  ? 'text-orange-500' 
-                  : 'text-white/30 hover:text-white'
+                  ? 'text-orange-500 after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-orange-500' 
+                  : 'text-white/50 hover:text-white'
               ]"
             >
               {{ category }}
-              <span v-if="activeCategory === category" class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500"></span>
             </button>
           </div>
         </div>
