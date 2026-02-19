@@ -7,6 +7,7 @@ import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
 import { useBook } from '@/composables/useBook';
 import { useSave } from '@/composables/useSave';
 import CreateBook from '../Book/createBook.vue';
+import FollowListModal from '@/components/FollowListModal.vue';
 
 const { user, isLoggedIn } = useUser();
 const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount } = useFollowers();
@@ -96,6 +97,14 @@ onUnmounted(() => {
   isComponentMounted.value = false;
   window.removeEventListener('resize', checkScreenSize);
 });
+
+const showFollowModal = ref(false)
+const modalType = ref('following')
+
+const openFollowList = (type) => {
+  modalType.value = type
+  showFollowModal.value = true
+}
 </script>
 
 <template>
@@ -129,10 +138,25 @@ onUnmounted(() => {
             <p class="text-white/50 text-sm mb-8">Membre depuis {{ formatDate(user?.created_at) }}</p>
 
             <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto md:mx-0 mb-8">
-              <div v-for="(val, label) in { 'Abonnés': followersCount, 'Abonnements': followingCount, 'Livres': countBook }" :key="label" 
-                class="border-l border-white/10 pl-4">
-                <p class="text-2xl font-bold text-orange-500 leading-none">{{ val ?? 0 }}</p>
-                <p class="text-white/40 text-[10px] uppercase tracking-wider mt-1">{{ label }}</p>
+              <button
+                @click="openFollowList('followers')"
+                class="border-l border-white/10 pl-4 text-left hover:bg-white/5 rounded-lg p-2 transition-colors cursor-pointer"
+              >
+                <p class="text-2xl font-bold text-orange-500 leading-none">{{ followersCount ?? 0 }}</p>
+                <p class="text-white/40 text-[10px] uppercase tracking-wider mt-1">Abonnés</p>
+              </button>
+
+              <button
+                @click="openFollowList('following')"
+                class="border-l border-white/10 pl-4 text-left hover:bg-white/5 rounded-lg p-2 transition-colors cursor-pointer"
+              >
+                <p class="text-2xl font-bold text-orange-500 leading-none">{{ followingCount ?? 0 }}</p>
+                <p class="text-white/40 text-[10px] uppercase tracking-wider mt-1">Abonnements</p>
+              </button>
+
+              <div class="border-l border-white/10 pl-4">
+                <p class="text-2xl font-bold text-orange-500 leading-none">{{ countBook ?? 0 }}</p>
+                <p class="text-white/40 text-[10px] uppercase tracking-wider mt-1">Livres</p>
               </div>
             </div>
 
@@ -300,6 +324,14 @@ onUnmounted(() => {
       </section>
 
       <CreateBook :visible="popupVisible" @close="popupVisible = false" />
+
+      <FollowListModal
+        :visible="showFollowModal"
+        :user-id="user?.id"
+        :type="modalType"
+        @close="showFollowModal = false"
+      />
+
     </div>
   </main>
 </template>
