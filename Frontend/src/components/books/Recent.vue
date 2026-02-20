@@ -2,7 +2,8 @@
 import { Icon } from '@iconify/vue';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import { useUser } from '@/composables/useUser';
-import { ref, onMounted } from 'vue';
+import { useBook } from '@/composables/useBook';
+import { ref, onMounted, computed } from 'vue';
 
 const { user } = useUser();
 const {
@@ -13,16 +14,39 @@ const {
   loadMore
 } = useLoadMoreBooks(8);
 
+const { genres, fetchBookGenres, genresLoading, genresError } = useBook()
+
 const activeCategory = ref('Tous');
 const isMobile = ref(false);
 
-const categories = ref([
-  'Tous', 'Romance', 'Fantaisie', 'Histoire', 'Fiction', 
-  'Non fiction', 'Comédie', 'Action', 'Science-fiction',
-  'Horreur', 'Biographie', 'Aventure', 'Mystère'
-]);
+onMounted(() => {
+  loadMore()        
+  fetchBookGenres()  
+})
 
-loadMore();
+const displayCategories = computed(() => {
+  const base = ['Tous']
+  
+  if (Array.isArray(genres.value) && genres.value.length > 0) {
+    const validGenres = genres.value
+      .filter(g => typeof g === 'string' && g.trim() !== '')
+      .map(g => g.trim())
+    
+    return [...base, ...validGenres]
+  }
+  
+  return base
+})
+
+const filteredBooks = computed(() => {
+  if (activeCategory.value === 'Tous') {
+    return books.value
+  }
+
+  return books.value.filter(book => 
+    book.genre?.toLowerCase() === activeCategory.value.toLowerCase()
+  )
+})
 
 const checkScreenSize = () => {
   isMobile.value = window.innerWidth < 768;
@@ -70,21 +94,36 @@ onMounted(() => {
 
       <div class="flex-row justify-between items-start lg:items-center gap-8 mb-12">
         <nav class="w-full lg:w-auto overflow-x-auto hide-scrollbar">
-          <div class="flex space-x-8 pb-2 lg:pb-0">
-            <button 
-              v-for="category in categories" 
-              :key="category"
-              @click="filterByCategory(category)"
-              :class="[
-                'text-[11px] font-black uppercase tracking-widest transition-all duration-300 relative py-2 whitespace-nowrap',
-                activeCategory === category 
-                  ? 'text-orange-500' 
-                  : 'text-white/30 hover:text-white'
-              ]"
-            >
-              {{ category }}
-              <span v-if="activeCategory === category" class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500"></span>
-            </button>
+          <div class="relative">
+            <div v-if="genresLoading" class="flex justify-center py-6">
+              <Icon icon="eos-icons:loading" class="animate-spin text-3xl text-orange-500" />
+            </div>
+
+            <div v-else-if="genresError" class="text-center py-6 text-red-400">
+              {{ genresError }}
+              <button 
+                @click="fetchBookGenres" 
+                class="ml-3 text-orange-500 hover:underline"
+              >
+                Réessayer
+              </button>
+            </div>
+
+            <div v-else class="flex flex-wrap gap-x-8 gap-y-4 border-b border-white/5 pb-6">
+              <button 
+                v-for="category in displayCategories" 
+                :key="category"
+                @click="filterByCategory(category)"
+                :class="[
+                  'text-xs font-black uppercase tracking-widest transition-all duration-300 relative py-2 px-1',
+                  activeCategory === category 
+                    ? 'text-orange-500 after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-orange-500' 
+                    : 'text-white/50 hover:text-white'
+                ]"
+              >
+                {{ category }}
+              </button>
+            </div>
           </div>
         </nav>
 
@@ -117,11 +156,12 @@ onMounted(() => {
       </div>
 
       <section class="mb-20">
-        <div v-if="books.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div v-if="filteredBooks.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div 
-            v-for="book in books" 
+            v-for="book in filteredBooks" 
             :key="book.id"
-            class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
+            class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer animate-stagger"
+            :style="{ animationDelay: `${index * 0.05}s` }"
           >
             <a :href="`/books/${book.id}`" class="h-full w-full block">
               <img 
@@ -237,5 +277,14 @@ onMounted(() => {
 }
 .popular-badge {
   animation: pulse 2s infinite;
+}
+
+.animate-stagger {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 </style>
