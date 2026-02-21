@@ -346,7 +346,7 @@ const categories = ref([
               />
               <div class="absolute top-6 left-6">
                 <span class="bg-orange-500 text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full shadow-lg">
-                  Romance
+                  {{ currentBook.genre }}
                 </span>
               </div>
             </div>
