@@ -35,7 +35,7 @@ class BookController extends Controller
         }
 
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('books', 'public');
+            $filePath = $request->file('file')->store('books', 'private');
             $validatedData['file'] = $filePath;
         }
 
