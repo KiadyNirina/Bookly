@@ -85,9 +85,9 @@ onMounted(() => {
               Livres <span class="text-orange-500">Récents</span>
             </h1>
           </div>
-          <div v-if="books.length > 0" class="flex flex-col items-start md:items-end gap-2">
+          <div v-if="filteredBooks.length > 0" class="flex flex-col items-start md:items-end gap-2">
             <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">Collection actuelle</span>
-            <span class="text-2xl font-black tracking-tighter">{{ books.length }} <span class="text-orange-500 text-sm italic">volumes</span></span>
+            <span class="text-2xl font-black tracking-tighter">{{ filteredBooks.length }} <span class="text-orange-500 text-sm italic">{{ filteredBooks.length === 1 ? "volume" : "volumes" }}</span></span>
           </div>
         </div>
       </div>
