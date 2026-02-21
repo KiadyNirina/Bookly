@@ -3,6 +3,9 @@ import { Icon } from '@iconify/vue';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import { ref, onMounted, computed } from 'vue';
 import { useBook } from '@/composables/useBook';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const {
   books,
@@ -36,8 +39,14 @@ const displayCategories = computed(() => {
 })
 
 const filterByCategory = (category) => {
-  activeCategory.value = category;
-};
+  if (category !== 'Tous') {
+    router.push({
+      path: '/books/recent',
+      query: { genre: category }
+    })
+  }
+}
+
 
 const observerTarget = ref(null);
 

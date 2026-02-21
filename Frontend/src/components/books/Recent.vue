@@ -3,7 +3,11 @@ import { Icon } from '@iconify/vue';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import { useUser } from '@/composables/useUser';
 import { useBook } from '@/composables/useBook';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
 
 const { user } = useUser();
 const {
@@ -19,10 +23,37 @@ const { genres, fetchBookGenres, genresLoading, genresError } = useBook()
 const activeCategory = ref('Tous');
 const isMobile = ref(false);
 
-onMounted(() => {
-  loadMore()        
-  fetchBookGenres()  
+onMounted(async () => {
+  loadMore()
+  await fetchBookGenres()
+
+  const genreFromUrl = (route.query.genre || '').toString().trim()
+
+  if (genreFromUrl) {
+    const normalized = genreFromUrl
+    if (displayCategories.value.includes(normalized)) {
+      activeCategory.value = normalized
+    } else {
+      router.replace({ query: {} })
+    }
+  }
+
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
 })
+
+watch(activeCategory, (newCategory) => {
+  const query = newCategory === 'Tous' 
+    ? {} 
+    : { genre: newCategory }
+
+  router.replace({
+    path: route.path,
+    query,
+    hash: route.hash || undefined
+  })
+}, { immediate: false })
+
 
 const displayCategories = computed(() => {
   const base = ['Tous']
@@ -66,11 +97,6 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('fr-FR', options);
 };
-
-onMounted(() => {
-  checkScreenSize();
-  window.addEventListener('resize', checkScreenSize);
-});
 </script>
 
 <template>
