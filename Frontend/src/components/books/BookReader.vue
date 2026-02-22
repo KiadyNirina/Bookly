@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from "vue"
+import { ref, onMounted, watch, onUnmounted, nextTick } from "vue"
 import { useRoute } from "vue-router"
 import { useBook } from "@/composables/useBook"
 import * as pdfjsLib from "pdfjs-dist"
@@ -14,6 +14,7 @@ const canvasRef = ref(null)
 const readerRef = ref(null)
 
 let pdfDoc = null
+let renderTask = null // Pour annuler un rendu en cours
 const currentPage = ref(1)
 const totalPages = ref(1)
 const zoomLevel = ref(1.5)
@@ -25,47 +26,72 @@ let startX = 0
 let startY = 0
 let scrollLeft = 0
 let scrollTop = 0
+const containerRef = ref(null)
+
+const getPdfUrl = (bookId) => {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') || 'http://localhost:8000/api'
+  return `${baseUrl}/books/${bookId}/file`
+}
 
 onMounted(async () => {
   await fetchBook(route.params.id)
 })
 
 watch(currentBook, async (newBook) => {
-  if (newBook && newBook.file) {
-    await loadPdf(getPdfUrl(newBook.file))
+  if (newBook?.id) {
+    // Réinitialisation
+    bookmarks.value = []
+    currentPage.value = 1
+    await loadPdf(getPdfUrl(newBook.id))
   }
 })
 
-const getPdfUrl = (filePath) =>
-  filePath.startsWith("http")
-    ? filePath
-    : `${import.meta.env.VITE_API_BASE_URL || "http://localhost:5173/storage/"}${filePath}`
-
 const loadPdf = async (url) => {
   try {
-    const loadingTask = pdfjsLib.getDocument(url)
+    const loadingTask = pdfjsLib.getDocument({
+      url,
+      // Si votre API nécessite un token d'authentification :
+      // httpHeaders: { 'Authorization': `Bearer ${token}` },
+      // withCredentials: true
+    })
     pdfDoc = await loadingTask.promise
     totalPages.value = pdfDoc.numPages
-    renderPage(currentPage.value)
+    await renderPage(currentPage.value)
   } catch (error) {
     console.error("Erreur chargement PDF :", error)
   }
 }
 
 const renderPage = async (pageNumber) => {
-  const page = await pdfDoc.getPage(pageNumber)
-  const viewport = page.getViewport({ scale: zoomLevel.value })
-  const canvas = canvasRef.value
-  const context = canvas.getContext("2d")
-
-  canvas.height = viewport.height
-  canvas.width = viewport.width
-
-  const renderContext = {
-    canvasContext: context,
-    viewport: viewport,
+  if (!pdfDoc || !canvasRef.value) return
+  
+  // Annuler le rendu précédent si en cours
+  if (renderTask) {
+    renderTask.cancel()
   }
-  page.render(renderContext)
+  
+  try {
+    const page = await pdfDoc.getPage(pageNumber)
+    const viewport = page.getViewport({ scale: zoomLevel.value })
+    const canvas = canvasRef.value
+    const context = canvas.getContext("2d")
+
+    canvas.height = viewport.height
+    canvas.width = viewport.width
+
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport,
+    }
+    
+    renderTask = page.render(renderContext)
+    await renderTask.promise
+    renderTask = null
+  } catch (error) {
+    if (error.name !== 'RenderingCancelled') {
+      console.error("Erreur rendu page :", error)
+    }
+  }
 }
 
 const prevPage = () => {
@@ -81,23 +107,22 @@ const nextPage = () => {
 }
 
 const zoomIn = () => {
-  zoomLevel.value += 0.2
+  zoomLevel.value = Math.min(zoomLevel.value + 0.2, 5) // Limite max
   renderPage(currentPage.value)
 }
 
 const zoomOut = () => {
-  if (zoomLevel.value <= 0.2) return
-  zoomLevel.value -= 0.2
+  zoomLevel.value = Math.max(zoomLevel.value - 0.2, 0.5) // Limite min
   renderPage(currentPage.value)
 }
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
-    readerRef.value.requestFullscreen().catch((err) => {
+    readerRef.value?.requestFullscreen?.().catch((err) => {
       console.error("Erreur fullscreen :", err)
     })
   } else {
-    document.exitFullscreen()
+    document.exitFullscreen?.()
   }
 }
 
@@ -120,53 +145,89 @@ const removeBookmark = (page) => {
 
 // Zoom avec molette
 const handleWheelZoom = (event) => {
+  if (!event.ctrlKey && !event.metaKey) return // zoom uniquement avec Ctrl
   event.preventDefault()
-  if (event.deltaY < 0) zoomLevel.value += 0.1
-  else if (zoomLevel.value > 0.2) zoomLevel.value -= 0.1
+  const delta = event.deltaY < 0 ? 0.1 : -0.1
+  zoomLevel.value = Math.min(Math.max(zoomLevel.value + delta, 0.5), 5)
   renderPage(currentPage.value)
 }
 
-// Panning avec clic gauche
+// ✅ Panning - utilisation de containerRef
 const handleMouseDown = (event) => {
-  if (event.button !== 0) return
+  if (event.button !== 0 || !containerRef.value) return
   isPanning = true
-  startX = event.pageX - canvasRef.value.parentElement.offsetLeft
-  startY = event.pageY - canvasRef.value.parentElement.offsetTop
-  scrollLeft = canvasRef.value.parentElement.scrollLeft
-  scrollTop = canvasRef.value.parentElement.scrollTop
-  canvasRef.value.parentElement.style.cursor = "grabbing"
+  startX = event.pageX - containerRef.value.offsetLeft
+  startY = event.pageY - containerRef.value.offsetTop
+  scrollLeft = containerRef.value.scrollLeft
+  scrollTop = containerRef.value.scrollTop
+  containerRef.value.style.cursor = "grabbing"
+  event.preventDefault()
 }
 
 const handleMouseMove = (event) => {
-  if (!isPanning) return
+  if (!isPanning || !containerRef.value) return
   event.preventDefault()
-  const x = event.pageX - canvasRef.value.parentElement.offsetLeft
-  const y = event.pageY - canvasRef.value.parentElement.offsetTop
-  const walkX = (x - startX)
-  const walkY = (y - startY)
-  canvasRef.value.parentElement.scrollLeft = scrollLeft - walkX
-  canvasRef.value.parentElement.scrollTop = scrollTop - walkY
+  const x = event.pageX - containerRef.value.offsetLeft
+  const y = event.pageY - containerRef.value.offsetTop
+  const walkX = x - startX
+  const walkY = y - startY
+  containerRef.value.scrollLeft = scrollLeft - walkX
+  containerRef.value.scrollTop = scrollTop - walkY
 }
 
 const handleMouseUp = () => {
   isPanning = false
-  canvasRef.value.parentElement.style.cursor = "grab"
+  if (containerRef.value) {
+    containerRef.value.style.cursor = "grab"
+  }
+}
+
+// ✅ Gestion centralisée des listeners
+const setupEventListeners = () => {
+  const canvas = canvasRef.value
+  const container = containerRef.value
+  
+  if (canvas) {
+    canvas.addEventListener("wheel", handleWheelZoom, { passive: false })
+    canvas.addEventListener("mousedown", handleMouseDown)
+    canvas.addEventListener("mousemove", handleMouseMove)
+    canvas.addEventListener("mouseup", handleMouseUp)
+    canvas.addEventListener("mouseleave", handleMouseUp)
+    canvas.addEventListener("contextmenu", (e) => e.preventDefault()) // Désactiver menu clic droit
+  }
+  
+  if (container) {
+    container.style.cursor = "grab"
+  }
+}
+
+const cleanupEventListeners = () => {
+  const canvas = canvasRef.value
+  if (canvas) {
+    canvas.removeEventListener("wheel", handleWheelZoom)
+    canvas.removeEventListener("mousedown", handleMouseDown)
+    canvas.removeEventListener("mousemove", handleMouseMove)
+    canvas.removeEventListener("mouseup", handleMouseUp)
+    canvas.removeEventListener("mouseleave", handleMouseUp)
+    canvas.removeEventListener("contextmenu", (e) => e.preventDefault())
+  }
 }
 
 onMounted(() => {
-  canvasRef.value?.addEventListener("wheel", handleWheelZoom, { passive: false })
-  canvasRef.value?.addEventListener("mousedown", handleMouseDown)
-  canvasRef.value?.addEventListener("mousemove", handleMouseMove)
-  canvasRef.value?.addEventListener("mouseup", handleMouseUp)
-  canvasRef.value?.addEventListener("mouseleave", handleMouseUp)
+  nextTick(() => {
+    setupEventListeners()
+  })
 })
 
 onUnmounted(() => {
-  canvasRef.value?.removeEventListener("wheel", handleWheelZoom)
-  canvasRef.value?.removeEventListener("mousedown", handleMouseDown)
-  canvasRef.value?.removeEventListener("mousemove", handleMouseMove)
-  canvasRef.value?.removeEventListener("mouseup", handleMouseUp)
-  canvasRef.value?.removeEventListener("mouseleave", handleMouseUp)
+  cleanupEventListeners()
+  if (renderTask) {
+    renderTask.cancel()
+  }
+  if (pdfDoc) {
+    pdfDoc.destroy()
+    pdfDoc = null
+  }
 })
 </script>
 

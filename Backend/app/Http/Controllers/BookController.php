@@ -183,7 +183,7 @@ class BookController extends Controller
     {
         $book = Book::findOrFail($id);
 
-        $filePath = storage_path('app/public/' . $book->file);
+        $filePath = storage_path('app/private/' . $book->file);
         $fileName = Str::slug($book->title) . '.pdf';
 
         if (!file_exists($filePath)) {
