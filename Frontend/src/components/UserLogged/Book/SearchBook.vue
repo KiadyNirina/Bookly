@@ -3,9 +3,14 @@ import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
 import apiClient from '@/plugins/axios';
 import { Icon } from '@iconify/vue';
+import { useUser } from '@/composables/useUser';
 
 const route = useRoute();
 const results = ref({ books: [], users: [] });
+const { user, IsLoggedIn } = useUser();
+const userLogged = ref(null);
+
+userLogged.value = user ? user.value.id : null;
 
 const fetchResults = async (query) => {
   try {
@@ -73,7 +78,7 @@ watch(
             <router-link 
               v-for="user in results.users" 
               :key="user.id" 
-              :to="`/profile/${user.id}`"
+              :to="user.id !== userLogged ? `/user/${user.id}/create` : '/profil'"
               class="group flex items-center p-6 bg-[#1a1c26] border border-white/5 rounded-2xl hover:border-orange-500 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
             >
               <div class="relative w-14 h-14 flex-shrink-0">

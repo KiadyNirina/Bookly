@@ -15,6 +15,7 @@ import Posted from '@/components/books/Posted.vue';
 import Recent from '@/components/books/Recent.vue';
 import BookReader from '@/components/books/BookReader.vue';
 import SearchBook from '@/components/UserLogged/Book/SearchBook.vue';
+import NotFound from '@/components/NotFound.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -33,6 +34,7 @@ const routes = [
     { path: '/profil', component: Create },
     { path: '/profil/saved', component: Saved },
     { path: '/search', component: SearchBook },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
 ];
 
 const router = createRouter({

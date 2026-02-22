@@ -20,6 +20,8 @@ class Book extends Model
         'date',
         'picture',
         'file',
+        'views_count',
+        'completed_count'
     ];
 
     public function posted_by()

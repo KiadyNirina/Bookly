@@ -159,7 +159,7 @@ onMounted(async () => {
       </div>
 
       <!-- Charger plus -->
-      <div v-if="hasMore" class="mt-16 text-center">
+      <div v-if="hasMore && books.length > 0" class="mt-16 text-center">
         <button
           @click="loadMoreBooks(userOne?.id)"
           :disabled="isLoading"
