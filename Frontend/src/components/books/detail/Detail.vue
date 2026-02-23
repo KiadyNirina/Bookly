@@ -205,7 +205,7 @@ const getPosterProfileLink = (poster) => {
     return '/profil'  
   }
   
-  return `/user/${poster.id}` 
+  return `/user/${poster.id}/create` 
 }
 
 // Gestion de l'évaluation
