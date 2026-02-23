@@ -1,10 +1,17 @@
 <script setup>
-import { ref, onMounted, watch, onUnmounted, nextTick } from "vue"
+import { ref, onMounted, watch, onUnmounted, nextTick, computed } from "vue"
 import { useRoute } from "vue-router"
 import { useBook } from "@/composables/useBook"
 import * as pdfjsLib from "pdfjs-dist"
 import pdfWorker from "/pdf.worker.min.mjs?url"
 import { Icon } from "@iconify/vue"
+
+defineProps({
+  id: {
+    type: [String, Number],
+    default: null
+  }
+})
 
 // Configuration du worker PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
@@ -143,22 +150,50 @@ const saveProgress = async () => {
   if (!sessionData.value?.id || !pdfDoc) return
   
   try {
-    await apiRequest(
+    const response = await apiRequest(
       getApiUrl(`/book-sessions/${sessionData.value.id}/progress`),
       {
         method: 'POST',
         body: JSON.stringify({
           current_page: currentPage.value,
-          time_spent: 30, // Envoi par blocs de 30 secondes
+          time_spent: 30,
           total_pages: totalPages.value
         })
       }
     )
+
     lastPageSave.value = currentPage.value
+
+    console.log("📤 Progression envoyée au serveur...", response)
+    if (response?.data) {
+      sessionData.value = {
+        ...sessionData.value,
+        ...response.data,
+        progress_percentage: response.data.progress_percentage ?? sessionData.value.progress_percentage
+      }
+    }
+    
+    // ✅ Feedback si une vue vient d'être comptabilisée
+    if (response?.view_counted) {
+      console.log('👁️ Vue comptabilisée !')
+      showViewCountedToast()
+    }
+    
     console.log(`💾 Progression sauvegardée : page ${currentPage.value}`)
   } catch (error) {
     console.error("⚠️ Erreur sauvegarde progression :", error)
   }
+}
+
+const viewCountedToast = ref(false)
+const isViewCounted = computed(() => sessionData.value?.view_counted === true)
+
+const showViewCountedToast = () => {
+  viewCountedToast.value = true
+  // Auto-hide après 3 secondes
+  setTimeout(() => {
+    viewCountedToast.value = false
+  }, 3000)
 }
 
 /**
@@ -443,6 +478,14 @@ onUnmounted(() => {
            <span class="text-sm font-black italic text-orange-500">
              {{ currentPage }} <span class="text-white/20 mx-1">/</span> {{ totalPages }}
            </span>
+           <!-- Badge "Vue comptée" -->
+  <span 
+    v-if="isViewCounted" 
+    class="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-green-400 bg-green-400/10 px-2 py-1 rounded-full"
+  >
+    <Icon icon="lucide:check" class="w-3 h-3" />
+    Vu
+  </span>
            <!-- Barre de progression session -->
            <div v-if="sessionData" class="w-20 h-1 bg-white/10 rounded-full overflow-hidden ml-4">
              <div 
@@ -562,6 +605,23 @@ onUnmounted(() => {
 
     </div>
   </section>
+
+  <Transition 
+    enter-active-class="transition duration-300 ease-out"
+    enter-from-class="translate-y-2 opacity-0"
+    enter-to-class="translate-y-0 opacity-100"
+    leave-active-class="transition duration-200 ease-in"
+    leave-from-class="translate-y-0 opacity-100"
+    leave-to-class="translate-y-2 opacity-0"
+  >
+    <div 
+      v-if="viewCountedToast" 
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-orange-500 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3"
+    >
+      <Icon icon="lucide:eye" class="text-xl" />
+      <span class="text-sm font-black uppercase tracking-wider">Lecture comptabilisée ! 👁️</span>
+    </div>
+  </Transition>
 </template>
 
 <style scoped>

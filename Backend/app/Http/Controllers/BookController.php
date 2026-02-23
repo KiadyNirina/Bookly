@@ -318,13 +318,13 @@ class BookController extends Controller
         $session->last_activity_at = now();
         $session->save();
 
-        // Vérifie si la vue peut être comptée
-        $this->validateView($session);
-
-        // Vérifie si le livre est complété
+        $viewCounted = $this->validateView($session);
         $this->checkCompletion($session);
-
-        return response()->json($session);
+        
+        return response()->json([
+            'data' => $session,
+            'view_counted' => $viewCounted
+        ]);
     }
 
     /**
@@ -340,7 +340,10 @@ class BookController extends Controller
             $session->book->increment('views_count');
             $session->view_counted = true;
             $session->save();
+
+            return true;
         }
+        return false;
     }
 
     /**
