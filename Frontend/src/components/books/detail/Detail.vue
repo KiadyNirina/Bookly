@@ -366,7 +366,7 @@ const categories = ref([
               </div>
               <span class="text-sm font-bold">(4.8/5)</span>
             </div>
-            <div v-for="stat in [{i:'lucide:eye', v:'1.3k'}, {i:'lucide:message-square', v:'112'}, {i:'lucide:download', v:'900'}]" :key="stat.v" class="flex items-center gap-2 text-white/40">
+            <div v-for="stat in [{i:'lucide:eye', v:`${currentBook.views_count}`}, {i:'lucide:message-square', v:'112'}, {i:'lucide:download', v:'900'}]" :key="stat.v" class="flex items-center gap-2 text-white/40">
               <Icon :icon="stat.i" class="w-4 h-4" />
               <span class="text-xs font-bold">{{ stat.v }}</span>
             </div>
@@ -581,7 +581,7 @@ const categories = ref([
                   <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">{{ bk.views || '1.2k' }}</span>
+                      <span class="text-xs font-medium text-white">{{ bk.views_count }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />

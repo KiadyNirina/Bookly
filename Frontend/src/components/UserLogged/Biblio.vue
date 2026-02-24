@@ -87,7 +87,7 @@ onMounted(() => {
                   <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">{{ book.views || '1.3k' }}</span>
+                      <span class="text-xs font-medium text-white">{{ book.views_count }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:download" class="text-orange-500 w-4 h-4" />
