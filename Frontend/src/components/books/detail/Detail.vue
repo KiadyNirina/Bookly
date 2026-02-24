@@ -140,6 +140,14 @@ const {
   loadMore: loadMoreBooks 
 } = useLoadMoreBooks(5)
 
+const filteredSimilarBooks = computed(() => {
+  if (!currentBook.value?.id) return similarBooks.value
+
+  return similarBooks.value.filter(
+    book => book.id !== currentBook.value.id
+  )
+})
+
 // États de l'évaluation
 const hoveredStar = ref(0)
 const selectedRating = ref(0)
@@ -546,7 +554,7 @@ const categories = ref([
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div 
-            v-for="bk in similarBooks.slice(0, 4)" 
+            v-for="bk in filteredSimilarBooks.slice(0, 4)"
             :key="bk.id" 
             class="group relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
