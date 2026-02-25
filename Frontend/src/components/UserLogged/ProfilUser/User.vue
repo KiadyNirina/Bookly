@@ -40,6 +40,24 @@ onMounted(async () => {
     isMobile.value = window.innerWidth < 768
   })
 })
+
+const handleFollowAction = (newFollowState) => {
+  if (newFollowState) {
+    followersCount.value = (followersCount.value || 0) + 1
+  } else {
+    followersCount.value = Math.max(0, (followersCount.value || 0) - 1)
+  }
+  
+  if (userOne.value?.id) {
+    fetchFollowersCount(userOne.value.id)
+  }
+}
+
+const profileImageError = ref(false)
+
+const loadProfileImage = () => {
+  profileImageError.value = false
+}
 </script>
 
 <template>
@@ -54,7 +72,21 @@ onMounted(async () => {
           <div class="flex-shrink-0">
             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-orange-500 p-1.5 transition-transform hover:rotate-3 duration-500">
               <div class="w-full h-full bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
-                <span class="text-5xl font-light text-white">
+                <!-- Image de profil si disponible -->
+                <img
+                  v-if="userOne?.picture && !profileImageError"
+                  :src="getImageUrl(userOne.picture)"
+                  :alt="userOne?.name || 'Profil'"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  @error="profileImageError = true"
+                  @load="loadProfileImage"
+                />
+                <!-- Fallback : initiale -->
+                <span 
+                  v-else 
+                  class="text-5xl font-light text-white"
+                >
                   {{ userOne?.name ? userOne.name.charAt(0).toUpperCase() : 'U' }}
                 </span>
               </div>
@@ -81,10 +113,10 @@ onMounted(async () => {
             </div>
 
             <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-              <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white rounded-full transition-all flex items-center group">
-                <Icon icon="lucide:share-2" class="mr-2 group-hover:text-orange-500" /> Partager
+              <FollowButton v-if="userOne" :userId="userOne.id" @followed="handleFollowAction" />
+              <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white hover:text-orange-500 rounded-full transition-all flex items-center">
+                <Icon icon="lucide:share-2" class="mr-2"/> Partager
               </button>
-              <FollowButton v-if="userOne" :userId="userOne.id" />
             </div>
           </div>
         </div>
@@ -142,7 +174,7 @@ onMounted(async () => {
                 <div class="flex items-center gap-4 text-sm">
                   <div class="flex items-center gap-1.5">
                     <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                    <span>{{ book.views || '1.2k' }}</span>
+                    <span>{{ book.views_count }}</span>
                   </div>
                   <div class="flex items-center gap-1.5">
                     <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />

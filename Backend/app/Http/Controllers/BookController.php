@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\BookSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -248,5 +249,140 @@ class BookController extends Controller
             ->toArray();
 
         return response()->json($genres);
+    }
+
+    /**
+     * Stream sécurisé du livre PDF
+     */
+    public function stream(Book $book)
+    {
+        // Vérifie que l'utilisateur peut accéder au livre
+        //$this->authorize('view', $book);
+
+        $filePath = storage_path("app/private/{$book->file}");
+        if (!file_exists($filePath)) {
+            abort(404, 'Fichier introuvable.');
+        }
+
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline'
+        ]);
+    }
+
+    /**
+     * Démarre une session de lecture
+     */
+    public function startSession(Book $book)
+    {
+        // ✅ Supprimer ou archiver les sessions actives précédentes pour éviter les doublons
+        BookSession::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->where('completed', false)
+            ->update(['completed' => true]); // Archive les anciennes
+        
+        $session = BookSession::create([
+            'user_id' => auth()->id(),
+            'book_id' => $book->id,
+            'current_page' => 1,
+            'progress_percentage' => 0,
+            'duration_seconds' => 0,
+            'view_counted' => false,
+            'completed' => false,
+            'started_at' => now(),
+            'last_activity_at' => now()
+        ]);
+
+        return response()->json(['data' => $session]);
+    }
+
+    /**
+     * Met à jour la progression de lecture
+     */
+    public function updateProgress(Request $request, BookSession $session)
+    {
+        $request->validate([
+            'current_page' => 'required|integer|min:1',
+            'time_spent' => 'required|integer|min:1',
+            'total_pages' => 'nullable|integer|min:1'
+        ]);
+
+        $session->current_page = $request->current_page;
+        $session->duration_seconds += $request->time_spent;
+
+        $totalPages = $validated['total_pages'] ?? $session->book->pages ?? 1;
+        $session->progress_percentage = min(100, 
+            ($session->current_page / $totalPages) * 100
+        );
+
+        $session->last_activity_at = now();
+        $session->save();
+
+        $viewCounted = $this->validateView($session);
+        $this->checkCompletion($session);
+        
+        return response()->json([
+            'data' => $session,
+            'view_counted' => $viewCounted
+        ]);
+    }
+
+    /**
+     * Valide si la session peut compter comme une vue
+     */
+    private function validateView(BookSession $session)
+    {
+        if (
+            $session->progress_percentage >= 5 && // au moins 5% lu
+            $session->duration_seconds >= 45 &&  // au moins 45 sec passées
+            !$session->view_counted
+        ) {
+            $session->book->increment('views_count');
+            $session->view_counted = true;
+            $session->save();
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Vérifie si le livre est terminé
+     */
+    private function checkCompletion(BookSession $session)
+    {
+        if ($session->progress_percentage >= 95 && !$session->completed) {
+            $session->completed = true;
+            $session->save();
+
+            // On peut aussi incrémenter un compteur global
+            $session->book->increment('completed_count');
+        }
+    }
+
+    /**
+     * Reprendre une session existante
+     */
+    public function resumeSession(Book $book)
+    {
+        $session = BookSession::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->latest()
+            ->first();
+
+        if (!$session) {
+            // ✅ Retourner 200 avec null plutôt que 404 pour simplifier le frontend
+            return response()->json(['data' => null]);
+        }
+
+        return response()->json([
+            'data' => [
+                'id' => $session->id,
+                'current_page' => $session->current_page,
+                'progress_percentage' => (float) $session->progress_percentage,
+                'duration_seconds' => $session->duration_seconds,
+                'last_activity_at' => $session->last_activity_at
+            ]
+        ]);
     }
 }

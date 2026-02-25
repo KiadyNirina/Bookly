@@ -10,6 +10,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['followed'])
+
 const isFollowing = ref(false)
 const isFollowedBy = ref(false)
 const isLoading = ref(false)
@@ -58,6 +60,8 @@ async function toggleFollow() {
     const response = await apiClient.post(endpoint)
     console.log('Succès follow/unfollow :', response.data.message)
     isFollowing.value = willFollowNow
+
+    emit('followed', { isFollowing: willFollowNow })
   } catch (err) {
     console.error('Erreur follow/unfollow :', err)
 

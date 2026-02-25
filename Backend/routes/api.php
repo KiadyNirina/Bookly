@@ -49,7 +49,12 @@ Route::get('/books/{id}/file', [BookController::class, 'getFile']);
 Route::get('/search', [BookController::class, 'search']);
 Route::get('/genres', [BookController::class, 'getGenres']);
 
-Route::get('/books/{book}/stream', [BookController::class, 'stream'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/books/{book}/stream', [BookController::class, 'stream']);
+    Route::post('/books/{book}/session', [BookController::class, 'startSession']);
+    Route::post('/book-sessions/{session}/progress', [BookController::class, 'updateProgress']);
+    Route::get('/books/{book}/resume', [BookController::class, 'resumeSession']);
+});
 
 Route::post('/saveBook', [SaveController::class, 'saveBook'])->middleware('auth:sanctum');
 Route::get('/check-saved/{bookId}/{userId}', [SaveController::class, 'checkIfSaved'])->middleware('auth:sanctum');

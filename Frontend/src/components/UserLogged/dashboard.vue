@@ -182,7 +182,7 @@ function getImageUrl(imgPath) {
                   <div class="flex items-center gap-4 translate-y-0 transition-all duration-500 delay-100">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
+                      <span class="text-xs font-medium text-white">{{ book.views_count }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
@@ -270,7 +270,7 @@ function getImageUrl(imgPath) {
                   <div class="flex items-center gap-4 translate-y-0 transition-all duration-500 delay-100">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">{{ book.views || '1.2k' }}</span>
+                      <span class="text-xs font-medium text-white">{{ book.views_count }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
