@@ -40,6 +40,18 @@ onMounted(async () => {
     isMobile.value = window.innerWidth < 768
   })
 })
+
+const handleFollowAction = (newFollowState) => {
+  if (newFollowState) {
+    followersCount.value = (followersCount.value || 0) + 1
+  } else {
+    followersCount.value = Math.max(0, (followersCount.value || 0) - 1)
+  }
+  
+  if (userOne.value?.id) {
+    fetchFollowersCount(userOne.value.id)
+  }
+}
 </script>
 
 <template>
@@ -84,7 +96,7 @@ onMounted(async () => {
               <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white rounded-full transition-all flex items-center group">
                 <Icon icon="lucide:share-2" class="mr-2 group-hover:text-orange-500" /> Partager
               </button>
-              <FollowButton v-if="userOne" :userId="userOne.id" />
+              <FollowButton v-if="userOne" :userId="userOne.id" @followed="handleFollowAction" />
             </div>
           </div>
         </div>
