@@ -93,10 +93,10 @@ const handleFollowAction = (newFollowState) => {
             </div>
 
             <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-              <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white rounded-full transition-all flex items-center group">
-                <Icon icon="lucide:share-2" class="mr-2 group-hover:text-orange-500" /> Partager
-              </button>
               <FollowButton v-if="userOne" :userId="userOne.id" @followed="handleFollowAction" />
+              <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white hover:text-orange-500 rounded-full transition-all flex items-center">
+                <Icon icon="lucide:share-2" class="mr-2"/> Partager
+              </button>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@ const handleFollowAction = (newFollowState) => {
                 <div class="flex items-center gap-4 text-sm">
                   <div class="flex items-center gap-1.5">
                     <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                    <span>{{ book.views || '1.2k' }}</span>
+                    <span>{{ book.views_count }}</span>
                   </div>
                   <div class="flex items-center gap-1.5">
                     <Icon icon="lucide:message-circle" class="text-orange-500 w-4 h-4" />
