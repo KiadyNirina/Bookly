@@ -1,15 +1,15 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { onMounted } from 'vue';
+import { onMounted, computed, watch } from 'vue';
 import { useUser } from '@/composables/useUser';
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks';
+import { useSave } from '@/composables/useSave';
 
-const { user, isLoggedIn, isUserLoading } = useUser();
+const { user, isLoggedIn } = useUser();
 const { books, isLoading, hasMore, error, loadMoreUserBook } = useLoadMoreBooks(4);
+const { savedBooks, fetchSavedBooks, isLoading: isLoadingSaved } = useSave();
 
-const getImageUrl = (imgPath) => {
-  return `http://localhost:8000/${imgPath}`;
-};
+const getImageUrl = (imgPath) => `http://localhost:8000/${imgPath}`;
 
 const formatDate = (dateString) => {
   const options = { day: '2-digit', month: 'long', year: 'numeric' };
@@ -17,10 +17,35 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('fr-FR', options);
 };
 
-onMounted(() => {
+// ✅ Fonction sécurisée pour fetcher les saved books
+const loadSavedBooksIfNeeded = async () => {
+  if (isLoggedIn.value && user.value?.id && savedBooks.value.length === 0) {
+    await fetchSavedBooks(user.value.id);
+  }
+};
+
+onMounted(async () => {
   loadMoreUserBook();
+  
+  // ✅ Essayer de charger les saved books, mais sans bloquer si user n'est pas prêt
+  await loadSavedBooksIfNeeded();
 });
 
+// ✅ Watch : re-fetch si l'utilisateur devient disponible après le mount
+watch(
+  () => user.value?.id,
+  async (userId, oldUserId) => {
+    if (userId && userId !== oldUserId && isLoggedIn.value) {
+      await loadSavedBooksIfNeeded();
+    }
+  },
+  { immediate: false }
+);
+
+// ✅ Données calculées pour chaque section
+const publishedBooks = computed(() => books.value || []);
+const savedBooksList = computed(() => savedBooks.value || []);
+const downloadedBooks = computed(() => []); 
 </script>
 
 <template>
@@ -28,9 +53,27 @@ onMounted(() => {
     <div class="container max-w-7xl mx-auto space-y-24">
       
       <section v-for="section in [
-        { title: 'Publiés', data: books, link: '/books/posted', empty: 'commencez à partager un livre' },
-        { title: 'Enregistrés', data: books, link: '/books/popular', empty: 'commencez à enregistrer un livre' },
-        { title: 'Téléchargés', data: books, link: '#', empty: 'commencez à télécharger un livre' }
+        { 
+          title: 'Publiés', 
+          data: publishedBooks, 
+          isLoading: isLoading,
+          link: '/books/posted', 
+          empty: 'commencez à partager un livre' 
+        },
+        { 
+          title: 'Enregistrés', 
+          data: savedBooksList, 
+          isLoading: isLoadingSaved,
+          link: '/books/saved', 
+          empty: 'commencez à enregistrer un livre' 
+        },
+        { 
+          title: 'Téléchargés', 
+          data: downloadedBooks, 
+          isLoading: false,
+          link: '#', 
+          empty: 'commencez à télécharger un livre' 
+        }
       ]" :key="section.title" class="group">
         
         <div class="flex items-end justify-between mb-10 border-b border-white/5 pb-6">
@@ -43,23 +86,31 @@ onMounted(() => {
           </router-link>
         </div>
 
-        <div v-if="section.data.length === 0" class="py-16 px-8 border border-dashed border-white/5 rounded-2xl bg-[#1a1c26]/20 text-center">
+        <!-- ✅ État de chargement -->
+        <div v-if="section.isLoading" class="py-16 text-center">
+          <Icon icon="eos-icons:loading" class="animate-spin text-4xl text-orange-500/40 mx-auto" />
+          <p class="text-[11px] uppercase tracking-widest text-white/40 mt-4">Chargement...</p>
+        </div>
+
+        <!-- ✅ État vide -->
+        <div v-else-if="!section.isLoading && section.data.length === 0" class="py-16 px-8 border border-dashed border-white/5 rounded-2xl bg-[#1a1c26]/20 text-center">
           <Icon icon="lucide:book-open" class="text-4xl text-orange-500/20 mx-auto mb-6" />
           <p class="text-[11px] uppercase tracking-widest text-white/40 font-medium">
             {{ section.empty }}
           </p>
         </div>
 
+        <!-- ✅ Grille de livres -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div 
-            v-for="(book, index) in section.data.slice(0, 4)" 
-            :key="index" 
+            v-for="book in section.data.slice(0, 4)" 
+            :key="book.id" 
             class="group/card relative aspect-[2/3] bg-[#1a1c26] rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500 transition-all duration-500 cursor-pointer"
           >
             <a :href="`/books/${book.id}`" class="h-full w-full block">
               
               <img 
-                :src="getImageUrl(book.picture)" 
+                :src="book.picture ? getImageUrl(book.picture) : '/default.jpg'" 
                 :alt="book.title"
                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110 opacity-80 group-hover/card:opacity-40"
                 loading="lazy"
@@ -87,11 +138,11 @@ onMounted(() => {
                   <div class="flex items-center gap-4">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:eye" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">{{ book.views_count }}</span>
+                      <span class="text-xs font-medium text-white">{{ book.views_count || '0' }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <Icon icon="lucide:download" class="text-orange-500 w-4 h-4" />
-                      <span class="text-xs font-medium text-white">{{ book.downloads || '900' }}</span>
+                      <span class="text-xs font-medium text-white">{{ book.downloads || '0' }}</span>
                     </div>
                     <div class="ml-auto flex gap-0.5">
                       <Icon 
