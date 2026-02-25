@@ -52,6 +52,12 @@ const handleFollowAction = (newFollowState) => {
     fetchFollowersCount(userOne.value.id)
   }
 }
+
+const profileImageError = ref(false)
+
+const loadProfileImage = () => {
+  profileImageError.value = false
+}
 </script>
 
 <template>
@@ -66,7 +72,21 @@ const handleFollowAction = (newFollowState) => {
           <div class="flex-shrink-0">
             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-orange-500 p-1.5 transition-transform hover:rotate-3 duration-500">
               <div class="w-full h-full bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
-                <span class="text-5xl font-light text-white">
+                <!-- Image de profil si disponible -->
+                <img
+                  v-if="userOne?.picture && !profileImageError"
+                  :src="getImageUrl(userOne.picture)"
+                  :alt="userOne?.name || 'Profil'"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  @error="profileImageError = true"
+                  @load="loadProfileImage"
+                />
+                <!-- Fallback : initiale -->
+                <span 
+                  v-else 
+                  class="text-5xl font-light text-white"
+                >
                   {{ userOne?.name ? userOne.name.charAt(0).toUpperCase() : 'U' }}
                 </span>
               </div>
