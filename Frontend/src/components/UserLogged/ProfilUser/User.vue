@@ -6,6 +6,7 @@ import { useUser } from '@/composables/useUser'
 import { useFollowers } from '@/composables/useFollowers'
 import { useLoadMoreBooks } from '@/composables/useLoadMoreBooks'
 import FollowButton from './FollowButton.vue'
+import { useAuth } from '@/composables/useAuth' 
 
 const route = useRoute()
 const userId = route.params.id
@@ -13,6 +14,13 @@ const userId = route.params.id
 const { userOne, fetchOneUser } = useUser()
 const { followersCount, followingCount, fetchFollowersCount, fetchFollowingCount } = useFollowers()
 const { books, isLoading, hasMore, loadMoreBooks } = useLoadMoreBooks(4)
+const { isAuthenticated } = useAuth()
+
+const isDisplayedButtons = ref(false)
+
+if(isAuthenticated.value) {
+  isDisplayedButtons.value = true
+}
 
 const isMobile = ref(false)
 
@@ -113,7 +121,7 @@ const loadProfileImage = () => {
             </div>
 
             <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-              <FollowButton v-if="userOne" :userId="userOne.id" @followed="handleFollowAction" />
+              <FollowButton v-if="userOne && isDisplayedButtons" :userId="userOne.id" @followed="handleFollowAction" />
               <button class="px-8 py-3 border border-white/20 hover:border-orange-500 text-white hover:text-orange-500 rounded-full transition-all flex items-center">
                 <Icon icon="lucide:share-2" class="mr-2"/> Partager
               </button>
