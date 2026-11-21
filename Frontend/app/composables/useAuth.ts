@@ -1,6 +1,8 @@
 export const useAuth = () => {
+  const { $api } = useNuxtApp()
+
   const token = useCookie<string | null>('auth_token', {
-    maxAge: 60 * 60 * 24 * 7, // 7 jours
+    maxAge: 60 * 60 * 24 * 7,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
   })
@@ -9,16 +11,27 @@ export const useAuth = () => {
 
   const isAuthenticated = computed(() => !!token.value)
 
-  const config = useRuntimeConfig()
+  async function login(email: string, password: string) {
+    const res = await $api<{ access_token: string; token_type: string }>('/login', {
+      method: 'POST',
+      body: { email, password },
+    })
+    token.value = res.access_token
+  }
+
+  async function register(name: string, email: string, password: string, password_confirmation: string) {
+    await $api('/register', {
+      method: 'POST',
+      body: { name, email, password, password_confirmation },
+    })
+    await login(email, password)
+  }
 
   async function fetchUser() {
     if (!token.value) return null
     try {
-      const data = await $fetch(`${config.public.apiBase}/user`, {
-        headers: { Authorization: `Bearer ${token.value}` },
-      })
-      user.value = data
-      return data
+      user.value = await $api('/user')
+      return user.value
     } catch {
       token.value = null
       user.value = null
@@ -28,12 +41,7 @@ export const useAuth = () => {
 
   async function logout() {
     try {
-      if (token.value) {
-        await $fetch(`${config.public.apiBase}/logout`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token.value}` },
-        })
-      }
+      if (token.value) await $api('/logout', { method: 'POST' })
     } finally {
       token.value = null
       user.value = null
@@ -41,5 +49,5 @@ export const useAuth = () => {
     }
   }
 
-  return { token, user, isAuthenticated, fetchUser, logout }
+  return { token, user, isAuthenticated, login, register, fetchUser, logout }
 }

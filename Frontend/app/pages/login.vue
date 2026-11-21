@@ -1,39 +1,22 @@
 <script setup lang="ts">
 useHead({ title: 'Connexion — PlumeStream' })
 
-const form = reactive({ email: '', password: '', remember: false })
-const showPassword = ref(false)
+const { login } = useAuth()
+
+const form = reactive({ email: '', password: '' })
 const loading = ref(false)
 const error = ref('')
-
-const config = useRuntimeConfig()
-const { token } = useAuth()
 
 async function handleSubmit() {
   error.value = ''
   loading.value = true
   try {
-    const res = await $fetch<{ access_token: string; token_type: string }>(
-      `${config.public.apiBase}/login`,
-      {
-        method: 'POST',
-        body: {
-          email: form.email,
-          password: form.password,
-        },
-      }
-    )
-
-    token.value = res.access_token
+    await login(form.email, form.password)
     await navigateTo('/')
   } catch (e: any) {
-    if (e?.data?.errors?.email) {
-      error.value = e.data.errors.email[0]
-    } else if (e?.data?.message) {
-      error.value = e.data.message
-    } else {
-      error.value = 'Identifiants invalides. Veuillez réessayer.'
-    }
+    error.value = e?.data?.errors?.email?.[0]
+      ?? e?.data?.message
+      ?? 'Identifiants invalides.'
   } finally {
     loading.value = false
   }
