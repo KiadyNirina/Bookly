@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8">
       <div class="md:col-span-2">
         <div class="flex items-center gap-2 text-xl font-bold mb-3">
-          <span class="text-2xl">📖</span>
+          <Icon name="lucide:book-open" class="w-6 h-6 text-indigo-400" />
           <span>Plume<span class="text-indigo-400">Stream</span></span>
         </div>
         <p class="text-sm text-slate-400 max-w-sm">

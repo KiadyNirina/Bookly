@@ -6,8 +6,9 @@
 
     <div class="relative max-w-7xl mx-auto px-6 py-24 md:py-32 grid md:grid-cols-2 gap-12 items-center">
       <div>
-        <span class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-medium mb-6">
-          ✨ Lecture & écriture en streaming
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-medium mb-6">
+          <Icon name="lucide:sparkles" class="w-3.5 h-3.5" />
+          Lecture & écriture en streaming
         </span>
         <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
           Lisez, écrivez,<br />
@@ -58,8 +59,14 @@
               persistait à filtrer sous la porte de l'atelier..."
             </p>
             <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
-              <span>📖 Chapitre 3 / 24</span>
-              <span>⭐ 4.8</span>
+              <span class="inline-flex items-center gap-1">
+                <Icon name="lucide:book-open" class="w-3.5 h-3.5" />
+                Chapitre 3 / 24
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <Icon name="lucide:star" class="w-3.5 h-3.5 text-amber-400" />
+                4.8
+              </span>
             </div>
             <div class="mt-4 h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <div class="h-full w-1/3 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"></div>

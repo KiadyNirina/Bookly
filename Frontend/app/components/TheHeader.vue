@@ -2,7 +2,7 @@
   <header class="sticky top-0 z-50 backdrop-blur-lg bg-slate-950/70 border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <NuxtLink to="/" class="flex items-center gap-2 text-xl font-bold">
-        <span class="text-2xl">📖</span>
+        <Icon name="lucide:book-open" class="w-6 h-6 text-indigo-400" />
         <span>Plume<span class="text-indigo-400">Stream</span></span>
       </NuxtLink>
 

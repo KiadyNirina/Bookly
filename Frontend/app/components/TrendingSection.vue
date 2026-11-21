@@ -1,9 +1,9 @@
 <script setup>
 const works = [
-  { title: 'Les Ombres du Crépuscule', author: '@Amina_Écrit', type: 'Roman', rating: 4.8, emoji: '🌙' },
-  { title: 'Fragments de Verre', author: '@LuciePoésie', type: 'Poésie', rating: 4.9, emoji: '🪞' },
-  { title: 'Le Dernier Train', author: '@MarcNouvelle', type: 'Nouvelle', rating: 4.7, emoji: '🚂' },
-  { title: 'Éclats d\'Étoiles', author: '@Noah_Story', type: 'Roman', rating: 4.6, emoji: '⭐' },
+  { title: 'Les Ombres du Crépuscule', author: '@Amina_Écrit', type: 'Roman', rating: 4.8, icon: 'lucide:moon' },
+  { title: 'Fragments de Verre', author: '@LuciePoésie', type: 'Poésie', rating: 4.9, icon: 'lucide:sparkles' },
+  { title: 'Le Dernier Train', author: '@MarcNouvelle', type: 'Nouvelle', rating: 4.7, icon: 'lucide:train-front' },
+  { title: 'Éclats d\'Étoiles', author: '@Noah_Story', type: 'Roman', rating: 4.6, icon: 'lucide:star' },
 ]
 </script>
 
@@ -25,8 +25,8 @@ const works = [
         :key="work.title"
         class="group bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden hover:border-indigo-500/50 transition cursor-pointer"
       >
-        <div class="aspect-[3/4] bg-gradient-to-br from-indigo-900/50 to-slate-900 flex items-center justify-center text-6xl group-hover:scale-105 transition">
-          {{ work.emoji }}
+        <div class="aspect-[3/4] bg-gradient-to-br from-indigo-900/50 to-slate-900 flex items-center justify-center group-hover:scale-105 transition">
+          <Icon :name="work.icon" class="w-20 h-20 text-indigo-300/70" />
         </div>
         <div class="p-4">
           <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300">
@@ -35,8 +35,14 @@ const works = [
           <h3 class="font-semibold mt-2 group-hover:text-indigo-300 transition">{{ work.title }}</h3>
           <p class="text-xs text-slate-500 mt-1">{{ work.author }}</p>
           <div class="flex items-center justify-between mt-3 text-xs text-slate-400">
-            <span>⭐ {{ work.rating }}</span>
-            <span class="text-indigo-400">Lire →</span>
+            <span class="inline-flex items-center gap-1">
+              <Icon name="lucide:star" class="w-3.5 h-3.5 text-amber-400" />
+              {{ work.rating }}
+            </span>
+            <span class="text-indigo-400 inline-flex items-center gap-1">
+              Lire
+              <Icon name="lucide:arrow-right" class="w-3.5 h-3.5" />
+            </span>
           </div>
         </div>
       </div>
