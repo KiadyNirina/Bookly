@@ -11,6 +11,15 @@ export const useAuth = () => {
 
   const isAuthenticated = computed(() => !!token.value)
 
+  async function googleLogin(idToken: string) {
+    const res = await $api<{ token: string; user: any }>('/google-login', {
+      method: 'POST',
+      body: { token: idToken },
+    })
+    token.value = res.token
+    user.value = res.user
+  }
+
   async function login(email: string, password: string) {
     const res = await $api<{ access_token: string; token_type: string }>('/login', {
       method: 'POST',
@@ -49,5 +58,5 @@ export const useAuth = () => {
     }
   }
 
-  return { token, user, isAuthenticated, login, register, fetchUser, logout }
+  return { token, user, isAuthenticated, googleLogin, login, register, fetchUser, logout }
 }

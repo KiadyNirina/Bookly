@@ -1,13 +1,28 @@
 <script setup lang="ts">
 useHead({ title: 'Connexion — PlumeStream' })
 
-const { login } = useAuth()
+const { login, googleLogin } = useAuth()
 const route = useRoute()
+const loadingGoogle = ref(false)
 
 const form = reactive({ email: '', password: '' })
 const showPassword = ref(false)
 const loading = ref(false)
 const error = ref('')
+
+async function handleGoogleSuccess(response: { credential: string }) {
+  loadingGoogle.value = true
+  error.value = ''
+  try {
+    await googleLogin(response.credential)
+    const redirect = (route.query.redirect as string) || '/'
+    await navigateTo(redirect)
+  } catch (e: any) {
+    error.value = e?.data?.message ?? 'La connexion Google a échoué.'
+  } finally {
+    loadingGoogle.value = false
+  }
+}
 
 async function handleSubmit() {
   error.value = ''
@@ -136,6 +151,14 @@ async function handleSubmit() {
             <div class="flex-1 h-px bg-slate-800"></div>
             <span class="text-xs text-slate-500">ou</span>
             <div class="flex-1 h-px bg-slate-800"></div>
+          </div>
+
+          <!-- Bouton Google -->
+          <div class="flex justify-center">
+            <GoogleSignInButton
+              :callback="handleGoogleSuccess"
+              :loading="loadingGoogle"
+            />
           </div>
 
           <!-- Lien inscription -->
