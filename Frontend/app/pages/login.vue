@@ -2,8 +2,10 @@
 useHead({ title: 'Connexion — PlumeStream' })
 
 const { login } = useAuth()
+const route = useRoute()
 
 const form = reactive({ email: '', password: '' })
+const showPassword = ref(false)
 const loading = ref(false)
 const error = ref('')
 
@@ -12,11 +14,13 @@ async function handleSubmit() {
   loading.value = true
   try {
     await login(form.email, form.password)
-    await navigateTo('/')
+    const redirect = (route.query.redirect as string) || '/'
+    await navigateTo(redirect)
   } catch (e: any) {
-    error.value = e?.data?.errors?.email?.[0]
-      ?? e?.data?.message
-      ?? 'Identifiants invalides.'
+    error.value =
+      e?.data?.errors?.email?.[0] ??
+      e?.data?.message ??
+      'Identifiants invalides.'
   } finally {
     loading.value = false
   }
@@ -117,17 +121,6 @@ async function handleSubmit() {
               </div>
             </div>
 
-            <!-- Se souvenir -->
-            <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer select-none">
-              <input
-                v-model="form.remember"
-                type="checkbox"
-                class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-indigo-500 focus:ring-indigo-500/30"
-              />
-              Se souvenir de moi
-            </label>
-
-            <!-- Bouton -->
             <button
               type="submit"
               :disabled="loading"
