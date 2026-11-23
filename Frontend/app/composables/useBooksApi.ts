@@ -24,5 +24,29 @@ export const useBooksApi = () => {
     return await $api(`/user-saves/${userId}`)
   }
 
-  return { getMyBooks, getMyBookCount, getSavedBooks }
+  async function getRecentBooks(): Promise<Book[]> {
+    return await $api('/books/recent')
+  }
+
+  async function searchBooks(query: string): Promise<Book[]> {
+    return await $api('/search', { query: { q: query } })
+  }
+
+  async function getGenres(): Promise<string[]> {
+    return await $api('/genres')
+  }
+
+  async function getBook(id: number): Promise<Book> {
+    return await $api(`/books/${id}`)
+  }
+
+  return {
+    getMyBooks,
+    getMyBookCount,
+    getSavedBooks,
+    getRecentBooks,
+    searchBooks,
+    getGenres,
+    getBook,
+  }
 }
