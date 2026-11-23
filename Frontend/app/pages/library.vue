@@ -33,7 +33,6 @@ const { data: savedBooksData, pending: loadingSaved } = await useAsyncData(
   },
   { default: () => [] as Book[], watch: [user] }
 )
-
 const savedBooks = computed(() => savedBooksData.value ?? [])
 
 const currentList = computed(() =>

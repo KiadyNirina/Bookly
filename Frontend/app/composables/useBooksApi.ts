@@ -50,9 +50,11 @@ export const useBooksApi = () => {
   }
 
   async function getSavedBooks(userId: number): Promise<Book[]> {
-    const res = await $api<{ data: Book[] }>(`/user-saves/${userId}`)
-    return res.data ?? []
-  }
+    const res = await $api<{ saves: Array<{ id: number; book: Book; user: number }> }>(
+        `/user-saves/${userId}`
+    )
+    return (res.saves ?? []).map((s) => s.book).filter(Boolean)
+    }
 
   async function getGenres(): Promise<string[]> {
     return await $api('/genres')
