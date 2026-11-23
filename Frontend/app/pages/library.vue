@@ -1,8 +1,15 @@
 <script setup lang="ts">
 useHead({ title: 'Ma bibliothèque — PlumeStream' })
 
+const config = useRuntimeConfig()
 const { user, fetchUser } = useAuth()
 const { getMyBooks, getSavedBooks } = useBooksApi()
+
+function pictureUrl(path?: string) {
+  if (!path) return null
+  if (path.startsWith('http')) return path
+  return `${config.public.apiRoot}/${path.replace(/^\/+/, '')}`
+}
 
 await useAsyncData('library-user', async () => {
   if (!user.value) await fetchUser()
@@ -11,13 +18,14 @@ await useAsyncData('library-user', async () => {
 
 const activeTab = ref<'works' | 'saved'>('works')
 
-const { data: myBooks, pending: loadingWorks } = await useAsyncData(
+const { data: myBooksPage, pending: loadingWorks } = await useAsyncData(
   'library-my-books',
   () => getMyBooks(),
-  { default: () => [] as Book[] }
 )
 
-const { data: savedBooks, pending: loadingSaved } = await useAsyncData(
+const myBooks = computed(() => myBooksPage.value?.data ?? [])
+
+const { data: savedBooksData, pending: loadingSaved } = await useAsyncData(
   'library-saved-books',
   async () => {
     if (!user.value?.id) return []
@@ -25,6 +33,8 @@ const { data: savedBooks, pending: loadingSaved } = await useAsyncData(
   },
   { default: () => [] as Book[], watch: [user] }
 )
+
+const savedBooks = computed(() => savedBooksData.value ?? [])
 
 const currentList = computed(() =>
   activeTab.value === 'works' ? myBooks.value : savedBooks.value
@@ -66,7 +76,7 @@ const currentLoading = computed(() =>
           @click="activeTab = 'works'"
         >
           Mes œuvres
-          <span v-if="myBooks?.length" class="ml-1.5 text-xs text-slate-500">
+          <span v-if="myBooks.length" class="ml-1.5 text-xs text-slate-500">
             ({{ myBooks.length }})
           </span>
         </button>
@@ -78,7 +88,7 @@ const currentLoading = computed(() =>
           @click="activeTab = 'saved'"
         >
           Sauvegardées
-          <span v-if="savedBooks?.length" class="ml-1.5 text-xs text-slate-500">
+          <span v-if="savedBooks.length" class="ml-1.5 text-xs text-slate-500">
             ({{ savedBooks.length }})
           </span>
         </button>
@@ -91,7 +101,7 @@ const currentLoading = computed(() =>
 
       <!-- Liste vide -->
       <div
-        v-else-if="!currentList?.length"
+        v-else-if="!currentList.length"
         class="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-2xl"
       >
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800 mb-4">
@@ -124,25 +134,28 @@ const currentLoading = computed(() =>
         >
           <div class="aspect-[3/4] bg-gradient-to-br from-indigo-900/50 to-slate-900 flex items-center justify-center overflow-hidden">
             <img
-              v-if="book.cover"
-              :src="book.cover"
+              v-if="book.picture"
+              :src="pictureUrl(book.picture)!"
               :alt="book.title"
               class="w-full h-full object-cover group-hover:scale-105 transition"
             />
             <Icon v-else name="lucide:book-open" class="w-16 h-16 text-indigo-300/60" />
           </div>
           <div class="p-4">
-            <span
-              v-if="book.genre"
-              class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300"
-            >
-              {{ book.genre }}
-            </span>
+            <div class="flex flex-wrap gap-1 mb-2">
+              <span
+                v-for="g in book.genre.split(',').map(s => s.trim()).filter(Boolean)"
+                :key="g"
+                class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300"
+              >
+                {{ g }}
+              </span>
+            </div>
             <h3 class="font-semibold mt-2 group-hover:text-indigo-300 transition line-clamp-1">
               {{ book.title }}
             </h3>
             <p class="text-xs text-slate-500 mt-1">
-              {{ book.author?.name ?? 'Vous' }}
+              {{ book.author ?? 'Auteur inconnu' }}
             </p>
           </div>
         </NuxtLink>

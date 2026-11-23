@@ -1,32 +1,50 @@
 <script setup lang="ts">
 useHead({ title: 'Découvrir — PlumeStream' })
 
-const { getRecentBooks, searchBooks, getGenres } = useBooksApi()
+const config = useRuntimeConfig()
+const { getRecentBooks, searchBooks } = useBooksApi()
 
 // Recherche
 const searchQuery = ref('')
 const searchResults = ref<Book[] | null>(null)
 const searching = ref(false)
 
-// Genres
 const selectedGenre = ref<string | null>(null)
-const { data: genres } = await useAsyncData('genres', () => getGenres(), {
-  default: () => [] as string[],
-})
 
-// Livres récents
-const { data: recentBooks, pending: loadingRecent } = await useAsyncData(
+const { data: recentPage, pending: loadingRecent } = await useAsyncData(
   'recent-books',
   () => getRecentBooks(),
-  { default: () => [] as Book[] }
 )
 
-// Livres filtrés par genre (côté client pour l'instant)
-const filteredBooks = computed(() => {
-  const list = searchResults.value ?? recentBooks.value ?? []
-  if (!selectedGenre.value) return list
-  return list.filter((b) => b.genre === selectedGenre.value)
+const recentBooks = computed(() => recentPage.value?.data ?? [])
+
+const genres = computed(() => {
+  const set = new Set<string>()
+  const list = searchResults.value ?? recentBooks.value
+  for (const book of list) {
+    if (!book.genre) continue
+    for (const g of book.genre.split(',')) {
+      const clean = g.trim()
+      if (clean) set.add(clean)
+    }
+  }
+  return Array.from(set).sort((a, b) => a.localeCompare(b))
 })
+
+const filteredBooks = computed(() => {
+  const list = searchResults.value ?? recentBooks.value
+  if (!selectedGenre.value) return list
+  return list.filter((b) =>
+    b.genre?.split(',').map((g) => g.trim()).includes(selectedGenre.value!)
+  )
+})
+
+// Helper URL image
+function pictureUrl(path?: string) {
+  if (!path) return null
+  if (path.startsWith('http')) return path
+  return `${config.public.apiRoot}/${path.replace(/^\/+/, '')}`
+}
 
 // Recherche debouncée
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -34,12 +52,15 @@ watch(searchQuery, (q) => {
   if (searchTimeout) clearTimeout(searchTimeout)
   if (!q.trim()) {
     searchResults.value = null
+    selectedGenre.value = null
     return
   }
   searchTimeout = setTimeout(async () => {
     searching.value = true
     try {
-      searchResults.value = await searchBooks(q.trim())
+      const res = await searchBooks(q.trim())
+      searchResults.value = res.books ?? []
+      selectedGenre.value = null
     } catch {
       searchResults.value = []
     } finally {
@@ -82,7 +103,7 @@ watch(searchQuery, (q) => {
       </div>
 
       <!-- Filtres genres -->
-      <div v-if="genres?.length" class="flex flex-wrap items-center gap-2 mb-8">
+      <div v-if="genres.length" class="flex flex-wrap items-center gap-2 mb-8">
         <button
           class="px-3 py-1.5 rounded-full text-xs font-medium border transition"
           :class="!selectedGenre
@@ -150,25 +171,28 @@ watch(searchQuery, (q) => {
         >
           <div class="aspect-[3/4] bg-gradient-to-br from-indigo-900/50 to-slate-900 flex items-center justify-center overflow-hidden">
             <img
-              v-if="book.cover"
-              :src="book.cover"
+              v-if="book.picture"
+              :src="pictureUrl(book.picture)!"
               :alt="book.title"
               class="w-full h-full object-cover group-hover:scale-105 transition"
             />
             <Icon v-else name="lucide:book-open" class="w-16 h-16 text-indigo-300/60" />
           </div>
           <div class="p-4">
-            <span
-              v-if="book.genre"
-              class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300"
-            >
-              {{ book.genre }}
-            </span>
+            <div class="flex flex-wrap gap-1 mb-2">
+              <span
+                v-for="g in book.genre.split(',').map(s => s.trim()).filter(Boolean)"
+                :key="g"
+                class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300"
+              >
+                {{ g }}
+              </span>
+            </div>
             <h3 class="font-semibold mt-2 group-hover:text-indigo-300 transition line-clamp-1">
               {{ book.title }}
             </h3>
             <p class="text-xs text-slate-500 mt-1">
-              {{ book.author?.name ?? 'Auteur inconnu' }}
+              {{ book.author ?? 'Auteur inconnu' }}
             </p>
           </div>
         </NuxtLink>
