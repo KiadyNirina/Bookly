@@ -67,10 +67,10 @@ async function handleLogout() {
               @click="userMenuOpen = !userMenuOpen"
             >
               <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white">
-                {{ user?.user.name?.charAt(0)?.toUpperCase() ?? '?' }}
+                {{ user?.name?.charAt(0)?.toUpperCase() ?? '?' }}
               </div>
               <span class="hidden sm:block text-sm text-slate-200 max-w-[120px] truncate">
-                {{ user?.user.name ?? 'Utilisateur' }}
+                {{ user?.name ?? 'Utilisateur' }}
               </span>
               <Icon
                 name="lucide:chevron-down"
@@ -94,10 +94,10 @@ async function handleLogout() {
               >
                 <div class="px-4 py-2.5 border-b border-slate-800">
                   <p class="text-sm font-medium text-slate-100 truncate">
-                    {{ user?.user.name ?? 'Utilisateur' }}
+                    {{ user?.name ?? 'Utilisateur' }}
                   </p>
                   <p class="text-xs text-slate-500 truncate">
-                    {{ user?.user.email ?? '' }}
+                    {{ user?.email ?? '' }}
                   </p>
                 </div>
 
