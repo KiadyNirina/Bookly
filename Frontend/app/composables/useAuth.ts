@@ -1,5 +1,5 @@
 export const useAuth = () => {
-  const { $api, $apiSpa } = useNuxtApp()
+  const { $api, $apiSpa, $apiAuth } = useNuxtApp()
   const config = useRuntimeConfig()
 
   const token = useAuthToken()
@@ -65,7 +65,10 @@ export const useAuth = () => {
 
   async function logout() {
     try {
-      if (token.value) await $api('/logout', { method: 'POST' })
+      if (token.value) {
+        await ensureCsrfCookie()
+        await $apiAuth('/logout', { method: 'POST' })
+      }
     } finally {
       clearAuthTokenCookie()
       token.value = null

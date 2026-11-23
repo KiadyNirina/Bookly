@@ -32,5 +32,21 @@ export default defineNuxtPlugin((nuxtApp) => {
     },
   })
 
-  return { provide: { api, apiSpa } }
+  const apiAuth = $fetch.create({
+    baseURL: config.public.apiBase,
+    credentials: 'include',
+    onRequest({ options }) {
+      options.headers.set('Accept', 'application/json')
+      const token = useAuthToken()
+      if (token.value) {
+        options.headers.set('Authorization', `Bearer ${token.value}`)
+      }
+      const xsrfToken = useCookie('XSRF-TOKEN')
+      if (xsrfToken.value) {
+        options.headers.set('X-XSRF-TOKEN', decodeURIComponent(xsrfToken.value))
+      }
+    },
+  })
+
+  return { provide: { api, apiSpa, apiAuth } }
 })
