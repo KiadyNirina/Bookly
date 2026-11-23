@@ -1,15 +1,16 @@
+// app/composables/useProfileApi.ts
 export const useProfileApi = () => {
-  const { $api } = useNuxtApp()
+  const { $apiAuth } = useNuxtApp()
 
   async function updateProfile(payload: { name: string; email: string }) {
-    return await $api('/user-update', {
+    return await $apiAuth('/user-update', {
       method: 'PUT',
       body: payload,
     })
   }
 
   async function deleteAccount() {
-    return await $api('/user-delete', {
+    return await $apiAuth('/user-delete', {
       method: 'DELETE',
     })
   }
